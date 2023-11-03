@@ -72,3 +72,15 @@ Plugins/*/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+# StarterContent
+Content/StarterContent/*
+
+# Rider files
+.idea/*
+
+# TPS Assets
+Content/ThirdPerson/*
+
+# TurboMaurice raw Assets
+TurboMaurice4000/*
