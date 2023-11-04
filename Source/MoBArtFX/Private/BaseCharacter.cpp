@@ -2,6 +2,8 @@
 
 
 #include "BaseCharacter.h"
+
+#include "PS_MoBArtFX.h"
 #include "Engine/DamageEvents.h"
 
 // Sets default values
@@ -14,7 +16,12 @@ ABaseCharacter::ABaseCharacter()
 // Called when the game starts or when spawned
 void ABaseCharacter::BeginPlay()
 {
-	Super::BeginPlay();	
+	Super::BeginPlay();
+
+	PlayerInfos = GetController()->GetPlayerState<APS_MoBArtFX>()->PlayerDatas;
+
+	MaxHealth = PlayerInfos->MaxHealth;
+	CurrentHealth = MaxHealth;
 }
 
 float ABaseCharacter::TakeDamage(const float DamageAmount, FDamageEvent const& DamageEvent,

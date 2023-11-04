@@ -4,8 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "Camera/CameraComponent.h"
+#include "PlayerInfos.h"
 #include "BaseCharacter.generated.h"
 
 UCLASS()
@@ -17,9 +16,9 @@ public:
 	/*VARIABLE*/
 	public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MoBA_Character|Stats|Health")
-	int CurrentHealth = 100;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MoBA_Character|Stats|Health")
 	int MaxHealth = 100;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MoBA_Character|Stats|Health")
+	int CurrentHealth = 100;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MoBA_Character|Stats|Ammo")
 	int MaxAmmo = 10;
 	UPROPERTY(BlueprintReadWrite, Category="MoBA_Character|Stats|Ammo")
@@ -35,6 +34,7 @@ public:
 	float CD_Ultimate = 10.f;
 
 protected:
+	UPlayerInfos* PlayerInfos;
 	
 private:
 	
@@ -66,5 +66,6 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void Death();
+	
 private:
 };
