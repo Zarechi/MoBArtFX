@@ -11,16 +11,17 @@ class MOBARTFX_API UPlayerInfos : public UDataAsset
 {
 	GENERATED_BODY()
 
+	/* VARIABLES */
 public:
 	/** Please add a variable description */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="CrossHair")
 	TObjectPtr<UMaterialInstance> CrossHairMat;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="CrossHair")
-	FVector2D CrossHairScale;
+	FVector2D CrossHairScale = FVector2D(1.f, 1.f);
 
 	/** Please add a variable description */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Ammo")
-	int32 MaxAmmo;
+	int32 MaxAmmo = 100;
 	UPROPERTY(BlueprintReadWrite, Category="Ammo", meta=(EditCondition=false))
 	int32 CurrentAmmo;
 
@@ -28,30 +29,31 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Character")
 	TObjectPtr<UMaterialInstance> CharacterMat;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Character|Health")
-	int32 MaxHealth;
+	int32 MaxHealth = 1500;
 	UPROPERTY(BlueprintReadWrite, Category="Character|Health", meta=(EditCondition=false))
 	int32 CurrentHealth;
 
 	/** Please add a variable description */
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Spells|AutoAttack")
+	double AutoAttack_CD = 0.7f;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Spells|Primary")
 	TObjectPtr<UMaterialInstance> Spell01_Mat;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Spells|Primary")
-	double Spell01_MaxCD;
-	UPROPERTY(BlueprintReadWrite, Category="Spells|Primary", meta=(EditCondition=false))
-	double Spell01_CurrentCD;
+	double Spell01_CD = 5.f;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Spells|Secondary")
 	TObjectPtr<UMaterialInstance> Spell02_Mat;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Spells|Secondary")
-	double Spell02_MaxCD;
-	UPROPERTY(BlueprintReadWrite, Category="Spells|Secondary", meta=(EditCondition=false))
-	double Spell02_CurrentCD;
+	double Spell02_CD = 15.f;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Spells|Ultimate")
 	TObjectPtr<UMaterialInstance> Ultimate_Mat;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Spells|Ultimate")
-	double Ultimate_MaxCD;
-	UPROPERTY(BlueprintReadWrite, Category="Spells|Ultimate", meta=(EditCondition=false))
-	double Ultimate_CurrentCD;
+	double Ultimate_CD = 30.f;
 
+protected:
+private:
+	
+	/* FUNCTION */
+public:
 protected:
 private:
 };

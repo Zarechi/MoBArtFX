@@ -12,31 +12,13 @@ class MOBARTFX_API ABaseCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-public:
 	/*VARIABLE*/
-	public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MoBA_Character|Stats|Health")
-	int MaxHealth = 100;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MoBA_Character|Stats|Health")
-	int CurrentHealth = 100;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MoBA_Character|Stats|Ammo")
-	int MaxAmmo = 10;
-	UPROPERTY(BlueprintReadWrite, Category="MoBA_Character|Stats|Ammo")
-	int CurrentAmmo = 10;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MoBA_Character|Stats|Cooldowns")
-	float CD_AutoAttack = 0.5f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MoBA_Character|Stats|Cooldowns")
-	float CD_Spell01 = 1.f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MoBA_Character|Stats|Cooldowns")
-	float CD_Spell02 = 5.f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MoBA_Character|Stats|Cooldowns")
-	float CD_Ultimate = 10.f;
+public:
 
 protected:
-	UPlayerInfos* PlayerInfos;
 	
 private:
+	UPlayerInfos* PlayerInfos;
 	
 	/*FUNCTIONS*/
 public:
@@ -58,6 +40,10 @@ public:
 	void Spell_02();
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void Ultimate();
+
+	// PlayerDatas
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UPlayerInfos* GetPlayerDatas();
 
 protected:
 	// Called when the game starts or when spawned

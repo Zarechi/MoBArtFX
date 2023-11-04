@@ -17,15 +17,10 @@ ABaseCharacter::ABaseCharacter()
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	PlayerInfos = GetController()->GetPlayerState<APS_MoBArtFX>()->PlayerDatas;
-
-	MaxHealth = PlayerInfos->MaxHealth;
-	CurrentHealth = MaxHealth;
 }
 
 float ABaseCharacter::TakeDamage(const float DamageAmount, FDamageEvent const& DamageEvent,
-	AController* EventInstigator, AActor* DamageCauser)
+                                 AController* EventInstigator, AActor* DamageCauser)
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
@@ -33,37 +28,48 @@ float ABaseCharacter::TakeDamage(const float DamageAmount, FDamageEvent const& D
 	{
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
-											 FString::Printf(TEXT("Radial Damages taken = %f"), DamageAmount));
+			                                 FString::Printf(TEXT("Radial Damages taken = %f"), DamageAmount));
 	}
 	else if (DamageEvent.IsOfType(FPointDamageEvent::ClassID))
 	{
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
-											 FString::Printf(TEXT("Point Damages taken = %f"), DamageAmount));
+			                                 FString::Printf(TEXT("Point Damages taken = %f"), DamageAmount));
 	}
 	else
 	{
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
-											 FString::Printf(TEXT("Any Damages taken = %f"), DamageAmount));
+			                                 FString::Printf(TEXT("Any Damages taken = %f"), DamageAmount));
 	}
 
-	CurrentHealth -= DamageAmount;
+	/*CurrentHealth -= DamageAmount;
 
 	if (CurrentHealth <= 0)
 	{
 		CurrentHealth = 0;
 		Death();
-	}
-	
+	}*/
+
 	return 0;
+}
+
+UPlayerInfos* ABaseCharacter::GetPlayerDatas()
+{
+	if (GetPlayerState<APS_MoBArtFX>())
+	{
+		return GetPlayerState<APS_MoBArtFX>()->PlayerDatas;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("PlayerState not valid"));
+
+	return nullptr;
 }
 
 // Called every frame
 void ABaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -71,4 +77,3 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
-

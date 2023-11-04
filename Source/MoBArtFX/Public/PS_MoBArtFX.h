@@ -13,7 +13,8 @@ class MOBARTFX_API APS_MoBArtFX : public APlayerState
 	GENERATED_BODY()
 
 	/* FUNCTIONS */
-public:	
+public:
+	virtual void BeginPlay() override;
 protected:
 private:
 
