@@ -15,13 +15,16 @@ class MOBARTFX_API APS_MoBArtFX : public APlayerState
 	/* FUNCTIONS */
 public:
 	virtual void BeginPlay() override;
+	
 protected:
 private:
 
 	/* VARIABLES */
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="PlayerDatas")
-	UPlayerInfos* PlayerDatas;
+	UPROPERTY(EditAnywhere, Category="PlayerDatas", meta=(AllowedClasses="UPlayerInfos"))
+	TSoftObjectPtr<UPlayerInfos> PlayerDatas_Asset;
+	UPROPERTY(BlueprintReadOnly, Category="PlayerDatas", meta=(EditCondition="false"))
+	TObjectPtr<UPlayerInfos> PlayerDatas;
 	
 protected:
 private:

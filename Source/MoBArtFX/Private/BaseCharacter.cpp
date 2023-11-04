@@ -2,8 +2,6 @@
 
 
 #include "BaseCharacter.h"
-
-#include "PS_MoBArtFX.h"
 #include "Engine/DamageEvents.h"
 
 // Sets default values
@@ -19,49 +17,52 @@ void ABaseCharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
-float ABaseCharacter::TakeDamage(const float DamageAmount, FDamageEvent const& DamageEvent,
-                                 AController* EventInstigator, AActor* DamageCauser)
-{
-	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-
-	if (DamageEvent.IsOfType(FRadialDamageEvent::ClassID))
-	{
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
-			                                 FString::Printf(TEXT("Radial Damages taken = %f"), DamageAmount));
-	}
-	else if (DamageEvent.IsOfType(FPointDamageEvent::ClassID))
-	{
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
-			                                 FString::Printf(TEXT("Point Damages taken = %f"), DamageAmount));
-	}
-	else
-	{
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
-			                                 FString::Printf(TEXT("Any Damages taken = %f"), DamageAmount));
-	}
-
-	/*CurrentHealth -= DamageAmount;
-
-	if (CurrentHealth <= 0)
-	{
-		CurrentHealth = 0;
-		Death();
-	}*/
-
-	return 0;
-}
+// float ABaseCharacter::TakeDamage(const float DamageAmount, FDamageEvent const& DamageEvent,
+//                                  AController* EventInstigator, AActor* DamageCauser)
+// {
+// 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+//
+// 	if (DamageEvent.IsOfType(FRadialDamageEvent::ClassID))
+// 	{
+// 		if (GEngine)
+// 			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
+// 			                                 FString::Printf(TEXT("Radial Damages taken = %f"), DamageAmount));
+// 	}
+// 	else if (DamageEvent.IsOfType(FPointDamageEvent::ClassID))
+// 	{
+// 		if (GEngine)
+// 			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
+// 			                                 FString::Printf(TEXT("Point Damages taken = %f"), DamageAmount));
+// 	}
+// 	else
+// 	{
+// 		if (GEngine)
+// 			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
+// 			                                 FString::Printf(TEXT("Any Damages taken = %f"), DamageAmount));
+// 	}
+//
+// 	TObjectPtr<UPlayerInfos> PlayerDatas = GetPlayerDatas();
+//
+// 	/*if (GetPlayerDatas()->ApplyDamages(DamageAmount) <= 0)
+// 		Death();*/
+//
+// 	return 0;
+// }
 
 UPlayerInfos* ABaseCharacter::GetPlayerDatas()
 {
-	if (GetPlayerState<APS_MoBArtFX>())
+	if (GetPlayerState<APlayerState>())
 	{
+		UE_LOG(LogTemp, Warning, TEXT("PlayerState's Datas"));
 		return GetPlayerState<APS_MoBArtFX>()->PlayerDatas;
 	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Debug's Datas"))
+		return DebugPlayerInfos;
+	}
 
-	UE_LOG(LogTemp, Warning, TEXT("PlayerState not valid"));
+	UE_LOG(LogTemp, Error, TEXT("PlayerState not valid"));
 
 	return nullptr;
 }

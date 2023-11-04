@@ -13,27 +13,29 @@ class MOBARTFX_API UPlayerInfos : public UDataAsset
 
 	/* VARIABLES */
 public:
-	/** Please add a variable description */
+	/** Crosshair parameters */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="CrossHair")
 	TObjectPtr<UMaterialInstance> CrossHairMat;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="CrossHair")
 	FVector2D CrossHairScale = FVector2D(1.f, 1.f);
 
-	/** Please add a variable description */
+	/** Ammo parameters */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Ammo")
 	int32 MaxAmmo = 100;
 	UPROPERTY(BlueprintReadWrite, Category="Ammo", meta=(EditCondition=false))
 	int32 CurrentAmmo;
 
-	/** Please add a variable description */
+	/** Character parameters */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Character")
 	TObjectPtr<UMaterialInstance> CharacterMat;
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Character|Speed")
+	float MaxWalkSpeed = 700.f;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Character|Health")
 	int32 MaxHealth = 1500;
 	UPROPERTY(BlueprintReadWrite, Category="Character|Health", meta=(EditCondition=false))
 	int32 CurrentHealth;
 
-	/** Please add a variable description */
+	/** Spells parameters */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Spells|AutoAttack")
 	double AutoAttack_CD = 0.7f;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Spells|Primary")
@@ -48,6 +50,10 @@ public:
 	TObjectPtr<UMaterialInstance> Ultimate_Mat;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Spells|Ultimate")
 	double Ultimate_CD = 30.f;
+
+	/* HUD Parameters */
+	UPROPERTY(EditDefaultsOnly, Category = "Viewport")
+	TSubclassOf<UUserWidget> ViewportClass;
 
 protected:
 private:

@@ -17,15 +17,14 @@ class MOBARTFX_API AHUD_MoBArtFX : public AHUD
 	
 	/* FUNCTIONS */
 public:
-	virtual void BeginPlay() override;
+	void ConstructViewport(TSubclassOf<UUserWidget> _ViewportClass);
 	
 protected:
 private:
 
 	/* VARIABLES */
 public:
-	UPROPERTY(EditDefaultsOnly, Category = Viewport)
-	TSubclassOf<UUserWidget> ViewportClass;
+	//TSubclassOf<UUserWidget> ViewportClass;
 	
 	UPROPERTY(BlueprintReadOnly, Category = Viewport)
 	UUserWidget* ViewportInstance;

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "PlayerInfos.h"
+#include "PS_MoBArtFX.h"
 #include "BaseCharacter.generated.h"
 
 UCLASS()
@@ -14,16 +14,20 @@ class MOBARTFX_API ABaseCharacter : public ACharacter
 
 	/*VARIABLE*/
 public:
-
-protected:
-	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowedClasses="UPlayerInfos"))
+	TSoftClassPtr<UPlayerInfos> DebugPlayerInfosAsset;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UPlayerInfos> DebugPlayerInfos;
+protected:	
 private:
-	UPlayerInfos* PlayerInfos;
 	
 	/*FUNCTIONS*/
 public:
 	// Sets default values for this character's properties
 	ABaseCharacter();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void Death();
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -48,10 +52,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	float TakeDamage(const float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
-
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void Death();
+	
+	//float TakeDamage(const float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	
 private:
 };

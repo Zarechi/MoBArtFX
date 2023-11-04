@@ -5,10 +5,8 @@
 
 #include "Blueprint/UserWidget.h"
 
-void AHUD_MoBArtFX::BeginPlay()
+void AHUD_MoBArtFX::ConstructViewport(TSubclassOf<UUserWidget> _ViewportClass)
 {
-	Super::BeginPlay();
-
-	ViewportInstance = CreateWidget<UUserWidget>(GetOwningPlayerController(), ViewportClass, FName("Viewport"));
+	ViewportInstance = CreateWidget<UUserWidget>(GetOwningPlayerController(), _ViewportClass, FName("Viewport"));
 	ViewportInstance->AddToPlayerScreen();	
 }
