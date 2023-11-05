@@ -17,38 +17,6 @@ void ABaseCharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
-// float ABaseCharacter::TakeDamage(const float DamageAmount, FDamageEvent const& DamageEvent,
-//                                  AController* EventInstigator, AActor* DamageCauser)
-// {
-// 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-//
-// 	if (DamageEvent.IsOfType(FRadialDamageEvent::ClassID))
-// 	{
-// 		if (GEngine)
-// 			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
-// 			                                 FString::Printf(TEXT("Radial Damages taken = %f"), DamageAmount));
-// 	}
-// 	else if (DamageEvent.IsOfType(FPointDamageEvent::ClassID))
-// 	{
-// 		if (GEngine)
-// 			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
-// 			                                 FString::Printf(TEXT("Point Damages taken = %f"), DamageAmount));
-// 	}
-// 	else
-// 	{
-// 		if (GEngine)
-// 			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
-// 			                                 FString::Printf(TEXT("Any Damages taken = %f"), DamageAmount));
-// 	}
-//
-// 	TObjectPtr<UPlayerInfos> PlayerDatas = GetPlayerDatas();
-//
-// 	/*if (GetPlayerDatas()->ApplyDamages(DamageAmount) <= 0)
-// 		Death();*/
-//
-// 	return 0;
-// }
-
 UPlayerInfos* ABaseCharacter::GetPlayerDatas()
 {
 	if (GetPlayerState<APlayerState>())

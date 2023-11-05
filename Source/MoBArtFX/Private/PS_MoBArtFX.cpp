@@ -15,8 +15,10 @@ void APS_MoBArtFX::BeginPlay()
 	{
 		PlayerDatas->CurrentHealth = PlayerDatas->MaxHealth;
 		PlayerDatas->CurrentAmmo = PlayerDatas->MaxAmmo;
-
-		//Cast<AHUD_MoBArtFX>(GetPlayerController()->GetHUD())->ConstructViewport(PlayerDatas->ViewportClass);
+		
+		UE_LOG(LogTemp, Warning, TEXT("PlayerDatas_Asset is valid"));
+		
+		//Cast<AHUD_MoBArtFX>(GetWorld()->GetFirstPlayerController()->GetHUD())->ConstructViewport(PlayerDatas->ViewportClass);
 	}
 	else
 	{

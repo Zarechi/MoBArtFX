@@ -7,9 +7,24 @@
 #include "Blueprint/UserWidget.h"
 #include "HUD_MoBArtFX.generated.h"
 
-/**
- * 
- */
+/** HUD Interface */
+
+UINTERFACE(MinimalAPI, Blueprintable)
+class UHUDInterface : public UInterface
+{
+	GENERATED_BODY()
+};
+class IHUDInterface
+{
+	GENERATED_BODY()
+
+public:
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "HUD")
+	void Cooldown(double _CooldownTime, int SpellNum);
+};
+
+/** HUD Class */
+
 UCLASS()
 class MOBARTFX_API AHUD_MoBArtFX : public AHUD
 {
@@ -17,7 +32,7 @@ class MOBARTFX_API AHUD_MoBArtFX : public AHUD
 	
 	/* FUNCTIONS */
 public:
-	void ConstructViewport(TSubclassOf<UUserWidget> _ViewportClass);
+	virtual void BeginPlay() override;
 	
 protected:
 private:

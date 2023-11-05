@@ -3,9 +3,11 @@
 #include "PC_MoBArtFX.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "HUD_MoBArtFX.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "HUD_MoBArtFX.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 
 void APC_MoBArtFX::BeginPlay()
@@ -40,6 +42,8 @@ void APC_MoBArtFX::BeginPlay()
 		EnhancedInputComponent->BindAction(Spell02_Action, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Spell02);
 		EnhancedInputComponent->BindAction(UltimateAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Ultimate);
 	}
+	
+	
 }
 
 void APC_MoBArtFX::Move(const FInputActionValue& Value)
@@ -76,6 +80,26 @@ void APC_MoBArtFX::Spell01(const FInputActionValue& Value)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Launch Spell_01"));
 	PlayerCharacter->Spell_01();
+	//
+	// if(GetHUD())
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT("Searching Interface %s on %s"), *UHUDInterface::StaticClass()->GetName(), *GetHUD()->GetName());
+	// 		
+	// 	if(GetHUD()->GetClass()->ImplementsInterface(UHUDInterface::StaticClass()))
+	// 	{
+	// 		Cast<IHUDInterface>(GetHUD())->Execute_Cooldown(GetHUD(), 2, 0);
+	// 		
+	// 		UE_LOG(LogTemp, Warning, TEXT("Interface used on Spell_01"));
+	// 	}
+	// 	else
+	// 	{
+	// 		UE_LOG(LogTemp, Error, TEXT("Interface %s not valid on Spell_01"), *UHUDInterface::StaticClass()->GetName());			
+	// 	}
+	// }
+	// else
+	// {
+	// 	UE_LOG(LogTemp, Error, TEXT("HUD not valid on Spell_01"));	
+	// }
 }
 
 void APC_MoBArtFX::Spell02(const FInputActionValue& Value)
