@@ -21,16 +21,15 @@ UPlayerInfos* ABaseCharacter::GetPlayerDatas()
 {
 	if (GetPlayerState<APlayerState>())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("PlayerState's Datas"));
 		return GetPlayerState<APS_MoBArtFX>()->PlayerDatas;
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Debug's Datas"))
-		return DebugPlayerInfos;
+		if(DebugPlayerInfos)
+			return DebugPlayerInfos;
 	}
 
-	UE_LOG(LogTemp, Error, TEXT("PlayerState not valid"));
+	UE_LOG(LogTemp, Error, TEXT("Can't find PlayerDatas"));
 
 	return nullptr;
 }
@@ -45,4 +44,18 @@ void ABaseCharacter::Tick(float DeltaTime)
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+void ABaseCharacter::AutoAttack_Implementation()
+{	
+	if(GetPlayerDatas()->CurrentAmmo <= 0)
+	{
+		GetPlayerDatas()->CurrentAmmo = 0;
+		Reload();
+	}
+}
+
+void ABaseCharacter::Reload_Implementation()
+{
+	GetPlayerDatas()->CurrentAmmo = GetPlayerDatas()->MaxAmmo;
 }

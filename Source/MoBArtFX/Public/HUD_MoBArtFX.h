@@ -20,7 +20,7 @@ class IHUDInterface
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "HUD")
-	void Cooldown(double _CooldownTime, int SpellNum);
+	void Cooldown(double _CooldownTime, int SpellNum = -1);
 };
 
 /** HUD Class */

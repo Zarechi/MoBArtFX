@@ -36,7 +36,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	// Attacks
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void AutoAttack();
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void Spell_01();
@@ -44,6 +44,10 @@ public:
 	void Spell_02();
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void Ultimate();
+
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void Reload();
 
 	// PlayerDatas
 	UFUNCTION(BlueprintCallable, BlueprintPure)
