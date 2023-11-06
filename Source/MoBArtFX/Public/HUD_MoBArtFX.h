@@ -42,7 +42,7 @@ public:
 	//TSubclassOf<UUserWidget> ViewportClass;
 	
 	UPROPERTY(BlueprintReadOnly, Category = Viewport)
-	UUserWidget* ViewportInstance;
+	TObjectPtr<UUserWidget> ViewportInstance;
 	
 protected:
 private:

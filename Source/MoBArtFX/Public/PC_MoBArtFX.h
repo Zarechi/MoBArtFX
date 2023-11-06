@@ -17,12 +17,12 @@ class MOBARTFX_API APC_MoBArtFX : public APlayerController
 {
 	GENERATED_BODY()
 
-	/* FUNCTIONS */
+	/** FUNCTIONS */
 public:
 	virtual void BeginPlay() override;
 	
 protected:
-	/** InputEvents */
+	/* InputEvents */
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void Jump(const FInputActionValue& Value);
@@ -34,30 +34,30 @@ protected:
 	
 private:
 	
-	/* VARIABLES */
+	/** VARIABLES */
 public:
 	UPROPERTY(BlueprintReadOnly, Category=Character)
-	ABaseCharacter* PlayerCharacter = nullptr;
+	TObjectPtr<ABaseCharacter> PlayerCharacter = nullptr;
 	
 	/* MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	UInputMappingContext* IMC_DefaultPlayer;
+	TObjectPtr<UInputMappingContext> IMC_DefaultPlayer;
 
 	/** InputActions */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	UInputAction* JumpAction;
+	TObjectPtr<UInputAction> JumpAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	UInputAction* MoveAction;	
+	TObjectPtr<UInputAction> MoveAction;	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* LookAction;	
+	TObjectPtr<UInputAction> LookAction;	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* AutoAttackAction;	
+	TObjectPtr<UInputAction> AutoAttackAction;	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* Spell01_Action;	
+	TObjectPtr<UInputAction> Spell01_Action;	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* Spell02_Action;	
+	TObjectPtr<UInputAction> Spell02_Action;	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* UltimateAction;
+	TObjectPtr<UInputAction> UltimateAction;
 	
 protected:
 private:

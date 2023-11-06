@@ -16,7 +16,7 @@ class MOBARTFX_API ABaseCharacter : public ACharacter
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSoftClassPtr<UPlayerInfos> DebugPlayerInfosAsset;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<UPlayerInfos> DebugPlayerInfos;
 protected:	
 private:

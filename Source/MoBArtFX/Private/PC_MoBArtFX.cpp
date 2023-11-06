@@ -80,26 +80,6 @@ void APC_MoBArtFX::Spell01(const FInputActionValue& Value)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Launch Spell_01"));
 	PlayerCharacter->Spell_01();
-	//
-	// if(GetHUD())
-	// {
-	// 	UE_LOG(LogTemp, Warning, TEXT("Searching Interface %s on %s"), *UHUDInterface::StaticClass()->GetName(), *GetHUD()->GetName());
-	// 		
-	// 	if(GetHUD()->GetClass()->ImplementsInterface(UHUDInterface::StaticClass()))
-	// 	{
-	// 		Cast<IHUDInterface>(GetHUD())->Execute_Cooldown(GetHUD(), 2, 0);
-	// 		
-	// 		UE_LOG(LogTemp, Warning, TEXT("Interface used on Spell_01"));
-	// 	}
-	// 	else
-	// 	{
-	// 		UE_LOG(LogTemp, Error, TEXT("Interface %s not valid on Spell_01"), *UHUDInterface::StaticClass()->GetName());			
-	// 	}
-	// }
-	// else
-	// {
-	// 	UE_LOG(LogTemp, Error, TEXT("HUD not valid on Spell_01"));	
-	// }
 }
 
 void APC_MoBArtFX::Spell02(const FInputActionValue& Value)
