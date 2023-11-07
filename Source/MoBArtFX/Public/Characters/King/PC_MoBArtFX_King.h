@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "PC_MoBArtFX.h"
+#include <Characters/King/BaseCharacter_King.h>
 #include "PC_MoBArtFX_King.generated.h"
 
 /**
