@@ -28,6 +28,7 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void Death();
+	virtual void Death_Implementation() {};
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -38,16 +39,21 @@ public:
 	// Attacks
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void AutoAttack();
+	virtual void AutoAttack_Implementation();
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void Spell_01();
+	virtual void Spell_01_Implementation() {}
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void Spell_02();
+	virtual void Spell_02_Implementation() {}
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void Ultimate();
+	virtual void Ultimate_Implementation() {}
 
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void Reload();
+	virtual void Reload_Implementation();
 
 	// PlayerDatas
 	UFUNCTION(BlueprintCallable, BlueprintPure)
