@@ -4,9 +4,12 @@
 
 void ADesertClawCharacter::BeginPlay()
 {
-	// Call the base class  
 	Super::BeginPlay();
 
+	//  cast player infos
+	Data = CastChecked<UDesertClawPlayerInfos>( GetPlayerDatas() );
+
+	//  init abilities
 	InitializeAbilities();
 }
 
@@ -29,10 +32,11 @@ void ADesertClawCharacter::InitializeAbilities()
 	//  create
 	for ( auto& pair : Data->Abilities )
 	{
-		//CreateAbility( pair.Key, pair.Value );
+		CreateAbility( pair.Key, pair.Value );
 	}
 
 	//  setup hud
+	//  TODO:
 	/*if ( PlayerController )
 	{
 		PlayerController->SetupHUD();
@@ -45,4 +49,56 @@ void ADesertClawCharacter::InitializeAbilities()
 		ability->Initialize();
 		kPRINT( "Initializing ability '" + ability->GetName() + "'" );
 	}
+}
+
+UMobaAbility* ADesertClawCharacter::CreateAbility( EMobaAbilitySlot slot, UMobaAbilityData* data )
+{
+	if ( data == nullptr || data->Class == nullptr ) return nullptr;
+
+	//  create ability
+	auto ability = NewObject<UMobaAbility>( this, data->Class, FName( "MobaAbility('" + data->Name + "')" ) );
+	ability->Setup( this, data, slot );
+
+	//  bind ability to controller
+	//  TODO:
+	/*if ( PlayerController )
+	{
+		PlayerController->BindAbility( ability );
+	}*/
+
+	//  register
+	Abilities.Add( slot, ability );
+	InputsToAbilities.Add( slot, ability );
+
+	return ability;
+}
+
+void ADesertClawCharacter::Death_Implementation()
+{
+	kPRINT( "DESERT CLAW IS DEAD!" );
+}
+
+void ADesertClawCharacter::AutoAttack_Implementation()
+{
+	kPRINT( "AUTO ATTACK!" );
+}
+
+void ADesertClawCharacter::Reload_Implementation()
+{
+	kPRINT( "RELOAD !" );
+}
+
+void ADesertClawCharacter::Spell_01_Implementation()
+{
+	kPRINT( "SPELL 01!" );
+}
+
+void ADesertClawCharacter::Spell_02_Implementation()
+{
+	kPRINT( "SPELL 02!" );
+}
+
+void ADesertClawCharacter::Ultimate_Implementation()
+{
+	kPRINT( "ULTIMATE!" );
 }

@@ -4,6 +4,8 @@
 #include "Engine/DataAsset.h"
 #include "MobaAbilityData.generated.h"
 
+class UMobaAbility;
+
 UENUM( BlueprintType )
 enum class EMobaAbilitySlot : uint8
 {

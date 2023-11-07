@@ -1,7 +1,7 @@
 #include "Characters/DesertClaw/MobaAbility.h"
 
 #include "Defines.h"
-#include "DesertClawCharacter.h"
+#include "Characters/DesertClaw/DesertClawCharacter.h"
 
 void UMobaAbility::Setup( ADesertClawCharacter* character, UMobaAbilityData* data, EMobaAbilitySlot slot )
 {
@@ -60,11 +60,13 @@ bool UMobaAbility::Run( FMobaAbilityRunContext context )
 		{
 			if ( IsActive )
 			{
-				Character->OverrideAbilitySlot( Data->ActiveOverrideSlot, this );
+				//  TODO:
+				//Character->OverrideAbilitySlot( Data->ActiveOverrideSlot, this );
 			}
 			else
 			{
-				Character->ResetAbilitySlot( Data->ActiveOverrideSlot );
+				//  TODO:
+				//Character->ResetAbilitySlot( Data->ActiveOverrideSlot );
 			}
 		}
 	}
