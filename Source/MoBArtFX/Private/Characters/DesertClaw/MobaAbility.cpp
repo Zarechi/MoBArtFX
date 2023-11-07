@@ -26,7 +26,7 @@ bool UMobaAbility::Run( FMobaAbilityRunContext context )
 	}
 
 	//  toggle on/off mode
-	if ( Mode == EMobaAbilityMode::ON_OFF )
+	if ( Mode == EMobaAbilityMode::OnOff )
 	{
 		if ( context.IsStartInput )
 		{
@@ -60,13 +60,11 @@ bool UMobaAbility::Run( FMobaAbilityRunContext context )
 		{
 			if ( IsActive )
 			{
-				//  TODO:
-				//Character->OverrideAbilitySlot( Data->ActiveOverrideSlot, this );
+				Character->OverrideAbilitySlot( Data->ActiveOverrideSlot, this );
 			}
 			else
 			{
-				//  TODO:
-				//Character->ResetAbilitySlot( Data->ActiveOverrideSlot );
+				Character->ResetAbilitySlot( Data->ActiveOverrideSlot );
 			}
 		}
 	}

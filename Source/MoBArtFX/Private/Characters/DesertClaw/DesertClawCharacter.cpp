@@ -73,6 +73,56 @@ UMobaAbility* ADesertClawCharacter::CreateAbility( EMobaAbilitySlot slot, UMobaA
 	return ability;
 }
 
+UMobaAbility* ADesertClawCharacter::GetAbility( EMobaAbilitySlot slot )
+{
+	if ( auto itr = Abilities.Find( slot ) ) return *itr;
+	return nullptr;
+}
+
+void ADesertClawCharacter::OverrideAbilitySlot( EMobaAbilitySlot slot, UMobaAbility* ability )
+{
+	InputsToAbilities.Add( slot, ability );
+}
+
+void ADesertClawCharacter::ResetAbilitySlot( EMobaAbilitySlot slot )
+{
+	UMobaAbility* ability = GetAbility( slot );
+	if ( !IsValid( ability ) )
+	{
+		InputsToAbilities.Remove( slot );
+		kPRINT_WARNING( "Character: couldn't reset ability input slot of '" + UEnum::GetValueAsString<EMobaAbilitySlot>( slot ) + "', original ability is NOT valid!" );
+		return;
+	}
+
+	InputsToAbilities.Add( slot, ability );
+}
+
+void ADesertClawCharacter::ProcessAbility( EMobaAbilitySlot slot, bool is_started )
+{
+	//  find ability at input slot
+	auto itr = InputsToAbilities.Find( slot );
+	if ( !itr )
+	{
+		kPRINT_WARNING( "Character: no Ability found on Input slot '" + UEnum::GetValueAsString<EMobaAbilitySlot>( slot ) + "'" );
+		return;
+	}
+
+	//  get ability and its data
+	UMobaAbility* ability = *itr;
+	UMobaAbilityData* data = ability->GetData();
+
+	//  ignore end input if not a holded ability
+	if ( !is_started && !data->IsHolded ) return;
+
+	//  construct context
+	FMobaAbilityRunContext context {};
+	context.IsOverridenSlot = slot != ability->Slot;
+	context.IsStartInput = is_started;
+
+	//  run ability
+	ability->Run( context );
+}
+
 void ADesertClawCharacter::Death_Implementation()
 {
 	kPRINT( "DESERT CLAW IS DEAD!" );
@@ -80,6 +130,7 @@ void ADesertClawCharacter::Death_Implementation()
 
 void ADesertClawCharacter::AutoAttack_Implementation()
 {
+	ProcessAbility( EMobaAbilitySlot::AutoAttack, true );
 	kPRINT( "AUTO ATTACK!" );
 }
 
@@ -90,15 +141,18 @@ void ADesertClawCharacter::Reload_Implementation()
 
 void ADesertClawCharacter::Spell_01_Implementation()
 {
+	ProcessAbility( EMobaAbilitySlot::First, true );
 	kPRINT( "SPELL 01!" );
 }
 
 void ADesertClawCharacter::Spell_02_Implementation()
 {
+	ProcessAbility( EMobaAbilitySlot::Second, true );
 	kPRINT( "SPELL 02!" );
 }
 
 void ADesertClawCharacter::Ultimate_Implementation()
 {
+	ProcessAbility( EMobaAbilitySlot::Ultimate, true );
 	kPRINT( "ULTIMATE!" );
 }

@@ -77,9 +77,9 @@ public:
 	FString GetName() const;
 
 	UPROPERTY( BlueprintReadOnly, Category = "Ability" )
-	EMobaAbilityMode Mode = EMobaAbilityMode::SINGLE;
+	EMobaAbilityMode Mode = EMobaAbilityMode::Single;
 	UPROPERTY( BlueprintReadOnly, Category = "Ability" )
-	EMobaAbilitySlot Slot = EMobaAbilitySlot::FIRST;
+	EMobaAbilitySlot Slot = EMobaAbilitySlot::First;
 
 	UWorld* GetWorld() const override;
 
