@@ -82,5 +82,5 @@ Content/StarterContent/*
 # TPS Assets
 Content/ThirdPerson/*
 
-# TurboMaurice raw Assets
-TurboMaurice4000/*
+# Dev Plugins
+Plugins/Developer/*
