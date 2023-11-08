@@ -19,22 +19,22 @@ class MOBARTFX_API UCainerInfos : public UPlayerInfos
 public:
 	/** Spells parameters */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Spells|Primary", meta = (min = 0.0f))
-	float monstroLife = 2000.0f;
+	float speedBoostValue = 1.5f;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Spells|Primary", meta = (min = 0.0f))
-	float monstroMoveSpeed = 600.0f;
+	float speedBoostRadius = 1000.0f;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Spells|Primary", meta = (min = 0.0f))
-	float monstroPingMaxDist = 1500.0f;
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Spells|Primary")
-	TSubclassOf<ACainerMonstro> monstroBlueprint;
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Spells|Primary")
-	TObjectPtr<UParticleSystem> monstroPingParticles;
+	float speedBoostDuration = 10.0f;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Spells|Secondary", meta = (min = 0.0f))
-	float speedBoostValue = 1.5f;
+	float monstroLife = 2000.0f;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Spells|Secondary", meta = (min = 0.0f))
-	float speedBoostRadius = 1000.0f;
+	float monstroMoveSpeed = 600.0f;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Spells|Secondary", meta = (min = 0.0f))
-	float speedBoostDuration = 10.0f;
+	float monstroPingMaxDist = 1500.0f;
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Spells|Secondary")
+	TSubclassOf<ACainerMonstro> monstroBlueprint;
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Spells|Secondary")
+	TObjectPtr<UParticleSystem> monstroPingParticles;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Spells|Ultimate", meta = (min = 0.0f))
 	float flashRange = 3000.0f;
