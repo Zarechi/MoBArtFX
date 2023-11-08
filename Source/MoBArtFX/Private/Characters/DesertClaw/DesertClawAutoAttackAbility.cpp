@@ -1,6 +1,8 @@
 #include "Characters/DesertClaw/DesertClawAutoAttackAbility.h"
-#include "Engine/DamageEvents.h"
 #include "Defines.h"
+
+#include "Engine/DamageEvents.h"
+#include "Kismet/KismetMathLibrary.h"
 
 void UDesertClawAutoAttackAbility::OnInitialize_Implementation()
 {
@@ -15,25 +17,22 @@ void UDesertClawAutoAttackAbility::OnTick_Implementation( float dt )
 	//  TODO: passive cost
 	//PassiveAbility->SetCooldown( 1.0f );
 
-	auto world = GetWorld();
+	UWorld* world = GetWorld();
+	auto controller = CastChecked<APC_MoBArtFX>( Character->GetController() );
 
-	//  setup line segment
-	FVector start = Character->GetActorLocation();
-	FVector dir = Character->GetActorForwardVector();
-	FVector end = start + dir * CustomData->Range;
-
-	//  setup params
+	//  query params
 	FCollisionQueryParams query_params {};
 	query_params.TraceTag = FName( "Ability" );
 	query_params.AddIgnoredActor( Character );
+
+	//  response params
 	FCollisionResponseParams response_params {};
 
 	//  line trace 
 	FHitResult result;
-	if ( world->LineTraceSingleByChannel(
-			result,
-			start,
-			end,
+	if ( controller->CameraTraceSingleByChannel(
+		    result,
+		    CustomData->Range,
 			CustomData->CollisionChannel,
 			query_params,
 			response_params
