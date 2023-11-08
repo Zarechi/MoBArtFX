@@ -26,6 +26,8 @@ public:
 	void Ultimate_Implementation() override;
 	void Reload_Implementation() override;
 
+	void PingMonstro();
+
 
 protected:
 	virtual void BeginPlay() override;

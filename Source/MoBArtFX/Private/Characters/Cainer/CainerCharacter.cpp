@@ -54,7 +54,7 @@ void ACainerCharacter::Spell_01_Implementation() //  speed boost
 
 	if (speedBoostCrtCD > 0.0f)
 	{
-		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 0.0f, FColor::Cyan, "Spell_01 : Speed Boost on cooldown for " + FString::SanitizeFloat(speedBoostCrtCD) + " seconds.");
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Cyan, "Spell_01 : Speed Boost on cooldown for " + FString::SanitizeFloat(speedBoostCrtCD) + " seconds.");
 		return;
 	}
 
@@ -72,7 +72,7 @@ void ACainerCharacter::Spell_02_Implementation() //  monstro
 
 	if (monstroCrtCD > 0.0f)
 	{
-		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 0.0f, FColor::Cyan, "Spell_02 : Monstro on cooldown for " + FString::SanitizeFloat(monstroCrtCD) + " seconds.");
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Cyan, "Spell_02 : Monstro on cooldown for " + FString::SanitizeFloat(monstroCrtCD) + " seconds.");
 		return;
 	}
 
@@ -93,7 +93,12 @@ void ACainerCharacter::Spell_02_Implementation() //  monstro
 	monstro = GetWorld()->SpawnActor<ACainerMonstro>(infos->monstroBlueprint, monstro_transform); 
 	monstro->SetSpeed(infos->monstroMoveSpeed); 
 	monstro->SetLife(infos->monstroLife); 
-} 
+}
+
+void ACainerCharacter::PingMonstro()
+{
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Blue, "Ping Monstro");
+}
 
 void ACainerCharacter::Ultimate_Implementation() //  flash
 {
@@ -102,7 +107,7 @@ void ACainerCharacter::Ultimate_Implementation() //  flash
 
 	if (flashCrtCD > 0.0f)
 	{
-		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 0.0f, FColor::Cyan, "Ultimate : Flash on cooldown for " + FString::SanitizeFloat(flashCrtCD) + " seconds.");
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Cyan, "Ultimate : Flash on cooldown for " + FString::SanitizeFloat(flashCrtCD) + " seconds.");
 		return;
 	}
 
