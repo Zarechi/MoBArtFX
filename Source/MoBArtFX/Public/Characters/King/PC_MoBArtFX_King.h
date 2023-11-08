@@ -20,8 +20,4 @@ public:
 
 protected:
 	void Spell01End(const FInputActionValue& Value);
-
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UInputAction> Spell01_EndAction;
 };
