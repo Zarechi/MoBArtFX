@@ -31,4 +31,3 @@ void ACainerMonstro::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
-
