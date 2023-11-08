@@ -48,11 +48,14 @@ void APC_MoBArtFX::BeginPlay()
 
 void APC_MoBArtFX::Move(const FInputActionValue& Value)
 {
+	FRotator rotation = GetControlRotation();
+	rotation.Pitch = 0.0f;
+
 	// Forward Movement
-	PlayerCharacter->AddMovementInput(UKismetMathLibrary::GetForwardVector(GetControlRotation()), Value.Get<FVector2D>().X);
+	PlayerCharacter->AddMovementInput(UKismetMathLibrary::GetForwardVector(rotation), Value.Get<FVector2D>().X);
 	
 	// Right Movement
-	PlayerCharacter->AddMovementInput(UKismetMathLibrary::GetRightVector(GetControlRotation()), Value.Get<FVector2D>().Y);
+	PlayerCharacter->AddMovementInput(UKismetMathLibrary::GetRightVector(rotation), Value.Get<FVector2D>().Y);
 }
 
 void APC_MoBArtFX::Look(const FInputActionValue& Value)
