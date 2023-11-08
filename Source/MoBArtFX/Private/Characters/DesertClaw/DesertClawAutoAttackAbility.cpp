@@ -21,29 +21,43 @@ void UDesertClawAutoAttackAbility::OnTick_Implementation( float dt )
 	auto controller = CastChecked<APC_MoBArtFX>( Character->GetController() );
 
 	//  query params
-	FCollisionQueryParams query_params {};
-	query_params.TraceTag = FName( "Ability" );
-	query_params.AddIgnoredActor( Character );
+	TArray<AActor*> ignored_actors;
+	ignored_actors.Add( Character );
 
-	//  response params
-	FCollisionResponseParams response_params {};
+	//  get trace locations
+	FVector start, end;
+	controller->GetCameraTraceBounds( start, end, CustomData->Range );
 
-	//  line trace 
+	//  sphere trace 
 	FHitResult result;
-	if ( controller->CameraTraceSingleByChannel(
-		    result,
-		    CustomData->Range,
-			CustomData->CollisionChannel,
-			query_params,
-			response_params
-		) )
+	UKismetSystemLibrary::SphereTraceSingleForObjects( 
+		Character,
+		start, 
+		end, 
+		CustomData->Radius,
+		CustomData->QueryObjectTypes,
+		false,
+		ignored_actors,
+		CustomData->DrawDebugType,
+		result,
+		true
+	);
+
+	//  check result
+	if ( result.bBlockingHit )
 	{
 		AActor* actor = result.GetActor();
-		actor->TakeDamage( CustomData->Damage * dt, FDamageEvent {}, Character->GetController(), Character );
+
+		//  inflict damage
+		actor->TakeDamage( 
+			CustomData->Damage * dt, 
+			FDamageEvent {}, 
+			Character->GetController(), 
+			Character 
+		);
+
 		kPRINT_TICK( result.GetActor()->GetName() );
 	}
-
-	kDEBUG_LINE_TRACE( world, result );
 }
 
 void UDesertClawAutoAttackAbility::OnRun_Implementation( FMobaAbilityRunContext context )

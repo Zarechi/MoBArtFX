@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Characters/DesertClaw/MobaAbility.h"
 #include "Characters/DesertClaw/DesertClawCharacter.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "DesertClawAutoAttackAbility.generated.h"
 
 
@@ -23,9 +24,17 @@ public:
 	UPROPERTY( BlueprintReadOnly, EditAnywhere, Category = "Auto-Attack" )
 	float Damage = 50.0f;
 
-	//  Attack trace collision channel
+	//  Radius of sphere trace
 	UPROPERTY( BlueprintReadOnly, EditAnywhere, Category = "Auto-Attack" )
-	TEnumAsByte<ECollisionChannel> CollisionChannel;
+	float Radius = 15.0f;
+
+	//  Trace query object types
+	UPROPERTY( BlueprintReadOnly, EditAnywhere, Category = "Auto-Attack" )
+	TArray<TEnumAsByte<EObjectTypeQuery>> QueryObjectTypes;
+
+	//  Trace draw debug type
+	UPROPERTY( BlueprintReadOnly, EditAnywhere, Category = "Auto-Attack" )
+	TEnumAsByte<EDrawDebugTrace::Type> DrawDebugType;
 };
 
 /**
