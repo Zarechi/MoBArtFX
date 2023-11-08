@@ -1,8 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "PC_MoBArtFX.h"
-#include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
 #include "HUD_MoBArtFX.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
@@ -16,34 +14,46 @@ void APC_MoBArtFX::BeginPlay()
 
 	UWidgetBlueprintLibrary::SetInputMode_GameOnly(this);
 	
-	PlayerCharacter = Cast<ABaseCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	//  cast base character
+	PlayerCharacter = Cast<ABaseCharacter>( GetPawn() );
 	
+	//  setup mapping context
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		Subsystem->AddMappingContext(IMC_DefaultPlayer, 0);
 	}
 	
-	// Set up action bindings
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
-	{			
-		//Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &APC_MoBArtFX::StopJump);
+	//  set up action bindings
+	EnhancedInputComponent = CastChecked<UEnhancedInputComponent>( InputComponent );
+	BindActions();
+}
 
-		//Moving
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Move);
+void APC_MoBArtFX::BindActions()
+{
+	BindMovementActions();
+	BindAbilitiesActions();
+}
 
-		//Looking
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Look);
+void APC_MoBArtFX::BindMovementActions()
+{
+	//Jumping
+	EnhancedInputComponent->BindAction( JumpAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Jump );
+	EnhancedInputComponent->BindAction( JumpAction, ETriggerEvent::Completed, this, &APC_MoBArtFX::StopJump );
 
-		//Attacks
-		EnhancedInputComponent->BindAction(AutoAttackAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::AutoAttack);
-		EnhancedInputComponent->BindAction(Spell01_Action, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Spell01);
-		EnhancedInputComponent->BindAction(Spell02_Action, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Spell02);
-		EnhancedInputComponent->BindAction(UltimateAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Ultimate);
-	}
-	
-	
+	//Moving
+	EnhancedInputComponent->BindAction( MoveAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Move );
+
+	//Looking
+	EnhancedInputComponent->BindAction( LookAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Look );
+}
+
+void APC_MoBArtFX::BindAbilitiesActions()
+{
+	//Attacks
+	EnhancedInputComponent->BindAction( AutoAttackAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::AutoAttack );
+	EnhancedInputComponent->BindAction( Spell01_Action, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Spell01 );
+	EnhancedInputComponent->BindAction( Spell02_Action, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Spell02 );
+	EnhancedInputComponent->BindAction( UltimateAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Ultimate );
 }
 
 void APC_MoBArtFX::Move(const FInputActionValue& Value)
