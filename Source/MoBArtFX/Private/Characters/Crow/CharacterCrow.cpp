@@ -1,4 +1,4 @@
-#include "CharacterCrow.h"
+#include "Characters/Crow/CharacterCrow.h"
 #include "Engine/DamageEvents.h"
 #include "MOBA_Projectile.h"
 
@@ -42,24 +42,19 @@ void ACharacterCrow::AutoAttack_Implementation()
         // Capacity not in cooldown
         LastUsedTime = CurrentTime;
 
-        if (Owner)
+        // Create projectile (sphère)
+        FVector SpawnLocation = GetActorLocation() + GetActorForwardVector() * 100.0f;
+        FRotator SpawnRotation = GetActorRotation();
+        AMOBA_Projectile* NewProjectile = GetWorld()->SpawnActor<AMOBA_Projectile>(ProjectileClass, SpawnLocation, SpawnRotation);
+
+        if (NewProjectile)
         {
-            // Create projectile (sphère)
-            FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 100.0f;
-            FRotator SpawnRotation = Owner->GetActorRotation();
-            AMOBA_Projectile* NewProjectile = GetWorld()->SpawnActor<AMOBA_Projectile>(ProjectileClass, SpawnLocation, SpawnRotation);
-
-            if (NewProjectile)
-            {
-                // Configurez la direction du projectile (par exemple, en avant)
-                FVector ShootDirection = Owner->GetActorForwardVector();
-                NewProjectile->SetDirection(ShootDirection);
-            }
-            GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Auto Attack"));
-
-            //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("SpawnLocation: %s"), *SpawnLocation.ToString()));
-            //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("SpawnRotation: %s"), *SpawnRotation.ToString()));
+            // Configurez la direction du projectile (par exemple, en avant)
+            FVector ShootDirection = GetActorForwardVector();
+            NewProjectile->SetDirection(ShootDirection);
         }
+        GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Auto Attack"));
+        
     }
     else
     {

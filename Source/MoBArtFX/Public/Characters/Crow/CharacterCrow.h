@@ -1,6 +1,6 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "BaseCharacter.h"
+#include "../../BaseCharacter.h"
 #include "CharacterCrow.generated.h"
 
 UCLASS()

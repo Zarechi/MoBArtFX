@@ -60,7 +60,7 @@ void AMOBA_Projectile::SetDirection(const FVector& NewDirection)
 	MoveDirection = NewDirection.GetSafeNormal(); // Normalize direction
 }
 
-// Function that manage the mouvement
+// Function that manage the movement
 void AMOBA_Projectile::MoveProjectile(float DeltaTime)
 {
 	FVector NewLocation = GetActorLocation() + MoveDirection * ProjectileSpeed * DeltaTime;
