@@ -81,35 +81,39 @@ void AVivianne::Tick(float DeltaTime)
 
 }
 
-
-void AVivianne::Move(const FInputActionValue& Value)
+void AVivianne::Death_Implementation()
 {
-	// input is a Vector2D
-	FVector2D MovementVector = Value.Get<FVector2D>();
-
-	if (Controller != nullptr)
-	{
-		// add movement 
-		AddMovementInput(GetActorForwardVector(), MovementVector.Y);
-		AddMovementInput(GetActorRightVector(), MovementVector.X);
-	}
 }
 
-void AVivianne::Look(const FInputActionValue& Value)
+void AVivianne::AutoAttack_Implementation()
 {
-	// input is a Vector2D
-	FVector2D LookAxisVector = Value.Get<FVector2D>();
-
-	if (Controller != nullptr)
-	{
-		// add yaw and pitch input to controller
-		AddControllerYawInput(LookAxisVector.X);
-		AddControllerPitchInput(LookAxisVector.Y);
-	}
+	Potion(true);
 }
 
-void AVivianne::Potion(const FInputActionValue& Value, bool healing)
+void AVivianne::Spell_01_Implementation()
 {
+	Potion(false);
+}
+
+void AVivianne::Spell_02_Implementation()
+{
+	Sprint();
+}
+
+void AVivianne::Ultimate_Implementation()
+{
+	Ultimate();
+}
+
+void AVivianne::Reload_Implementation()
+{
+}
+
+
+
+void AVivianne::Potion(bool healing)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("yes"));
 	APlayerCameraManager* playerCamera = GetWorld()->GetFirstPlayerController() ? GetWorld()->GetFirstPlayerController()->PlayerCameraManager : nullptr;
 
 
@@ -161,7 +165,7 @@ void AVivianne::Potion(const FInputActionValue& Value, bool healing)
 }
 
 
-void AVivianne::Sprint(const FInputActionValue& value)
+void AVivianne::Sprint()
 {
 	if (sprintReady)
 	{
@@ -174,11 +178,7 @@ void AVivianne::Sprint(const FInputActionValue& value)
 	}
 }
 
-void AVivianne::Spell(const FInputActionValue& value)
-{
-}
-
-void AVivianne::Ultimate(const FInputActionValue& value)
+void AVivianne::Ultimate()
 {
 
 	APlayerCameraManager* playerCamera = GetWorld()->GetFirstPlayerController() ? GetWorld()->GetFirstPlayerController()->PlayerCameraManager : nullptr;

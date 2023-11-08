@@ -56,23 +56,21 @@ public:
 	// Called every frame
 	void Tick(float DeltaTime) override;
 
-	/** Called for movement input */
-	void Move(const FInputActionValue& Value);
-
-	/** Called for looking input */
-	void Look(const FInputActionValue& Value);
-
 	// Potion attacks
-	void Potion(const FInputActionValue& Value, bool healing);
+	void Potion(bool healing);
 
 	// Sprint
-	void Sprint(const FInputActionValue& value);
-
-	// RayCast attack
-	void Spell(const FInputActionValue& value);
+	void Sprint();
 
 	// Ultimate
-	void Ultimate(const FInputActionValue& value);
+	void Ultimate();
+
+	void Death_Implementation() override;
+	void AutoAttack_Implementation() override;
+	void Spell_01_Implementation() override;
+	void Spell_02_Implementation() override;
+	void Ultimate_Implementation() override;
+	void Reload_Implementation() override;
 
 
 
