@@ -1,33 +1,74 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Characters/Cainer/CainerMonstro.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
-// Sets default values
+
 ACainerMonstro::ACainerMonstro()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 }
 
-// Called when the game starts or when spawned
 void ACainerMonstro::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	aiController = GetWorld()->SpawnActor<AAIC_CainerMonstro>(aiControllerClass_, FTransform());
+	aiController->Possess(this);
 }
 
-// Called every frame
 void ACainerMonstro::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (isMoving)
+	{
+		if (!aiController->IsMoving())
+		{
+			isMoving = false;
+			aiController->Stop();
+
+			FRotator rotation = GetActorRotation();
+			rotation.Yaw = wantedYawRotation;
+			SetActorRotation(rotation);
+		}
+		return;
+	}
 }
 
-// Called to bind functionality to input
-void ACainerMonstro::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+void ACainerMonstro::SetSpeed(float speed)
+{
+	Cast<UCharacterMovementComponent>(GetMovementComponent())->MaxWalkSpeed = speed;
+}
+
+void ACainerMonstro::SetLife(float life)
+{
+	health = life;
+}
+
+
+void ACainerMonstro::SetDestination(FVector destination, float yawRotation)
+{
+	isMoving = aiController->SetDestination(destination);
+
+	wantedYawRotation = yawRotation;
+
+	if (isMoving) return;
+
+	FRotator rotation = GetActorRotation();
+	rotation.Yaw = wantedYawRotation;
+	SetActorRotation(rotation);
+}
+
+
+void ACainerMonstro::TakeDamage(float damage)
+{
+	health -= damage;
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::White, "Monstro took " + FString::SanitizeFloat(damage) + " damages.");
+
+	if (health <= 0.0f)
+	{
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::White, "Monstro died.");
+		Destroy();
+	}
 }

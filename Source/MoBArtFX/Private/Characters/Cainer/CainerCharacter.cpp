@@ -6,7 +6,7 @@
 
 
 
-void ABaseCharacter::AutoAttack_Implementation()
+/*void ABaseCharacter::AutoAttack_Implementation()
 {
 	if (GetPlayerDatas()->CurrentAmmo <= 0)
 	{
@@ -26,4 +26,4 @@ void ABaseCharacter::Spell_02_Implementation() {}
 
 void ABaseCharacter::Ultimate_Implementation() {}
 
-void ABaseCharacter::Death_Implementation() {}
+void ABaseCharacter::Death_Implementation() {}*/

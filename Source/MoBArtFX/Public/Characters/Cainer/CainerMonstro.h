@@ -1,9 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "AIC_CainerMonstro.h"
 #include "CainerMonstro.generated.h"
 
 UCLASS()
@@ -12,18 +11,27 @@ class MOBARTFX_API ACainerMonstro : public ACharacter
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	ACainerMonstro();
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AI)
+	TSubclassOf<AAIC_CainerMonstro> aiControllerClass_;
 
+	void SetSpeed(float speed);
+	void SetLife(float life);
+	void SetDestination(FVector destination, float yawRotation);
+
+	UFUNCTION(BlueprintCallable)
+	void TakeDamage(float damage);
+
+protected:
+	virtual void BeginPlay() override;
+
+private:
+	TObjectPtr<AAIC_CainerMonstro> aiController;
+
+	float health{ 0.0f };
+	bool isMoving{ false };
+
+	float wantedYawRotation{ 0.0f };
 };
