@@ -6,6 +6,9 @@ void ADesertClawCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//  cast player controller
+	PlayerController = CastChecked<ADesertClawPlayerController>( GetController() );
+
 	//  cast player infos
 	Data = CastChecked<UDesertClawPlayerInfos>( GetPlayerDatas() );
 
@@ -60,11 +63,10 @@ UMobaAbility* ADesertClawCharacter::CreateAbility( EMobaAbilitySlot slot, UMobaA
 	ability->Setup( this, data, slot );
 
 	//  bind ability to controller
-	//  TODO:
-	/*if ( PlayerController )
+	if ( PlayerController )
 	{
 		PlayerController->BindAbility( ability );
-	}*/
+	}
 
 	//  register
 	Abilities.Add( slot, ability );
@@ -99,6 +101,8 @@ void ADesertClawCharacter::ResetAbilitySlot( EMobaAbilitySlot slot )
 
 void ADesertClawCharacter::ProcessAbility( EMobaAbilitySlot slot, bool is_started )
 {
+	//kPRINT( "Process Ability: " + UEnum::GetValueAsString<EMobaAbilitySlot>( slot ) );
+
 	//  find ability at input slot
 	auto itr = InputsToAbilities.Find( slot );
 	if ( !itr )
@@ -128,6 +132,7 @@ void ADesertClawCharacter::Death_Implementation()
 	kPRINT( "DESERT CLAW IS DEAD!" );
 }
 
+/*
 void ADesertClawCharacter::AutoAttack_Implementation()
 {
 	ProcessAbility( EMobaAbilitySlot::AutoAttack, true );
@@ -156,3 +161,4 @@ void ADesertClawCharacter::Ultimate_Implementation()
 	ProcessAbility( EMobaAbilitySlot::Ultimate, true );
 	kPRINT( "ULTIMATE!" );
 }
+*/

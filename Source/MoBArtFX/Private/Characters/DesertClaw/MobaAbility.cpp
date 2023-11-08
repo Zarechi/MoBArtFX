@@ -99,6 +99,11 @@ void UMobaAbility::OnRun_Implementation( FMobaAbilityRunContext context )
 	kPRINT( "Running '" + Data->Name + "' (IsActive=" + ( IsActive ? "True" : "False" ) + ")" );
 }
 
+void UMobaAbility::OnStop_Implementation( FMobaAbilityRunContext context )
+{
+	kPRINT( "Stopping '" + Data->Name + "' (IsActive=" + ( IsActive ? "True" : "False" ) + ")" );
+}
+
 UWorld* UMobaAbility::GetWorld() const
 {
 	if ( Character == nullptr ) return nullptr;

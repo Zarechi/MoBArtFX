@@ -53,7 +53,7 @@ public:
 	float Cooldown = 5.0f;
 
 	//  Cooldown applied after ability becomes active. 'Mode' must be set to 'On Off'
-	UPROPERTY( BlueprintReadOnly, EditAnywhere, Category = "Base", meta = ( EditCondition = "Mode == kMobaAbilityMode::ON_OFF" ) )
+	UPROPERTY( BlueprintReadOnly, EditAnywhere, Category = "Base", meta = ( EditCondition = "Mode == EMobaAbilityMode::OnOff" ) )
 	float ToggleCooldown = 1.0f;
 
 	//  Mode of run
@@ -61,11 +61,11 @@ public:
 	EMobaAbilityMode Mode = EMobaAbilityMode::Single;
 
 	//  If set, the input key can be holded instead of pressed. 'Mode' must be set to 'On Off'
-	UPROPERTY( BlueprintReadOnly, EditAnywhere, Category = "Input", meta = ( EditCondition = "Mode == kMobaAbilityMode::ON_OFF" ) )
+	UPROPERTY( BlueprintReadOnly, EditAnywhere, Category = "Input", meta = ( EditCondition = "Mode == EMobaAbilityMode::OnOff" ) )
 	bool IsHolded = false;
 
 	//  Should a slot be overriden when the ability is active. 'Mode' must be set to 'On Off'
-	UPROPERTY( BlueprintReadOnly, EditAnywhere, Category = "Input", meta = ( EditCondition = "Mode == kMobaAbilityMode::ON_OFF" ) )
+	UPROPERTY( BlueprintReadOnly, EditAnywhere, Category = "Input", meta = ( EditCondition = "Mode == EMobaAbilityMode::OnOff" ) )
 	bool UseActiveOverrideSlot = false;
 
 	//  Slot to provide an additional input

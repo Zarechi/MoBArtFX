@@ -2,8 +2,9 @@
 
 #include "CoreMinimal.h"
 #include "BaseCharacter.h"
-#include "DesertClawPlayerInfos.h"
 #include "MobaAbility.h"
+#include "DesertClawPlayerInfos.h"
+#include "DesertClawPlayerController.h"
 #include "DesertClawCharacter.generated.h"
 
 /**
@@ -32,16 +33,20 @@ protected:
 
 	void Death_Implementation() override;
 
+	/*
 	void AutoAttack_Implementation() override;
 	void Reload_Implementation() override;
 
 	void Spell_01_Implementation() override;
 	void Spell_02_Implementation() override;
 	void Ultimate_Implementation() override;
+	*/
 
 	UPROPERTY()
 	TMap<EMobaAbilitySlot, UMobaAbility*> Abilities;
 	TMap<EMobaAbilitySlot, UMobaAbility*> InputsToAbilities;
 
 	TObjectPtr<UDesertClawPlayerInfos> Data;
+
+	ADesertClawPlayerController* PlayerController;
 };

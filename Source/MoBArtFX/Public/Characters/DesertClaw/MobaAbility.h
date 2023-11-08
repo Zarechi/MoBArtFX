@@ -54,7 +54,7 @@ public:
 	 */
 	UFUNCTION( BlueprintNativeEvent )
 	void OnStop( FMobaAbilityRunContext context );
-	virtual void OnStop_Implementation( FMobaAbilityRunContext context ) {}
+	virtual void OnStop_Implementation( FMobaAbilityRunContext context );
 	/*
 	 *  Called for each tick.
 	 */
