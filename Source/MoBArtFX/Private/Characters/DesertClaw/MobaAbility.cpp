@@ -94,6 +94,8 @@ void UMobaAbility::Tick( float dt )
 	//kPRINT_TICK( "aiblity tick!" );
 }
 
+void UMobaAbility::OnInitialize_Implementation() {}
+
 void UMobaAbility::OnRun_Implementation( FMobaAbilityRunContext context )
 {
 	kPRINT( "Running '" + Data->Name + "' (IsActive=" + ( IsActive ? "True" : "False" ) + ")" );
@@ -103,6 +105,8 @@ void UMobaAbility::OnStop_Implementation( FMobaAbilityRunContext context )
 {
 	kPRINT( "Stopping '" + Data->Name + "' (IsActive=" + ( IsActive ? "True" : "False" ) + ")" );
 }
+
+void UMobaAbility::OnTick_Implementation( float dt ) {}
 
 UWorld* UMobaAbility::GetWorld() const
 {

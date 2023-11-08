@@ -41,26 +41,22 @@ public:
 	 */
 	UFUNCTION( BlueprintNativeEvent )
 	void OnInitialize();
-	virtual void OnInitialize_Implementation() {}
 	/*
 	 *  Called when the ability is activated, most likely via input.
-	 *  On kMobaAbilityMode::ON_OFF mode, the OnRun is called when IsActive is equal to true.
+	 *  On EMobaAbilityMode::OnOff mode, the OnRun is called when IsActive is equal to true.
 	 */
 	UFUNCTION( BlueprintNativeEvent )
 	void OnRun( FMobaAbilityRunContext context );
-	virtual void OnRun_Implementation( FMobaAbilityRunContext context );
 	/*
-	 *  Called only in kMobaAbilityMode::ON_OFF mode, when IsActive is equal to false.
+	 *  Called only in EMobaAbilityMode::OnOff mode, when IsActive is equal to false.
 	 */
 	UFUNCTION( BlueprintNativeEvent )
 	void OnStop( FMobaAbilityRunContext context );
-	virtual void OnStop_Implementation( FMobaAbilityRunContext context );
 	/*
 	 *  Called for each tick.
 	 */
 	UFUNCTION( BlueprintNativeEvent )
 	void OnTick( float delta_time );
-	virtual void OnTick_Implementation( float dt ) {}
 
 	UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Ability" )
 	bool IsOnCooldown() { return Cooldown > 0.0f; }
