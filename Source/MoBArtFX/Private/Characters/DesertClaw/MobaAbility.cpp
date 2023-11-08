@@ -49,7 +49,7 @@ bool UMobaAbility::Run( FMobaAbilityRunContext context )
 		else
 		{
 			//  reset cooldown
-			Cooldown = Data->Cooldown;
+			ResetCooldown();
 
 			//  custom callback
 			OnStop( context );
@@ -71,7 +71,7 @@ bool UMobaAbility::Run( FMobaAbilityRunContext context )
 	else
 	{
 		//  reset cooldown
-		Cooldown = Data->Cooldown;
+		ResetCooldown();
 
 		//  custom callback
 		OnRun( context );
@@ -112,6 +112,11 @@ UWorld* UMobaAbility::GetWorld() const
 {
 	if ( Character == nullptr ) return nullptr;
 	return Character->GetWorld();
+}
+
+void UMobaAbility::ResetCooldown()
+{
+	Cooldown = Data->Cooldown;
 }
 
 FString UMobaAbility::GetName() const

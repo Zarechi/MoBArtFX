@@ -62,6 +62,8 @@ public:
 	bool IsOnCooldown() { return Cooldown > 0.0f; }
 	UFUNCTION( BlueprintCallable, Category = "Ability" )
 	void SetCooldown( float cooldown ) { Cooldown = cooldown; }
+	UFUNCTION( BlueprintCallable, Category = "Ability" )
+	void ResetCooldown();
 	UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Ability" )
 	float GetCooldown() { return Cooldown; }
 

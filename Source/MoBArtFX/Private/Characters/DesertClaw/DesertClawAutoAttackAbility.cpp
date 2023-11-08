@@ -6,7 +6,7 @@
 
 void UDesertClawAutoAttackAbility::OnInitialize_Implementation()
 {
-	PassiveAbility = CastChecked<UMobaAbility>( Character->GetAbility( EMobaAbilitySlot::Passive ) );
+	PassiveAbility = CastChecked<UDesertClawPassiveAbility>( Character->GetAbility( EMobaAbilitySlot::Passive ) );
 	CustomData = CastChecked<UDesertClawAutoAttackAbilityData>( Data );
 }
 
@@ -14,9 +14,15 @@ void UDesertClawAutoAttackAbility::OnTick_Implementation( float dt )
 {
 	if ( !IsActive ) return;
 	
-	//  TODO: passive cost
-	//PassiveAbility->SetCooldown( 1.0f );
+	//  reset passive cooldown
+	PassiveAbility->ResetCooldown();
 
+	//  check passive cost
+	float sand_cost = CustomData->SandCost * dt;
+	if ( !PassiveAbility->CanAffordSand( sand_cost ) ) return;
+	PassiveAbility->AddSandPercent( -sand_cost );
+
+	//  get references
 	UWorld* world = GetWorld();
 	auto controller = CastChecked<APC_MoBArtFX>( Character->GetController() );
 
@@ -56,7 +62,7 @@ void UDesertClawAutoAttackAbility::OnTick_Implementation( float dt )
 			Character 
 		);
 
-		kPRINT_TICK( result.GetActor()->GetName() );
+		//kPRINT_TICK( result.GetActor()->GetName() );
 	}
 }
 

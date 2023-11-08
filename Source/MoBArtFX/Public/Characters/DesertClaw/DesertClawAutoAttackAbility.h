@@ -1,9 +1,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Characters/DesertClaw/MobaAbility.h"
-#include "Characters/DesertClaw/DesertClawCharacter.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Characters/DesertClaw/MobaAbility.h"
+#include "Characters/DesertClaw/DesertClawPassiveAbility.h"
+#include "Characters/DesertClaw/DesertClawCharacter.h"
 #include "DesertClawAutoAttackAbility.generated.h"
 
 
@@ -16,7 +17,11 @@ class MOBARTFX_API UDesertClawAutoAttackAbilityData : public UMobaAbilityData
 	GENERATED_BODY()
 
 public:
-	//  Max Range of auto-attack
+	//  Passive sand cost per second
+	UPROPERTY( BlueprintReadOnly, EditAnywhere, Category = "Auto-Attack" )
+	float SandCost = 0.15f;
+
+	//  Max range of auto-attack
 	UPROPERTY( BlueprintReadOnly, EditAnywhere, Category = "Auto-Attack" )
 	float Range = 750.0f;
 
@@ -52,6 +57,6 @@ public:
 	void OnStop_Implementation( FMobaAbilityRunContext context ) override;
 
 private:
-	UMobaAbility* PassiveAbility;
+	UDesertClawPassiveAbility* PassiveAbility;
 	UDesertClawAutoAttackAbilityData* CustomData;
 };
