@@ -92,7 +92,9 @@ void ADesertClawCharacter::ResetAbilitySlot( EMobaAbilitySlot slot )
 	if ( !IsValid( ability ) )
 	{
 		InputsToAbilities.Remove( slot );
-		kPRINT_WARNING( "Character: couldn't reset ability input slot of '" + UEnum::GetValueAsString<EMobaAbilitySlot>( slot ) + "', original ability is NOT valid!" );
+
+		FString slot_name = StaticEnum<EMobaAbilitySlot>()->GetValueAsString( slot );
+		kPRINT_WARNING( "Character: couldn't reset ability input slot of '" + slot_name + "', original ability is NOT valid!" );
 		return;
 	}
 
@@ -107,7 +109,8 @@ void ADesertClawCharacter::ProcessAbility( EMobaAbilitySlot slot, bool is_starte
 	auto itr = InputsToAbilities.Find( slot );
 	if ( !itr )
 	{
-		kPRINT_WARNING( "Character: no Ability found on Input slot '" + UEnum::GetValueAsString<EMobaAbilitySlot>( slot ) + "'" );
+		FString slot_name = StaticEnum<EMobaAbilitySlot>()->GetValueAsString( slot );
+		kPRINT_WARNING( "Character: no Ability found on Input slot '" + slot_name + "'" );
 		return;
 	}
 
