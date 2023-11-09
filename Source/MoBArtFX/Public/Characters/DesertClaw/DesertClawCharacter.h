@@ -24,6 +24,9 @@ public:
 	UFUNCTION( BlueprintCallable, BlueprintPure )
 	UMobaAbility* GetAbility( EMobaAbilitySlot slot );
 
+	UFUNCTION( BlueprintCallable, BlueprintPure )
+	ADesertClawPlayerController* GetPlayerController() { return PlayerController; }
+
 protected:
 	void BeginPlay() override;
 	void Tick( float dt ) override;

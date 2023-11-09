@@ -85,7 +85,7 @@ protected:
 	ADesertClawCharacter* Character;
 	UMobaAbilityData* Data;
 
-	//  Exclusive to kMobaAbilityMode::ON_OFF mode, represents if the ability is active or not
+	//  Exclusive to EMobaAbilityMode::OnOff mode, represents if the ability is active or not
 	UPROPERTY( BlueprintReadOnly, Category = "Ability", meta = ( AllowPrivateAccess = true ) )
 	bool IsActive = false;
 
