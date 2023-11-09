@@ -10,42 +10,43 @@ void UDesertClawUltimateAbility::OnInitialize_Implementation()
 	PassiveAbility = CastChecked<UDesertClawPassiveAbility>( Character->GetAbility( EMobaAbilitySlot::Passive ) );
 
 	SpawnDecal();
+
+	TriggerPillar( -1 );
 }
 
 void UDesertClawUltimateAbility::OnTick_Implementation( float dt )
 {
-	//kPRINT_TICK( "yel" );
+	if ( !IsActive ) return;
 
-	if ( IsActive )
-	{
-		auto controller = Character->GetPlayerController();
+	auto controller = Character->GetPlayerController();
 	
-		//  setup params
-		FCollisionQueryParams query_params;
-		query_params.AddIgnoredActor( Character );
-		FCollisionResponseParams response_params;
+	//  setup params
+	FCollisionQueryParams query_params;
+	query_params.AddIgnoredActor( Character );
+	FCollisionResponseParams response_params;
 
-		//  performs trace
-		FHitResult result;
-		controller->CameraTraceSingleByChannel( 
-			result, 
-			CustomData->PlacementRange, 
-			CustomData->PlacementCollisionChannel,
-			query_params,
-			response_params
-		);
-		if ( result.bBlockingHit )
-		{
-			UltimateActor->SetActorLocation( result.Location );
-		}
-		
-		//  startup timer
-		if ( ( StartupTime -= dt ) <= 0.0f )
-		{
-			EndStartup();
-			return;
-		}
+	//  performs trace
+	FHitResult result;
+	controller->CameraTraceSingleByChannel( 
+		result, 
+		CustomData->PlacementRange, 
+		CustomData->PlacementCollisionChannel,
+		query_params,
+		response_params
+	);
+	if ( result.bBlockingHit )
+	{
+		UltimateActor->SetActorLocation( result.Location );
 	}
+		
+	//  startup timer
+	if ( ( StartupTime -= dt ) <= 0.0f )
+	{
+		EndStartup();
+		return;
+	}
+
+	//  TODO: update startup timer HUD
 }
 
 void UDesertClawUltimateAbility::OnRun_Implementation( FMobaAbilityRunContext context )
@@ -56,6 +57,18 @@ void UDesertClawUltimateAbility::OnRun_Implementation( FMobaAbilityRunContext co
 void UDesertClawUltimateAbility::OnStop_Implementation( FMobaAbilityRunContext context )
 {
 	EndStartup();
+}
+
+void UDesertClawUltimateAbility::TriggerPillar( int index )
+{
+	/*if ( !Pillars.IsValidIndex( index ) )
+	{
+		kPRINT_ERROR( "Ultimate: couldn't Trigger Pillar with index " + FString::FromInt( index ) + ", out of bounds!" );
+		return;
+	}*/
+	//kSAFE_ASSERT_TEXT( Pillars.IsValidIndex( index ), "Ultimate: couldn't Trigger Pillar with index " + FString::FromInt( index ) + ", out of bounds!" );
+	check( Pillars.IsValidIndex( index ) );
+	//FString::Format( TEXT( "{0}::{1}: safe assert failure '{2}'" ), { __FILE__, __LINE__, "oh" } );
 }
 
 void UDesertClawUltimateAbility::BeginStartup()
@@ -138,4 +151,8 @@ FVector UDesertClawUltimateAbility::GetDecalScaleFromSize( float radius, float h
 		radius / decal_size.Y,
 		radius / decal_size.Y
 	);
+}
+
+void UDesertClawUltimateAbility::SpawnPillars()
+{
 }

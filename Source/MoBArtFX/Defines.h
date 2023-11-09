@@ -10,6 +10,10 @@
 //  Print a yellow sreen debug warning text for 5.0s
 #define kPRINT_WARNING(text)                    kPRINT_ARGS( INDEX_NONE, 5.0f, FColor::Yellow, FString( "WARNING: " ) + FString( text ) )
 
+#define kSAFE_ASSERT_ARGS( expr, text, ret )    if ( !( expr ) ) { kPRINT_ERROR( text ); return ret; }
+#define kSAFE_ASSERT_TEXT( expr, text )         kSAFE_ASSERT_ARGS( expr, text, )
+#define kSAFE_ASSERT( expr )                    kSAFE_ASSERT_ARGS( expr, FString::Format( TEXT( "{0}::{1}: safe assert failure '{2}'" ), { __FILE__, __LINE__, #expr } ), )
+
 //  Draw a debug line and sphere at impact from the given line trace FHitResult
 #define kDEBUG_LINE_TRACE( world, result )                                                                        \
     FColor color = result.bBlockingHit ? FColor::Red : FColor::Green;                                             \
