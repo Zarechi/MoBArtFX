@@ -19,5 +19,9 @@ public:
 	virtual void BeginPlay() override;
 
 protected:
+	void Spell01(const FInputActionValue& Value);
 	void Spell01End(const FInputActionValue& Value);
+
+private:
+	TObjectPtr<ABaseCharacter_King> PlayerCharacterK = nullptr;
 };

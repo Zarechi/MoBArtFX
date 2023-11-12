@@ -6,6 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/ArrowComponent.h"
+#include <Characters/King/Projectile.h>
 
 ABaseCharacter_King::ABaseCharacter_King()
 {
@@ -56,17 +57,35 @@ ABaseCharacter_King::ABaseCharacter_King()
 	SetActorTickInterval(0.1);
 }
 
+void ABaseCharacter_King::BeginPlay()
+{
+	Super::BeginPlay();
+
+	GetCharacterMovement()->MaxWalkSpeed = DefaultMaxWalkSpeed;
+	GetCharacterMovement()->GravityScale = DefaultGravityScale;
+
+	currentGodHandHealth = AbilityHealth;
+}
+
 void ABaseCharacter_King::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	timerDefaultAttack -= DeltaSeconds;
+
+	timerDefaultAttack -= DeltaTime;
+	timerGodHandBreack -= DeltaTime;
+	timerIronShears -= DeltaTime;
+
+	if (timerIronShears <= 0)
+	{
+		Spell02IsActive = false;
+	}
 }
 
 void ABaseCharacter_King::AutoAttack_Implementation()
 {
 	if (!UltiIsActive && !Spell01IsActive && timerDefaultAttack <= 0)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, SpellSpawnPoint->GetComponentLocation().ToString());
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, SpellSpawnPoint->GetComponentLocation().ToString());
 		timerDefaultAttack = AttackRate;
 		GetWorld()->SpawnActor<AActor>(ProjectilClass, SpellSpawnPoint->GetComponentLocation(), FirstPersonCameraComponent->GetComponentRotation() + Calibrate);
 	}
@@ -74,24 +93,93 @@ void ABaseCharacter_King::AutoAttack_Implementation()
 
 void ABaseCharacter_King::Spell_01_Implementation()
 {
+	FTimerDelegate Delegate;
+	Delegate.BindLambda([&]()
+		{
+			Spell01IsActive = true;
+			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("God Hand"));
+			GetCharacterMovement()->MaxWalkSpeed = AbilityMaxWalkSpeed;
+			MeshGodHand->SetVisibility(true);
+			MeshGodHand->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		}
+	);
+
+	if (!UltiIsActive && timerGodHandBreack < 0)
+	{
+		FTimerHandle TimerH;
+		GetWorld()->GetTimerManager().SetTimer(TimerH, Delegate, abilityActivationTime, false);
+		if (godHandBreak)
+		{
+			currentGodHandHealth = AbilityHealth;
+			godHandBreak = false;
+		}
+	}
 }
 
 void ABaseCharacter_King::Spell_02_Implementation()
 {
+	FTimerDelegate Delegate;
+	Delegate.BindLambda([&]()
+		{
+			if (!Spell02IsActive)
+			{
+				//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Ability2"));
+				GetWorld()->SpawnActor<AActor>(ActorAbility2, SpellSpawnPoint->GetComponentLocation(), GetCapsuleComponent()->GetComponentRotation());
+				timerIronShears = cooldownAbility2;
+				Spell02IsActive = true;
+			}
+		}
+	);
+
+	if (!UltiIsActive && timerIronShears <= 0)
+	{
+		FTimerHandle TimerH;
+		GetWorld()->GetTimerManager().SetTimer(TimerH, Delegate, ability2ActivationTime, false);
+	}
 }
 
 void ABaseCharacter_King::Ultimate_Implementation()
 {
 }
 
-void ABaseCharacter_King::Spell_01End_Implementation()
+void ABaseCharacter_King::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+	AProjectile* proj = Cast<AProjectile>(OtherActor);
+	if (proj != nullptr)
+	{
+		currentGodHandHealth -= proj->GetDamage();
+		OtherActor->Destroy();
+
+		//FString currentFHHealthStr = FString::SanitizeFloat(currentGodHandHealth);
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::SanitizeFloat(currentGodHandHealth));
+
+		if (currentGodHandHealth <= proj->GetDamage())
+		{
+			EndGodHand();
+			godHandBreak = true;
+			timerGodHandBreack = cooldownAbilityBreak;
+		}
+	}
 }
 
-void ABaseCharacter_King::BeginPlay()
+void ABaseCharacter_King::Spell_01End_Implementation()
 {
-	Super::BeginPlay();
+	FTimerDelegate Delegate;
+	Delegate.BindLambda([&]()
+		{
+			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Orange, TEXT("EndAbility1"));
+			EndGodHand();
+		}
+	);
 
+	FTimerHandle TimerH;
+	GetWorld()->GetTimerManager().SetTimer(TimerH, Delegate, abilityActivationTime, false);
+}
+
+void ABaseCharacter_King::EndGodHand()
+{
 	GetCharacterMovement()->MaxWalkSpeed = DefaultMaxWalkSpeed;
-	GetCharacterMovement()->GravityScale = DefaultGravityScale;
+	MeshGodHand->SetVisibility(false);
+	MeshGodHand->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Spell01IsActive = false;
 }

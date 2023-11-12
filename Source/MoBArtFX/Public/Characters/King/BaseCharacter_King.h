@@ -19,19 +19,19 @@ class MOBARTFX_API ABaseCharacter_King : public ABaseCharacter
 	GENERATED_BODY()
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	UCameraComponent* FirstPersonCameraComponent;
+	TObjectPtr<UCameraComponent> FirstPersonCameraComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Ability, meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* MeshGodHand;
+	TObjectPtr<UStaticMeshComponent> MeshGodHand;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Ability, meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* UltimateLHand;
+	TObjectPtr<UStaticMeshComponent> UltimateLHand;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Ability, meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* UltimateRHand;
+	TObjectPtr<UStaticMeshComponent> UltimateRHand;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Ability, meta = (AllowPrivateAccess = "true"))
-	UArrowComponent* SpellSpawnPoint;
+	TObjectPtr<UArrowComponent> SpellSpawnPoint;
 
 	/*FUNCTIONS*/
 public:
@@ -47,6 +47,9 @@ public:
 	void Spell_01_Implementation() override;
 	void Spell_02_Implementation() override;
 	void Ultimate_Implementation() override;
+
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 protected:
 	// Called when the game starts or when spawned
@@ -71,7 +74,7 @@ private:
 	// Auto Attack
 	// ====================
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AutoAttack, meta = (AllowPrivateAccess = "true"))
-	UClass* ProjectilClass;
+	TObjectPtr<UClass> ProjectilClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AutoAttack, meta = (AllowPrivateAccess = "true"))
 	float AttackRate = 0.8f;
@@ -84,7 +87,39 @@ private:
 	// ====================
 	// Spell_01
 	// ====================
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Ability1, meta = (AllowPrivateAccess = "true"))
+	float AbilityHealth = 500.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Ability1, meta = (AllowPrivateAccess = "true"))
+	float cooldownAbilityBreak = 6.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Ability1, meta = (AllowPrivateAccess = "true"))
+	float abilityActivationTime = .1f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Ability1, meta = (AllowPrivateAccess = "true"))
+	float abilityRetractationTime = .3f;
+
 	bool Spell01IsActive = false;
+	bool godHandBreak = false;
+	float timerGodHandBreack = 0.f;
+	float currentGodHandHealth;
+
+	void EndGodHand();
+
+	// ====================
+	// Spell_02
+	// ====================
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Ability2, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UClass> ActorAbility2;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Ability2, meta = (AllowPrivateAccess = "true"))
+	float ability2ActivationTime = .1f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Ability2, meta = (AllowPrivateAccess = "true"))
+	float cooldownAbility2 = 8.f;
+
+	bool Spell02IsActive = false;
+	float timerIronShears = 0.f;
 
 	// ====================
 	// Ultimate
