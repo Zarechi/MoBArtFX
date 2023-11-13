@@ -26,6 +26,25 @@ public:
 	virtual void BindMovementActions();
 	virtual void BindAbilitiesActions();
 
+	/*
+	 *  Performs a Line Trace Single by Channel using the camera location 
+	 *  and direction.
+	 * 
+	 *  Internally uses GetCameraTraceBounds
+	 */
+	bool CameraTraceSingleByChannel( 
+		FHitResult& out, 
+		float distance, 
+		ECollisionChannel collision_channel, 
+		const FCollisionQueryParams& params,
+		const FCollisionResponseParams& response_param 
+	);
+	/*
+	 *  Returns Line Trace Start and End locations using the Camera
+	 */
+	UFUNCTION( BlueprintCallable )
+	void GetCameraTraceBounds( FVector& start, FVector& end, float distance );
+
 	UPROPERTY(BlueprintReadOnly, Category=Character)
 	TObjectPtr<ABaseCharacter> PlayerCharacter = nullptr;
 	
