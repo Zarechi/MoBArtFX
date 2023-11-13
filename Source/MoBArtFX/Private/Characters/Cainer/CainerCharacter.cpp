@@ -1,12 +1,12 @@
 #include "Characters/Cainer/CainerCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "PC_MoBArtFX.h"
 
 
 
 ACainerCharacter::ACainerCharacter()
 {
-
 }
 
 void ACainerCharacter::BeginPlay()
@@ -97,7 +97,20 @@ void ACainerCharacter::Spell_02_Implementation() //  monstro
 
 void ACainerCharacter::PingMonstro()
 {
+	if (!IsValid(monstro))
+	{
+		return;
+	}
+
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Blue, "Ping Monstro");
+
+	FVector monstro_dest = GetMonstroDestination();
+
+	if (monstro_dest == FVector::ZeroVector) return;
+
+	monstro_dest += FVector::UpVector * 15.0f;
+
+	monstro->SetDestination(monstro_dest, GetActorRotation().Yaw);
 }
 
 void ACainerCharacter::Ultimate_Implementation() //  flash
@@ -120,7 +133,27 @@ void ACainerCharacter::Ultimate_Implementation() //  flash
 
 FVector ACainerCharacter::GetMonstroDestination()
 {
-	return FVector();
+	FHitResult out;
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(this);
+	FCollisionResponseParams response_params;
+
+	bool hit = Cast<APC_MoBArtFX>(GetController())->CameraTraceSingleByChannel(out, infos->monstroPingMaxDist, ECC_Camera, params, response_params);
+
+	if (!hit) return FVector::ZeroVector;
+
+	if (FVector::DotProduct(out.ImpactNormal, FVector::UpVector) < 0.8f) return FVector::ZeroVector;
+
+	FVector destination = out.ImpactPoint;
+
+	FTransform particles_transform;
+	particles_transform.SetTranslation(destination + FVector::UpVector * 70.0f);
+	particles_transform.SetRotation(UKismetMathLibrary::RandomRotator().Quaternion());
+
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), infos->monstroPingParticles, particles_transform);
+
+
+	return destination;
 }
 
 

@@ -13,6 +13,7 @@ class MOBARTFX_API ACainerCharacter : public ABaseCharacter
 {
 	GENERATED_BODY()
 
+
 public:
 	ACainerCharacter();
 
