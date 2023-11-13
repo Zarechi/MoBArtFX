@@ -1,6 +1,8 @@
 #include "Characters/DesertClaw/DesertClawUltimateAbility.h"
 #include "Characters/DesertClaw/DesertClawCharacter.h"
 
+#include "ActorSequence.h"
+#include "ActorSequencePlayer.h"
 #include "Defines.h"
 
 void UDesertClawUltimateAbility::OnInitialize_Implementation()
@@ -10,8 +12,7 @@ void UDesertClawUltimateAbility::OnInitialize_Implementation()
 	PassiveAbility = CastChecked<UDesertClawPassiveAbility>( Character->GetAbility( EMobaAbilitySlot::Passive ) );
 
 	SpawnDecal();
-
-	TriggerPillar( -1 );
+	SpawnPillars();
 }
 
 void UDesertClawUltimateAbility::OnTick_Implementation( float dt )
@@ -36,10 +37,11 @@ void UDesertClawUltimateAbility::OnTick_Implementation( float dt )
 	);
 	if ( result.bBlockingHit )
 	{
-		UltimateActor->SetActorLocation( result.Location );
+		DecalActor->SetActorLocation( result.Location );
 	}
 		
 	//  startup timer
+	//  TODO: refactor w/ an Unreal timer
 	if ( ( StartupTime -= dt ) <= 0.0f )
 	{
 		EndStartup();
@@ -59,16 +61,27 @@ void UDesertClawUltimateAbility::OnStop_Implementation( FMobaAbilityRunContext c
 	EndStartup();
 }
 
+void UDesertClawUltimateAbility::TriggerNextPillar()
+{
+	kPRINT( "Trigger pillar " + FString::FromInt( CurrentPillarIndex ) );
+
+	TriggerPillar( CurrentPillarIndex );
+	CurrentPillarIndex++;
+}
+
 void UDesertClawUltimateAbility::TriggerPillar( int index )
 {
-	/*if ( !Pillars.IsValidIndex( index ) )
-	{
-		kPRINT_ERROR( "Ultimate: couldn't Trigger Pillar with index " + FString::FromInt( index ) + ", out of bounds!" );
-		return;
-	}*/
 	//kSAFE_ASSERT_TEXT( Pillars.IsValidIndex( index ), "Ultimate: couldn't Trigger Pillar with index " + FString::FromInt( index ) + ", out of bounds!" );
 	check( Pillars.IsValidIndex( index ) );
-	//FString::Format( TEXT( "{0}::{1}: safe assert failure '{2}'" ), { __FILE__, __LINE__, "oh" } );
+
+	//  get pillar spawn location
+	FVector location = DecalActor->GetSpawnLocation( index );
+	location.Z += CustomData->PillarSpawnOffsetZ;
+
+	//  trigger pillar
+	auto pillar = Pillars[index];
+	pillar->SetActorLocation( location );
+	pillar->TriggerFall();
 }
 
 void UDesertClawUltimateAbility::BeginStartup()
@@ -78,7 +91,7 @@ void UDesertClawUltimateAbility::BeginStartup()
 	StartupTime = CustomData->StartupTime;
 
 	//  show in game
-	UltimateActor->SetActorHiddenInGame( false );
+	DecalActor->SetActorHiddenInGame( false );
 
 	kPRINT( "Ultimate: Begin Startup" );
 }
@@ -87,16 +100,33 @@ void UDesertClawUltimateAbility::EndStartup()
 {
 	IsActive = false;
 
-	//  hide in game
-	UltimateActor->SetActorHiddenInGame( true );
-
-	//  schedule refill
-	RefillGaugeAfterDelay();
+	BeginFall();
 
 	//  reset active slot
 	Character->ResetAbilitySlot( Data->ActiveOverrideSlot );
 
 	kPRINT( "Ultimate: End Startup" );
+}
+
+void UDesertClawUltimateAbility::BeginFall()
+{
+	//  play fall sequence
+	CurrentPillarIndex = 0;
+	UActorSequenceComponent* sequence_component = DecalActor->GetSequenceComponent();
+	sequence_component->PlaySequence();
+
+	kPRINT( "Ultimate: Begin Fall" );
+}
+
+void UDesertClawUltimateAbility::EndFall()
+{
+	//  schedule refill
+	RefillGaugeAfterDelay();
+
+	//  hide decal
+	DecalActor->SetActorHiddenInGame( true );
+
+	kPRINT( "Ultimate: End Fall" );
 }
 
 void UDesertClawUltimateAbility::RefillGaugeAfterDelay()
@@ -121,21 +151,22 @@ void UDesertClawUltimateAbility::RefillGauge()
 void UDesertClawUltimateAbility::SpawnDecal()
 {
 	//  spawn decal actor
-	UltimateActor = GetWorld()->SpawnActor<ADesertClawUltimateDecal>( 
+	DecalActor = GetWorld()->SpawnActor<ADesertClawUltimateDecal>( 
 		CustomData->DecalActorClass,
 		FVector( 0.0f, 0.0f, 0.0f ),
 		FRotator( 0.0f, 0.0f, 0.0f )
 	);
+	DecalActor->SetupAbility( this );
 
 	//  set scale
 	FVector scale = GetDecalScaleFromSize( 
 		CustomData->DecalRadius, 
 		CustomData->DecalHeight 
 	);
-	UltimateActor->SetActorScale3D( scale );
+	DecalActor->SetActorScale3D( scale );
 
 	//  hide in game
-	UltimateActor->SetActorHiddenInGame( true );
+	DecalActor->SetActorHiddenInGame( true );
 }
 
 FVector UDesertClawUltimateAbility::GetDecalScaleFromSize( float radius, float height )
@@ -145,7 +176,7 @@ FVector UDesertClawUltimateAbility::GetDecalScaleFromSize( float radius, float h
 	 *  - YZ is Radius
 	 *  - X is height
 	 */
-	FVector decal_size = UltimateActor->GetDecalComponent()->DecalSize;
+	FVector decal_size = DecalActor->GetDecalComponent()->DecalSize;
 	return FVector(
 		height / decal_size.X,
 		radius / decal_size.Y,
@@ -155,4 +186,33 @@ FVector UDesertClawUltimateAbility::GetDecalScaleFromSize( float radius, float h
 
 void UDesertClawUltimateAbility::SpawnPillars()
 {
+	UWorld* world = GetWorld();
+
+	//  get pillar radius
+	float radius = CustomData->DecalRadius;
+	radius *= 2.0f;   //  radius to diameter
+	radius /= 3.0f;   //  decal is divided in 3 circles
+	radius *= 0.01f;  //  centimeters to meters
+
+	//  get pillar scale
+	FVector scale { 
+		radius, 
+		radius, 
+		CustomData->PillarHeight 
+	};
+
+	//  spawn pillars
+	for ( int i = 0; i < DecalActor->GetSpawnCount(); i++ )
+	{
+		auto pillar = world->SpawnActor<ADesertClawUltimatePillar>( 
+			CustomData->PillarActorClass
+			//CustomData->PillarDefaultLocation,  //  position is set automatically in StopFall
+			//FRotator::ZeroRotator
+		);
+		pillar->SetupAbility( this );
+		pillar->Mesh->SetRelativeScale3D( scale );
+		pillar->StopFall();
+
+		Pillars.Add( pillar );
+	}
 }

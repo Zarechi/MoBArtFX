@@ -3,7 +3,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/DecalComponent.h"
+#include "ActorSequenceComponent.h"
 #include "DesertClawUltimateDecal.generated.h"
+
+class UDesertClawUltimateAbility;
 
 UCLASS()
 class MOBARTFX_API ADesertClawUltimateDecal : public AActor
@@ -12,11 +15,19 @@ class MOBARTFX_API ADesertClawUltimateDecal : public AActor
 	
 public:	
 	ADesertClawUltimateDecal();
+	
+	void SetupAbility( UDesertClawUltimateAbility* ability );
 
 	UFUNCTION( BlueprintImplementableEvent, BlueprintPure )
 	FVector GetSpawnLocation( int index );
 	UFUNCTION( BlueprintCallable, BlueprintPure )
 	int GetSpawnCount() { return SpawnCount; }
+
+	UFUNCTION( BlueprintImplementableEvent, BlueprintPure )
+	UActorSequenceComponent* GetSequenceComponent();
+
+	UFUNCTION( BlueprintCallable, BlueprintPure )
+	UDesertClawUltimateAbility* GetAbility() { return Ability; }
 
 	UDecalComponent* GetDecalComponent() { return DecalComponent; }
 
@@ -30,4 +41,6 @@ private:
 
 	UPROPERTY( EditAnywhere )
 	UDecalComponent* DecalComponent;
+
+	UDesertClawUltimateAbility* Ability;
 };

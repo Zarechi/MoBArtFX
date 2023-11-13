@@ -5,6 +5,12 @@ ADesertClawUltimateDecal::ADesertClawUltimateDecal()
 	PrimaryActorTick.bCanEverTick = false;
 
 	DecalComponent = CreateDefaultSubobject<UDecalComponent>( TEXT( "Decal Component" ) );
+	RootComponent = DecalComponent;
+}
+
+void ADesertClawUltimateDecal::SetupAbility( UDesertClawUltimateAbility* ability )
+{
+	Ability = ability;
 }
 
 void ADesertClawUltimateDecal::BeginPlay()
