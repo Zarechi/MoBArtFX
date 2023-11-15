@@ -9,6 +9,7 @@
 #include "Potion.h"
 #include "PoisonPotion.h"
 #include "Cauldron.h"
+#include "VivianneInfos.h"
 #include "Vivianne.generated.h"
 
 UCLASS()
@@ -52,6 +53,8 @@ public:
 
 	UPROPERTY(EditAnywhere);
 	TSubclassOf<ACauldron> cauldronClass;
+
+	TObjectPtr<UVivianneInfos> infos;
 
 	// Called every frame
 	void Tick(float DeltaTime) override;

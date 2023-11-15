@@ -10,8 +10,6 @@ AVivianne::AVivianne()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 	PrimaryActorTick.bCanEverTick = true;
-
-
 }
 
 // Called when the game starts or when spawned
@@ -19,6 +17,8 @@ void AVivianne::BeginPlay()
 {
 	Super::BeginPlay();
 
+	infos = Cast<UVivianneInfos>(GetPlayerDatas());
+	if (infos.IsNull()) GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.0f, FColor::Red, "ça marche pa");
 }
 
 // Called every frame
@@ -133,7 +133,7 @@ void AVivianne::Potion(bool healing)
 		if (healThrowable)
 		{
 			healThrowable = false;
-			healCooldown = 1.5f;
+			healCooldown = infos->AutoAttack_CD;
 			APotion* spawnedPotion = GetWorld()->SpawnActor<APotion>(potionClass, Location, Rotation, SpawnInfo);
 			if (spawnedPotion && spawnedPotion->getMesh())
 			{
@@ -150,7 +150,7 @@ void AVivianne::Potion(bool healing)
 		if (poisonThrowable)
 		{
 			poisonThrowable = false;
-			poisonCooldown = 5.f;
+			poisonCooldown = infos->Spell01_CD;
 			APoisonPotion* spawnedPotion = GetWorld()->SpawnActor<APoisonPotion>(poisonPotionClass, Location, Rotation, SpawnInfo);
 			if (spawnedPotion && spawnedPotion->getMesh())
 			{
@@ -171,7 +171,7 @@ void AVivianne::Sprint()
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("sirpnt"));
 		sprintDuration = 5.f;
-		sprintCooldown = 15.f;
+		sprintCooldown = infos->Spell02_CD;
 		GetCharacterMovement()->MaxWalkSpeed = 1200.0f;
 		sprinting = true;
 		sprintReady = false;
@@ -198,7 +198,7 @@ void AVivianne::Ultimate()
 	if (ultimateReady)
 	{
 		ultimateReady = false;
-		ultimateCooldown = 40.f;
+		ultimateCooldown = infos->Ultimate_CD;
 		ACauldron* spawnedCauldron = GetWorld()->SpawnActor<ACauldron>(cauldronClass, Location, Rotation, SpawnInfo);
 		if (spawnedCauldron && spawnedCauldron->getMesh())
 		{
