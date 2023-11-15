@@ -6,6 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "DesertClawSunsetivitiesGrenade.generated.h"
 
+class ADesertClawSunsetivitiesShield;
+class UDesertClawSunsetivitiesAbilityData;
+
 UCLASS()
 class MOBARTFX_API ADesertClawSunsetivitiesGrenade : public AActor
 {
@@ -14,21 +17,26 @@ class MOBARTFX_API ADesertClawSunsetivitiesGrenade : public AActor
 public:
 	ADesertClawSunsetivitiesGrenade();
 
+	UPROPERTY( BlueprintReadOnly, VisibleAnywhere )
+	UStaticMeshComponent* Mesh;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick( float dt ) override;
 
-	void OnMeshOverlap(
-		UPrimitiveComponent* OverlappedComponent, 
+	void OnMeshHit(
+		UPrimitiveComponent* HitComponent, 
 		AActor* OtherActor, 
-		UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex, 
-		bool bFromSweep, 
-		const FHitResult& SweepResult
+		UPrimitiveComponent* OtherComp, 
+		FVector NormalImpulse, 
+		const FHitResult& Hit
 	);
 
 private:
-	UPROPERTY( VisibleAnywhere )
-	UStaticMeshComponent* Mesh;
+	bool IsTriggered = false;
+	float TriggerTime = 0.5f;
 
+	FRotator SpawnRotation;
+
+	UDesertClawSunsetivitiesAbilityData* CustomData;
 };
