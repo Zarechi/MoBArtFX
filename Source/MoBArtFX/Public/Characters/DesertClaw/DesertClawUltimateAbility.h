@@ -58,6 +58,10 @@ public:
 	UPROPERTY( BlueprintReadOnly, EditAnywhere, Category = "Ultimate's Pillar" )
 	float PillarSpawnOffsetZ = 6000.0f;
 
+	//  Custom spawn order of pillars as a list of pillar indices, it must contains the size of pillars
+	UPROPERTY( BlueprintReadOnly, EditAnywhere, Category = "Ultimate's Pillar" )
+	TArray<int> PillarSpawnOrder;
+
 	UPROPERTY( BlueprintReadOnly, EditAnywhere, Category = "Ultimate's Pillar" )
 	TSubclassOf<ADesertClawUltimatePillar> PillarActorClass;
 

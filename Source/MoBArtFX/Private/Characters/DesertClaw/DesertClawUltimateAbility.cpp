@@ -72,10 +72,18 @@ void UDesertClawUltimateAbility::TriggerNextPillar()
 void UDesertClawUltimateAbility::TriggerPillar( int index )
 {
 	//kSAFE_ASSERT_TEXT( Pillars.IsValidIndex( index ), "Ultimate: couldn't Trigger Pillar with index " + FString::FromInt( index ) + ", out of bounds!" );
-	check( Pillars.IsValidIndex( index ) );
+	checkf( 
+		CustomData->PillarSpawnOrder.IsValidIndex( index ), 
+		TEXT( "Data 'Pillar Spawn Order' MUST contains index %s" ), 
+		*FString::FromInt( index )
+	);
+
+	//  use custom spawn order
+	int arranged_index = CustomData->PillarSpawnOrder[index];
+	check( Pillars.IsValidIndex( arranged_index ) );
 
 	//  get pillar spawn location
-	FVector location = DecalActor->GetSpawnLocation( index );
+	FVector location = DecalActor->GetSpawnLocation( arranged_index );
 	location.Z += CustomData->PillarSpawnOffsetZ;
 
 	//  trigger pillar
