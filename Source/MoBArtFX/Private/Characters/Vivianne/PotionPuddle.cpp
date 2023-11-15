@@ -3,8 +3,6 @@
 
 
 #include "Characters/Vivianne/PotionPuddle.h"
-#include "BaseCharacter.h"
-
 
 // Sets default values
 APotionPuddle::APotionPuddle()
@@ -43,19 +41,17 @@ void APotionPuddle::setHealing(bool healingP)
 
 void APotionPuddle::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    if (OtherActor->IsA(ABaseCharacter::StaticClass()))
+
+    if (healing)
     {
-        if (healing)
-        {
-            GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("healing player"));
-            // Handle what you want to happen when the player steps in the puddle here.
-        }
-        else
-        {
-            GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("damaging player"));
-            // Handle poison
-        }
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("healing player"));
     }
+    else
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("damaging player"));
+        // Handle poison
+    }
+    
 }
 
 // Called when the game starts or when spawned
@@ -63,6 +59,7 @@ void APotionPuddle::BeginPlay()
 {
     Super::BeginPlay();
     puddleMesh->OnComponentBeginOverlap.AddDynamic(this, &APotionPuddle::OnOverlap);
+
 
 }
 

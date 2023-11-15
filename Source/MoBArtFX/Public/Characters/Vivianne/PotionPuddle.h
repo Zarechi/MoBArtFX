@@ -36,6 +36,7 @@ public:
 protected:
 	float puddleTimer;
 	bool healing;
+;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
