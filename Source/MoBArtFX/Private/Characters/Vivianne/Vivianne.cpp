@@ -8,7 +8,7 @@
 AVivianne::AVivianne()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+	
 	PrimaryActorTick.bCanEverTick = true;
 }
 
@@ -19,6 +19,7 @@ void AVivianne::BeginPlay()
 
 	infos = Cast<UVivianneInfos>(GetPlayerDatas());
 	if (infos.IsNull()) GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.0f, FColor::Red, "ça marche pa");
+	GetCharacterMovement()->MaxWalkSpeed = infos->MaxWalkSpeed;
 }
 
 // Called every frame
@@ -42,7 +43,7 @@ void AVivianne::Tick(float DeltaTime)
 	else if (sprintDuration < 0 && sprinting)
 	{
 		sprinting = false;
-		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+		GetCharacterMovement()->MaxWalkSpeed = infos->MaxWalkSpeed;
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("sprint off"));
 	}
 
