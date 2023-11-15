@@ -34,16 +34,19 @@ void ACainerCharacter::Tick(float DeltaTime)
 
 void ACainerCharacter::AutoAttack_Implementation()
 {
-	if (GetPlayerDatas()->CurrentAmmo <= 0)
+	if (infos->CurrentAmmo <= 0)
 	{
-		GetPlayerDatas()->CurrentAmmo = 0;
 		Reload();
+	}
+	else
+	{
+		infos->CurrentAmmo--;
 	}
 }
 
 void ACainerCharacter::Reload_Implementation()
 {
-	GetPlayerDatas()->CurrentAmmo = GetPlayerDatas()->MaxAmmo;
+	infos->CurrentAmmo = infos->MaxAmmo;
 }
 
 
