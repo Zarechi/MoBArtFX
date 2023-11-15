@@ -4,7 +4,9 @@
 #include "Characters/King/IronShears.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/BoxComponent.h"
+#include <Characters/King/Int_Interaction_Chara.h>
 #include "AC_SlowDown.generated.h"
+
 
 // Sets default values
 AIronShears::AIronShears()
@@ -37,7 +39,17 @@ AIronShears::AIronShears()
 
 void AIronShears::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	//TObjectPtr<UAC_SlowDown> slowComp = OtherActor->GetComponentByClass<UAC_SlowDown>();
+	//if (slowComp != nullptr)
+	//{
+	//	//slowComp->;
+	//}
 
+	if (OtherActor->Implements<UInt_Interaction_Chara>())
+	{
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Ability2"));
+		IInt_Interaction_Chara::Execute_SlowDown(OtherActor);
+	}
 }
 
 // Called when the game starts or when spawned

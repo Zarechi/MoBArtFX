@@ -4,11 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Int_Interaction_Chara.h"
 #include "AC_SlowDown.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class MOBARTFX_API UAC_SlowDown : public UActorComponent
+class MOBARTFX_API UAC_SlowDown : public UActorComponent, public IInt_Interaction_Chara
 {
 	GENERATED_BODY()
 
@@ -17,6 +18,10 @@ public:
 	UAC_SlowDown();
 
 	void SlowDownWalkSpeed();
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Interact")
+	void SlowDown();
+	virtual void SlowDown_Implementation() override;
 
 protected:
 	// Called when the game starts

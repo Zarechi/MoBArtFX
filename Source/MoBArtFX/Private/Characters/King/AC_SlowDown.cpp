@@ -8,7 +8,6 @@
 // Sets default values for this component's properties
 UAC_SlowDown::UAC_SlowDown()
 {
-	
 }
 
 void UAC_SlowDown::SlowDownWalkSpeed()
@@ -28,6 +27,22 @@ void UAC_SlowDown::SlowDownWalkSpeed()
 	GetWorld()->GetTimerManager().SetTimer(TimerH, Delegate, slowDownDuration, false);
 }
 
+void UAC_SlowDown::SlowDown_Implementation()
+{
+	chara->GetCharacterMovement()->MaxWalkSpeed = walkSpeedInSlowDown;
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Slow"));
+
+	FTimerDelegate Delegate;
+	Delegate.BindLambda([&]()
+		{
+			chara->GetCharacterMovement()->MaxWalkSpeed = defaultWalkSpeed;
+		}
+	);
+
+	FTimerHandle TimerH;
+	GetWorld()->GetTimerManager().SetTimer(TimerH, Delegate, slowDownDuration, false);
+}
+
 
 // Called when the game starts
 void UAC_SlowDown::BeginPlay()
@@ -42,4 +57,3 @@ void UAC_SlowDown::BeginPlay()
 	}
 	
 }
-
