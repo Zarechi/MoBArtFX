@@ -26,8 +26,15 @@ public:
 	float LastUsedTime;
 	float RemainingCooldown;
 	float CastingTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Cooldown")
 	float CooldownTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectile Settings")
 	float Damage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectile Settings")
+	float ProjectileSpeed;
 
 	// Class of the sphere projectile
 	TSubclassOf<class AMOBA_Projectile> ProjectileClass;

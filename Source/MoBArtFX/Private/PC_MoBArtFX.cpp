@@ -37,8 +37,8 @@ void APC_MoBArtFX::BeginPlay()
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Look);
 
 		//Attacks
-		EnhancedInputComponent->BindAction(AutoAttackAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::AutoAttack);
-		EnhancedInputComponent->BindAction(Spell01_Action, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Spell01);
+		EnhancedInputComponent->BindAction(AutoAttackAction, ETriggerEvent::Completed, this, &APC_MoBArtFX::AutoAttack);
+		EnhancedInputComponent->BindAction(Spell01_Action, ETriggerEvent::Completed, this, &APC_MoBArtFX::Spell01);
 		EnhancedInputComponent->BindAction(Spell02_Action, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Spell02);
 		EnhancedInputComponent->BindAction(UltimateAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Ultimate);
 	}

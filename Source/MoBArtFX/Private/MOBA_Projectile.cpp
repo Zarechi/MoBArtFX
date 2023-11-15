@@ -26,7 +26,7 @@ AMOBA_Projectile::AMOBA_Projectile()
 	//PARAMETERS BY DEFAULT
 	ProjectileSpeed = 2000.0f;
 	ProjectileLifetime = 1.0f;
-	ProjectileSize = FVector(1.5f, 0.1f, 0.1f);
+	ProjectileSize = FVector(1.0f, 0.05f, 0.05f);
 
 	SphereMesh->SetWorldScale3D(ProjectileSize);
 
@@ -57,8 +57,10 @@ void AMOBA_Projectile::Tick(float DeltaTime)
 // Function to define the direction of projectile
 void AMOBA_Projectile::SetDirection(const FVector& NewDirection)
 {
+	UE_LOG(LogTemp, Warning, TEXT("SetDirection: %s"), *NewDirection.ToString());
 	MoveDirection = NewDirection.GetSafeNormal(); // Normalize direction
 }
+
 
 // Function that manage the movement
 void AMOBA_Projectile::MoveProjectile(float DeltaTime)
