@@ -56,6 +56,27 @@ void APC_MoBArtFX::BindAbilitiesActions()
 	EnhancedInputComponent->BindAction( UltimateAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Ultimate );
 }
 
+bool APC_MoBArtFX::CameraTraceSingleByChannel( FHitResult& out, float distance, ECollisionChannel collision_channel, const FCollisionQueryParams& params, const FCollisionResponseParams& response_param )
+{
+	FVector trace_start, trace_end;
+	GetCameraTraceBounds( trace_start, trace_end, distance );
+
+	return GetWorld()->LineTraceSingleByChannel(
+		out,
+		trace_start,
+		trace_end,
+		collision_channel,
+		params,
+		response_param
+	);
+}
+
+void APC_MoBArtFX::GetCameraTraceBounds( FVector& start, FVector& end, float distance )
+{
+	start = PlayerCameraManager->GetCameraLocation();
+	end = start + PlayerCameraManager->GetActorForwardVector() * distance;
+}
+
 void APC_MoBArtFX::Move(const FInputActionValue& Value)
 {
 	FRotator rotation = GetControlRotation();
