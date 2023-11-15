@@ -171,9 +171,9 @@ void AVivianne::Sprint()
 	if (sprintReady)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("sirpnt"));
-		sprintDuration = 5.f;
+		sprintDuration = infos->sprintDuration;
 		sprintCooldown = infos->Spell02_CD;
-		GetCharacterMovement()->MaxWalkSpeed = 1200.0f;
+		GetCharacterMovement()->MaxWalkSpeed = infos->sprintSpeed;
 		sprinting = true;
 		sprintReady = false;
 	}
