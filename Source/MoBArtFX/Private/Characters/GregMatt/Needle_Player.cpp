@@ -2,6 +2,7 @@
 
 
 #include "Characters/GregMatt/Needle_Player.h"
+#include "Characters/GregMatt/Needle.h"
 #include <Kismet/GameplayStatics.h>
 
 void ANeedle_Player::Tick(float DeltaTime)
@@ -240,19 +241,19 @@ void ANeedle_Player::ShootProjectile(int attType)
 		AActor* proj = World->SpawnActor(ProjectileClass, &pos, &rotation);
 		if (IsValid(proj))
 		{
-			//ANeddle* needle = (ANeddle*)proj;
-			//needle->Damage = NeedleBaseDamage;
-			//needle->Type = CurrentAttackType;
+			ANeedle* needle = (ANeedle*)proj;
+			needle->Damage = NeedleBaseDamage;
+			needle->Type = CurrentAttackType;
 			////needle->Player = pc;
-			//needle->Player = GetOwner();
-			//if (attType == 1)
-			//{
-			//	needle->IsSkillShot = true;
-			//}
-			//else if (attType == 2)
-			//{
-			//	needle->IsTeleport = true;
-			//}
+			needle->Player = this;
+			if (attType == 1)
+			{
+				needle->IsSkillShot = true;
+			}
+			else if (attType == 2)
+			{
+				needle->IsTeleport = true;
+			}
 		}
 	}
 }
