@@ -3,22 +3,21 @@
 // Sets default values
 ADesertClawSunsetivitiesGrenade::ADesertClawSunsetivitiesGrenade()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	
+	Mesh = CreateDefaultSubobject<UStaticMeshComponent>( TEXT( "Mesh" ) );
+	RootComponent = Mesh;
 }
 
-// Called when the game starts or when spawned
 void ADesertClawSunsetivitiesGrenade::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
-// Called every frame
-void ADesertClawSunsetivitiesGrenade::Tick(float DeltaTime)
+void ADesertClawSunsetivitiesGrenade::Tick( float dt )
 {
-	Super::Tick(DeltaTime);
+	Super::Tick( dt );
 
 }
 
