@@ -62,7 +62,33 @@ void ACainerCharacter::Spell_01_Implementation() //  speed boost
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Blue, "Spell_01 : Speed Boost");
 	speedBoostCrtCD = infos->Spell01_CD;
 
+	TArray<FHitResult> outs;
 
+
+	bool hit = GetWorld()->SweepMultiByObjectType(outs, GetActorLocation(), GetActorLocation(), FQuat(), FCollisionObjectQueryParams(ECC_Pawn), FCollisionShape::MakeSphere(infos->speedBoostRadius));
+
+	if (!hit)
+	{
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Red, "Speed boost ability found no actor (bruh).");
+		return;
+	}
+
+	TArray<ACharacter*> checked_chara; 
+
+	for (FHitResult out : outs)
+	{
+		auto chara = Cast<ACharacter>(out.GetActor());
+		if (!chara->IsValidLowLevel()) continue;
+
+		if (checked_chara.Contains(chara)) continue;
+		checked_chara.Add(chara);
+
+
+		auto speed_comp = chara->GetComponentByClass<UAC_CainerSpeedBoost>();
+		if (!speed_comp->IsValidLowLevel()) continue;
+
+		speed_comp->TriggerSpeedBoost(infos->speedBoostValue, infos->speedBoostDuration);
+	}
 }
 
 void ACainerCharacter::Spell_02_Implementation() //  monstro
@@ -129,6 +155,73 @@ void ACainerCharacter::Ultimate_Implementation() //  flash
 	flashCrtCD = infos->Ultimate_CD;
 
 
+	TArray<FHitResult> outs; 
+
+	bool hit = GetWorld()->SweepMultiByObjectType(outs, GetActorLocation(), GetActorLocation(), FQuat(), FCollisionObjectQueryParams(ECC_Pawn), FCollisionShape::MakeSphere(infos->flashRange));
+
+	if (!hit)
+	{
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Red, "Ultimate flash ability from Cainer found no actor (bruh).");
+		return;
+	}
+
+	TArray<ACharacter*> checked_chara;
+
+	for (FHitResult out : outs)
+	{
+		auto chara = Cast<ACharacter>(out.GetActor());
+		if (!chara->IsValidLowLevel()) continue;
+
+		if (chara == this) continue;
+
+		if (checked_chara.Contains(chara)) continue;
+		checked_chara.Add(chara);
+
+
+		auto speed_comp = chara->GetComponentByClass<UAC_CainerFlash>();
+		if (!speed_comp->IsValidLowLevel()) continue;
+
+		FVector flash_direction = chara->GetActorLocation() - GetActorLocation();
+		flash_direction.Normalize();
+		if (FVector::DotProduct(GetActorForwardVector(), flash_direction) > 0.6f && FVector::DotProduct(chara->GetActorForwardVector(), -flash_direction) > 0.6f)
+		{
+			speed_comp->Flash(infos->flashDuration);
+			GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Cyan, "Flashed " + chara->GetName() + ". (by Cainer)");
+		}
+	}
+
+	if (!IsValid(monstro)) return;
+
+	outs.Empty();
+
+	hit = GetWorld()->SweepMultiByObjectType(outs, monstro->GetActorLocation(), monstro->GetActorLocation(), FQuat(), FCollisionObjectQueryParams(ECC_Pawn), FCollisionShape::MakeSphere(infos->flashRange));
+
+	if (!hit)
+	{
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Red, "Ultimate flash ability from Cainer's monstro found no actor (bruh).");
+		return;
+	}
+
+	for (FHitResult out : outs)
+	{
+		auto chara = Cast<ACharacter>(out.GetActor());
+		if (!chara->IsValidLowLevel()) continue;
+
+		if (checked_chara.Contains(chara)) continue;
+		checked_chara.Add(chara);
+
+
+		auto speed_comp = chara->GetComponentByClass<UAC_CainerFlash>();
+		if (!speed_comp->IsValidLowLevel()) continue;
+
+		FVector flash_direction = chara->GetActorLocation() - monstro->GetActorLocation();
+		flash_direction.Normalize();
+		if (FVector::DotProduct(monstro->GetActorForwardVector(), flash_direction) > 0.7f && FVector::DotProduct(chara->GetActorForwardVector(), -flash_direction) > 0.7f)
+		{
+			speed_comp->Flash(infos->flashDuration);
+			GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Cyan, "Flashed " + chara->GetName() + ". (by Cainer's monstro)");
+		}
+	}
 }
 
 FVector ACainerCharacter::GetMonstroDestination()
@@ -154,6 +247,22 @@ FVector ACainerCharacter::GetMonstroDestination()
 
 
 	return destination;
+}
+
+
+float ACainerCharacter::GetSpell01Cooldown() const
+{
+	return speedBoostCrtCD;
+}
+
+float ACainerCharacter::GetSpell02Cooldown() const
+{
+	return monstroCrtCD;
+}
+
+float ACainerCharacter::GetUltimateCooldown() const
+{
+	return flashCrtCD;
 }
 
 

@@ -5,6 +5,8 @@
 #include <Particles/ParticleSystem.h>
 #include "CainerInfos.h"
 #include "CainerMonstro.h"
+#include "AC_CainerFlash.h"
+#include "AC_CainerSpeedBoost.h"
 #include "CainerCharacter.generated.h"
 
 
@@ -29,6 +31,15 @@ public:
 
 	void PingMonstro();
 
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	float GetSpell01Cooldown() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	float GetSpell02Cooldown() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	float GetUltimateCooldown() const;
 
 protected:
 	virtual void BeginPlay() override;
