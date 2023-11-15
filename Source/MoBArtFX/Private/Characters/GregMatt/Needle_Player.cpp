@@ -4,6 +4,38 @@
 #include "Characters/GregMatt/Needle_Player.h"
 #include "Characters/GregMatt/Needle.h"
 #include <Kismet/GameplayStatics.h>
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+
+void ANeedle_Player::BeginPlay()
+{
+	// Call the base class  
+	Super::BeginPlay();
+
+	CurrentHealth = MaxHealth;
+
+	if (IsAI)
+		return;
+
+	//Add Input Mapping Context
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+
+		}
+	}
+}
+
+void ANeedle_Player::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
+{
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		EnhancedInputComponent->BindAction(SwitchTypeInputAction, ETriggerEvent::Triggered, this, &ANeedle_Player::SwitchAttackType);
+
+	}
+}
 
 void ANeedle_Player::Tick(float DeltaTime)
 {
@@ -267,4 +299,5 @@ void ANeedle_Player::SwitchAttackType()
 	{
 		CurrentAttackType = (AttackType)0;
 	}
+	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("SwitchAttackType"));
 }
