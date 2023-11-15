@@ -16,6 +16,14 @@ public:
 	// Configurez la fonction pour définir la direction du mouvement du projectile
 	void SetDirection(const FVector& NewDirection);
 
+	// Set the speed of the projectile
+	UFUNCTION(BlueprintCallable, Category = "Projectile")
+	void SetProjectileSpeed(float NewSpeed);
+
+	// Set the lifetime of the projectile
+	UFUNCTION(BlueprintCallable, Category = "Projectile")
+	void SetProjectileLifetime(float NewLifetime);
+
 protected:
 
 	virtual void BeginPlay() override;

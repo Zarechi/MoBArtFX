@@ -26,6 +26,7 @@ public:
 	float LastUsedTime;
 	float RemainingCooldown;
 	float CastingTime;
+	float AngleBetweenProjectiles;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Cooldown")
 	float CooldownTime;
@@ -36,11 +37,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectile Settings")
 	float ProjectileSpeed;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectile Settings")
+	float ProjectileLifetime;
+
 	// Class of the sphere projectile
 	TSubclassOf<class AMOBA_Projectile> ProjectileClass;
 
 protected:
 
 	virtual void BeginPlay() override;
+	int32 SideCounter = 0; // Initialize SideCounter to 0
 
 };
