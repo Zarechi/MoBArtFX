@@ -37,7 +37,9 @@ void UDesertClawUltimateAbility::OnTick_Implementation( float dt )
 	);
 	if ( result.bBlockingHit )
 	{
+		//  update location and rotation
 		DecalActor->SetActorLocation( result.Location );
+		DecalActor->SetActorRotation( FRotator { 90.0f, Character->GetActorRotation().Yaw, 0.0f } );
 	}
 		
 	//  startup timer
