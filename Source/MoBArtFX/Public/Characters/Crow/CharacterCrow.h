@@ -23,22 +23,36 @@ public:
 	void Ultimate_Implementation() override;
 
 	// Cooldown
-	float LastUsedTime;
+	float LastUsedAATime;
+	float LastUsedSpell01Time;
 	float RemainingCooldown;
 	float CastingTime;
 	float AngleBetweenProjectiles;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Cooldown")
-	float CooldownTime;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Auto Attack Setting")
+	float AACD;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectile Settings")
-	float Damage;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Auto Attack Setting")
+	float AADamage;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectile Settings")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Auto Attack Setting")
 	float ProjectileSpeed;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectile Settings")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Auto Attack Setting")
 	float ProjectileLifetime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Redemption Feather Setting")
+	float RedemptionFeatherCD;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Redemption Feather Setting")
+	float RedemptionFeatherDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Redemption Feather Setting")
+	float RedemptionFeatherRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Redemption Feather Setting")
+	float RedemptionFeatherKB;
+
 
 	// Class of the sphere projectile
 	TSubclassOf<class AMOBA_Projectile> ProjectileClass;
