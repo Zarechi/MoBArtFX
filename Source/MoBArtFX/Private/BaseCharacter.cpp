@@ -59,3 +59,11 @@ void ABaseCharacter::Reload_Implementation()
 {
 	GetPlayerDatas()->CurrentAmmo = GetPlayerDatas()->MaxAmmo;
 }
+
+void ABaseCharacter::Spell_01_Implementation() {}
+
+void ABaseCharacter::Spell_02_Implementation() {}
+
+void ABaseCharacter::Ultimate_Implementation() {}
+
+void ABaseCharacter::Death_Implementation() {}
