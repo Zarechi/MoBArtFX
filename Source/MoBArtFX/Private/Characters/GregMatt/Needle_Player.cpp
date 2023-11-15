@@ -62,13 +62,13 @@ void ANeedle_Player::Ultimate_Implementation()
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Ultimate"));
 
 		TArray<AActor*> FoundActors;
-		/*UGameplayStatics::GetAllActorsOfClass(GetWorld(), AMobaRtFxCharacter::StaticClass(), FoundActors);
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ANeedle_Player::StaticClass(), FoundActors);
 		int foundActorCount = FoundActors.Num();
 
 		int foundNeedleCount = 0;
 		for (int i = 0; i < foundActorCount; i++)
 		{
-			AMobaRtFxCharacter* player = (AMobaRtFxCharacter*)FoundActors[i];
+			ANeedle_Player* player = (ANeedle_Player*)FoundActors[i];
 			if (FoundActors[i] != GetOwner())
 			{
 				foundNeedleCount += player->needleStack.Num();
@@ -79,13 +79,13 @@ void ANeedle_Player::Ultimate_Implementation()
 		{
 			for (int i = 0; i < foundActorCount; i++)
 			{
-				AMobaRtFxCharacter* player = (AMobaRtFxCharacter*)FoundActors[i];
+				ANeedle_Player* player = (ANeedle_Player*)FoundActors[i];
 				if (FoundActors[i] != GetOwner())
 				{
 					player->Hit(CurrentAttackType, NeedleBaseDamage);
 				}
 			}
-		}*/
+		}
 	}
 }
 
@@ -244,7 +244,6 @@ void ANeedle_Player::ShootProjectile(int attType)
 			ANeedle* needle = (ANeedle*)proj;
 			needle->Damage = NeedleBaseDamage;
 			needle->Type = CurrentAttackType;
-			////needle->Player = pc;
 			needle->Player = this;
 			if (attType == 1)
 			{
