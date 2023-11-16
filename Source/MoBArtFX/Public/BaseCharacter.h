@@ -15,6 +15,21 @@ class MOBARTFX_API ABaseCharacter : public ACharacter
 public:
 	ABaseCharacter();
 
+	float TakeDamage(
+		const float Damage, 
+		FDamageEvent const& DamageEvent, 
+		AController* EventInstigator, 
+		AActor* DamageCauser
+	) override;
+
+	/*
+	 *  Intermediate function called before TakeDamage to mitigate damage taken
+	 * 
+	 *  Returns amount of damage to apply
+	 */
+	UFUNCTION( BlueprintNativeEvent, BlueprintCallable )
+	float MitigateDamage( float damage, AActor* causer );
+
 	// Attacks
 	UFUNCTION( BlueprintNativeEvent, BlueprintCallable )
 	void AutoAttack();
@@ -44,10 +59,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick( float DeltaTime ) override;
+	
 	virtual void SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent ) override;
-	
-	//float TakeDamage(const float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
-	
 	virtual void SetupData( UPlayerInfos* data );
 
 	TObjectPtr<APS_MoBArtFX> PlayerState;

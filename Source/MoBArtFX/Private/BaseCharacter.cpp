@@ -1,5 +1,6 @@
 #include "BaseCharacter.h"
 #include "Engine/DamageEvents.h"
+#include "PC_MoBArtFX.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 #include "Defines.h"
@@ -9,12 +10,48 @@ ABaseCharacter::ABaseCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
+float ABaseCharacter::TakeDamage(
+	const float Damage,
+	FDamageEvent const& DamageEvent,
+	AController* EventInstigator,
+	AActor* DamageCauser
+)
+{
+	auto data = GetPlayerDatas();
+	if ( !IsValid( data ) ) return 0.0f;
+	if ( data->CurrentHealth == 0.0f ) return 0.0f;
+
+	//  mitigate damage
+	float took_damage = Super::TakeDamage( Damage, DamageEvent, EventInstigator, DamageCauser );
+	took_damage = MitigateDamage( took_damage, DamageCauser );
+
+	//  apply damage
+	data->CurrentHealth = FMath::Max( 0.0f, data->CurrentHealth - took_damage );
+
+	//  check death
+	if ( data->CurrentHealth == 0.0f )
+	{
+		Death();
+	}
+
+	return took_damage;
+}
+
+float ABaseCharacter::MitigateDamage_Implementation( float damage, AActor* causer )
+{
+	return damage;
+}
+
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
 	//  get player state
 	PlayerState = GetPlayerState<APS_MoBArtFX>();
+	if ( PlayerState == nullptr && GetController<APC_MoBArtFX>() )
+	{
+		kERROR_LOG_ARGS( "A Player-Controlled Character doesn't have a valid Player State!" );
+	}
 	
 	//  setup data
 	SetPlayerDatas( GetPlayerDatas() );
@@ -22,11 +59,13 @@ void ABaseCharacter::BeginPlay()
 
 void ABaseCharacter::SetPlayerDatas( UPlayerInfos* data )
 {
+	if ( !IsValid( PlayerState ) ) return;
+
 	PlayerState->PlayerDatas = data;
 
 	if ( data == nullptr )
 	{
-		kPRINT_ERROR( "A BaseCharacter doesn't have a PlayerInfos data asset!" );
+		kPRINT_ERROR( "A Character doesn't have a PlayerInfos data asset!" );
 		return;
 	}
 
@@ -74,7 +113,7 @@ void ABaseCharacter::SetupData( UPlayerInfos* data )
 		movement->AirControl = data->AirControl;
 	}
 
-	kLOG_ARGS( TEXT( "Character '%s' data has been setup" ), *data->Name );
+	kLOG_ARGS( "Character '%s' data has been setup", *data->Name );
 }
 
 void ABaseCharacter::AutoAttack_Implementation()
@@ -97,4 +136,10 @@ void ABaseCharacter::Spell_02_Implementation() {}
 
 void ABaseCharacter::Ultimate_Implementation() {}
 
-void ABaseCharacter::Death_Implementation() {}
+void ABaseCharacter::Death_Implementation() 
+{
+	auto data = GetPlayerDatas();
+	if ( !IsValid( data ) ) return;
+
+	kPRINT( data->Name + " is dead!" );
+}

@@ -39,9 +39,9 @@ public:
 	float AirControl = 0.05f;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Character|Health")
-	int32 MaxHealth = 1500;
+	float MaxHealth = 1500;
 	UPROPERTY(BlueprintReadWrite, Category="Character|Health", meta=(EditCondition=false))
-	int32 CurrentHealth;
+	float CurrentHealth;
 
 	/** Spells parameters */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Spells|AutoAttack")
