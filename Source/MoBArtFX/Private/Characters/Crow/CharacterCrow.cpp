@@ -21,16 +21,17 @@ ACharacterCrow::ACharacterCrow()
     // Default Params for Redemption Feather
     RedemptionFeatherCD = 1.5f;
     RedemptionFeatherDamage = 40.0f;
-    RedemptionFeatherRange = 100.0f;
-    RedemptionFeatherKB = 100.0f;
-    DistanceFromChara = 100.0f;
+    RedemptionFeatherRange = 150.0f;
+    RedemptionFeatherKB = 350.0f;
+    DistanceFromChara = 200.0f;
 
     // Default Params for Scarecrow Breeze
     ScarecrowBreezeCD = 1.0f;
-    GlideDuration = 10.0f;
-    JumpZVelocity = 1.0f;
-    AltitudeLossRate = 50.0f;
-    DefaultAirControl = 1.0f;
+    GlideDuration = 3.0f;
+    JumpZVelocity = 2000.0f;
+    AltitudeLossRate = 500.0f;
+    GlideAirControl = 1.0f;
+    DefaultAirControl = 0.3f;
     DefaultGravity = 1.0f;
 
     // Default Params for CD
@@ -142,14 +143,14 @@ void ACharacterCrow::Spell_01_Implementation()
         bool bHit = GetWorld()->SweepMultiByChannel(HitResults, StartLocation, StartLocation, FQuat::Identity, ECC_Pawn, FCollisionShape::MakeSphere(SphereRadius), CollisionParams);
 
         // Draw debug sphere
-        DrawDebugSphere(GetWorld(), StartLocation, SphereRadius, 16, bHit ? FColor::Green : FColor::Red, false, 1.0f, 0, 1.0f);
+        DrawDebugSphere(GetWorld(), StartLocation, SphereRadius, 32, bHit ? FColor::Green : FColor::Red, false, 1.0f, 0, 1.0f);
 
         // If sphere trace hits something and the recoil has not been applied yet
         if (bHit && !bRecoilApplied)
         {
             for (const FHitResult& HitResult : HitResults)
             {
-                // Vérifiez si l'acteur touché est un Pawn
+                // Verify if an actor is hit
                 if (HitResult.GetActor()->IsA(APawn::StaticClass()))
                 {
                     // Knockback direction
@@ -188,23 +189,23 @@ void ACharacterCrow::Spell_02_Implementation()
 {
     if (CanUseGlideAbility())
     {
-        // Commencez le saut
+        // Start Jump
         LaunchCharacter(FVector(0.0f, 0.0f, JumpZVelocity), false, false);
 
-        // Activez le planeur
+        // Activate Gliding
         bIsGliding = true;
         GlideStartTime = GetWorld()->GetTimeSeconds();
 
-        // Réglez le contrôle aérien pour le planeur
+        // Params glide controls
         GetCharacterMovement()->AirControl = GlideAirControl;
 
-        // Mettez à jour le temps de la dernière utilisation
+        // MUpdate last time utilization
         LastUsedSpell02Time = GetWorld()->GetTimeSeconds();
     }
     else
     {
-        // Capacité en cours de recharge
-        GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Glide ability is on cooldown"));
+        // Capacity in cooldown
+        GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Purple, TEXT("Glide ability is on cooldown"));
     }
 }
 
@@ -216,23 +217,23 @@ void ACharacterCrow::UpdateGlide()
 
         if (ElapsedTime < GlideDuration)
         {
-            // Calcule la perte d'altitude
+            // Calculate loss altitude
             FVector NewLocation = GetActorLocation();
             NewLocation.Z -= AltitudeLossRate * GetWorld()->GetDeltaSeconds();
 
-            // Applique le contrôle aérien
+            // Apply new control in air
             GetCharacterMovement()->AddInputVector(GetPendingMovementInputVector() * GlideAirControl);
 
-            // Met à jour la position du personnage
+            // Update Character position
             SetActorLocation(NewLocation, true);
         }
         else
         {
-            // Désactive le planeur à la fin de sa durée
+            // Desactivate gliding at the end of his time
             bIsGliding = false;
             GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Purple, TEXT("Glide End"));
 
-            // Rétablit le contrôle aérien par défaut
+            // Restore default aerial control
             GetCharacterMovement()->AirControl = DefaultAirControl;
         }
     }
