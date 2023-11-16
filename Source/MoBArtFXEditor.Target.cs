@@ -11,5 +11,6 @@ public class MoBArtFXEditorTarget : TargetRules
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_1;
 		ExtraModuleNames.Add("MoBArtFX");
+		ExtraModuleNames.Add("ShootingRange_Editor");
 	}
 }
