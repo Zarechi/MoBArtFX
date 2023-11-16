@@ -1,20 +1,102 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "BaseCharacter.h"
 #include "Engine/DamageEvents.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
-// Sets default values
+#include "PC_MoBArtFX.h"
+#include "PC_MoBArtFX.h"
+
+#include "Defines.h"
+
 ABaseCharacter::ABaseCharacter()
 {
-	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-// Called when the game starts or when spawned
+float ABaseCharacter::TakeDamage(
+	const float Damage,
+	FDamageEvent const& DamageEvent,
+	AController* EventInstigator,
+	AActor* DamageCauser
+)
+{
+	auto data = GetPlayerDatas();
+	if ( !IsValid( data ) ) return 0.0f;
+	if ( data->CurrentHealth == 0.0f ) return 0.0f;
+
+	//  mitigate damage
+	float took_damage = Super::TakeDamage( Damage, DamageEvent, EventInstigator, DamageCauser );
+	took_damage = MitigateDamage( took_damage, DamageCauser );
+
+	//  apply damage
+	data->CurrentHealth = FMath::Max( 0.0f, data->CurrentHealth - took_damage );
+
+	//  check death
+	if ( data->CurrentHealth == 0.0f )
+	{
+		Death();
+	}
+
+	return took_damage;
+}
+
+void ABaseCharacter::ApplySpellCooldown( float time, EMobaSpellType type )
+{
+	SpellCooldowns.Add( type, time );
+
+	if ( IsValid( CustomPlayerController ) )
+	{
+		CustomPlayerController->ApplySpellCooldownOnHUD( time, type );
+	}
+
+	auto data = GetPlayerDatas();
+	if ( IsValid( data ) )
+	{
+		auto type_name = StaticEnum<EMobaSpellType>()->GetValueAsString( type );
+		kLOG_ARGS( "%s: %s is on cooldown for %ds!", *data->Name, *type_name, time );
+	}
+}
+
+bool ABaseCharacter::IsSpellOnCooldown( EMobaSpellType type )
+{
+	auto itr = SpellCooldowns.Find( type );
+	if ( itr == nullptr ) return false;
+
+	return *itr > 0.0f;
+}
+
+float ABaseCharacter::MitigateDamage_Implementation( float damage, AActor* causer )
+{
+	return damage;
+}
+
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	//  get player state
+	CustomPlayerState = GetPlayerState<APS_MoBArtFX>();
+	if ( CustomPlayerState == nullptr && GetController<APC_MoBArtFX>() )
+	{
+		kERROR_LOG_ARGS( "A Player-Controlled Character doesn't have a valid Player State!" );
+	}
+	
+	//  setup data
+	SetPlayerDatas( GetPlayerDatas() );
+}
+
+void ABaseCharacter::SetPlayerDatas( UPlayerInfos* data )
+{
+	if ( !IsValid( CustomPlayerState ) ) return;
+
+	CustomPlayerState->PlayerDatas = data;
+
+	if ( data == nullptr )
+	{
+		kPRINT_ERROR( "A Character doesn't have a PlayerInfos data asset!" );
+		return;
+	}
+
+	SetupData( data );
 }
 
 UPlayerInfos* ABaseCharacter::GetPlayerDatas()
@@ -29,7 +111,8 @@ UPlayerInfos* ABaseCharacter::GetPlayerDatas()
 			return DebugPlayerInfos;
 	}
 
-	UE_LOG(LogTemp, Error, TEXT("Can't find PlayerDatas"));
+	//  get player state
+	if ( IsValid( CustomPlayerState ) ) return CustomPlayerState->PlayerDatas;
 
 	return nullptr;
 }

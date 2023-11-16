@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -9,6 +7,7 @@
 #include "BaseCharacter.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "HUD_MoBArtFX.h"
 #include "PC_MoBArtFX.generated.h"
 
 class UInputComponent;
@@ -25,6 +24,9 @@ public:
 	virtual void BindActions();
 	virtual void BindMovementActions();
 	virtual void BindAbilitiesActions();
+
+	UFUNCTION( BlueprintCallable )
+	void ApplySpellCooldownOnHUD( float time, EMobaSpellType type );
 
 	/*
 	 *  Performs a Line Trace Single by Channel using the camera location 
@@ -80,4 +82,7 @@ protected:
 	void Spell01(const FInputActionValue& Value);
 	void Spell02(const FInputActionValue& Value);
 	void Ultimate(const FInputActionValue& Value);
+
+private:
+	AHUD_MoBArtFX* HUD;
 };

@@ -1,11 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "PS_MoBArtFX.h"
 #include "BaseCharacter.generated.h"
+
+class APC_MoBArtFX;
 
 UCLASS()
 class MOBARTFX_API ABaseCharacter : public ACharacter
@@ -17,6 +17,11 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION( BlueprintCallable )
+	void ApplySpellCooldown( float time, EMobaSpellType type );
+	UFUNCTION( BlueprintCallable, BlueprintPure )
+	bool IsSpellOnCooldown( EMobaSpellType type );
 
 	// Attacks
 	UFUNCTION( BlueprintNativeEvent, BlueprintCallable )
@@ -45,6 +50,9 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	//float TakeDamage(const float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
+	TMap<EMobaSpellType, float> SpellCooldowns;
+
+	TObjectPtr<APS_MoBArtFX> CustomPlayerState;
+	TObjectPtr<APC_MoBArtFX> CustomPlayerController;
 };

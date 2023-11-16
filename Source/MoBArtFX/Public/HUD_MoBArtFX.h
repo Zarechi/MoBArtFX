@@ -7,6 +7,14 @@
 #include "Blueprint/UserWidget.h"
 #include "HUD_MoBArtFX.generated.h"
 
+UENUM( BlueprintType )
+enum class EMobaSpellType : uint8
+{
+	First        UMETA( DisplayName = "First" ),
+	Second       UMETA( DisplayName = "Second" ),
+	Ultimate     UMETA( DisplayName = "Ultimate" ),
+};
+
 /** HUD Interface */
 
 UINTERFACE(MinimalAPI, Blueprintable)
@@ -19,12 +27,11 @@ class IHUDInterface
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "HUD")
-	void Cooldown(double _CooldownTime, int SpellNum = -1);
+	UFUNCTION( BlueprintImplementableEvent, BlueprintCallable, Category = "HUD" )
+	void Cooldown( double time, int type );
 };
 
 /** HUD Class */
-
 UCLASS()
 class MOBARTFX_API AHUD_MoBArtFX : public AHUD
 {
@@ -33,6 +40,9 @@ class MOBARTFX_API AHUD_MoBArtFX : public AHUD
 	/* FUNCTIONS */
 public:
 	virtual void BeginPlay() override;
+
+	UFUNCTION( BlueprintImplementableEvent, BlueprintCallable, Category = "HUD" )
+	void Cooldown( float time, EMobaSpellType type );
 	
 protected:
 private:
