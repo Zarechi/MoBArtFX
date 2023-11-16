@@ -23,7 +23,9 @@ ACharacterCrow::ACharacterCrow()
     RedemptionFeatherDamage = 40.0f;
     RedemptionFeatherRange = 100.0f;
     RedemptionFeatherKB = 100.0f;
+    DistanceFromChara = 100.0f;
 
+    // Default Params for CD
     LastUsedAATime = -AACD;
     LastUsedSpell01Time = -RedemptionFeatherCD;
     RemainingCooldown = 0.0f;
@@ -113,39 +115,53 @@ void ACharacterCrow::Spell_01_Implementation()
         FRotator CameraRotation = GetControlRotation();
         FVector ForwardVector = FRotationMatrix(CameraRotation).GetScaledAxis(EAxis::X);
 
-        // Starting point of the raycast
+        // Starting point of the sphere trace
         FVector StartLocation = GetActorLocation() + ForwardVector * 100.0f;
 
-        float RaycastHeight = 50.0f;
-        // Final point of the raycast
-        FVector EndLocation = StartLocation + ForwardVector * RedemptionFeatherRange + FVector(0.0f, 0.0f, RaycastHeight);
+        // Sphere radius
+        float SphereRadius = RedemptionFeatherRange;
 
         // Params
-        FHitResult HitResult;
         FCollisionQueryParams CollisionParams;
         CollisionParams.AddIgnoredActor(this); // Ignore player actor
 
-        // Raycast
-        bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility, CollisionParams);
-        DrawDebugLine(GetWorld(), StartLocation, EndLocation, bHit ? FColor::Green : FColor::Red, false, 0.1f, 0, 1.0f);
+        TArray<FHitResult> HitResults;
 
-        // If raycast hit something
-        if (bHit)
+        // Sphere trace
+        bool bHit = GetWorld()->SweepMultiByChannel(HitResults, StartLocation, StartLocation, FQuat::Identity, ECC_Pawn, FCollisionShape::MakeSphere(SphereRadius), CollisionParams);
+
+        // Draw debug sphere
+        DrawDebugSphere(GetWorld(), StartLocation, SphereRadius, 16, bHit ? FColor::Green : FColor::Red, false, 1.0f, 0, 1.0f);
+
+        // If sphere trace hits something and the recoil has not been applied yet
+        if (bHit && !bRecoilApplied)
         {
-            // Knockback direction
-            FVector RecoilDirection = -ForwardVector;
+            for (const FHitResult& HitResult : HitResults)
+            {
+                // Vérifiez si l'acteur touché est un Pawn
+                if (HitResult.GetActor()->IsA(APawn::StaticClass()))
+                {
+                    // Knockback direction
+                    FVector RecoilDirection = -ForwardVector;
 
-            // Calculate new position of the player
-            FVector NewLocation = GetActorLocation() + RecoilDirection * RedemptionFeatherKB;
+                    // Calculate new position of the player
+                    FVector NewLocation = GetActorLocation() + RecoilDirection * RedemptionFeatherKB;
 
-            // Define new position of the player
-            SetActorLocation(NewLocation);
+                    // Define new position of the player
+                    SetActorLocation(NewLocation);
 
-            // Get hit actor
-            AActor* HitActor = HitResult.GetActor();
+                    // Mark recoil as applied
+                    bRecoilApplied = true;
 
-            GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, TEXT("Redemption Feather"));
-            GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, FString::Printf(TEXT("Hit: %s, Recoil Applied"), *HitActor->GetName()));
+                    // Get hit actor
+                    AActor* HitActor = HitResult.GetActor();
+                    GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, TEXT("Redemption Feather"));
+                    GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, FString::Printf(TEXT("Hit: %s, Recoil Applied"), *HitActor->GetName()));
+
+                    // Sortez de la boucle après avoir appliqué le recul une fois
+                    break;
+                }
+            }
         }
     }
     else
@@ -153,7 +169,12 @@ void ACharacterCrow::Spell_01_Implementation()
         // Ability in cooldown
         GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, TEXT("Cooldown in progress"));
     }
+    // Reset the recoil flag at the end of the function
+    bRecoilApplied = false;
 }
+
+
+
 
 
 
