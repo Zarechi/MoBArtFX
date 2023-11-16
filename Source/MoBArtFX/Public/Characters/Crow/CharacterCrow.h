@@ -25,12 +25,23 @@ public:
 	void Spell_02_Implementation() override;
 	void Ultimate_Implementation() override;
 
+	bool CanUseGlideAbility() const;
+	void UpdateGlide();
+
 	// Cooldown
 	float LastUsedAATime;
 	float LastUsedSpell01Time;
+	float LastUsedSpell02Time;
 	float RemainingCooldown;
 	float CastingTime;
 	float AngleBetweenProjectiles;
+
+
+	// Scarecrow Breeze
+	bool bIsGliding;
+	float GlideStartTime;
+
+	//AUTO ATTACK 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Auto Attack Setting")
 	float AACD;
@@ -43,6 +54,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Auto Attack Setting")
 	float ProjectileLifetime;
+
+	// REDEMPTION FEATHER
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Redemption Feather Setting")
 	float RedemptionFeatherCD;
@@ -62,12 +75,31 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Redemption Feather Setting")
 	bool bRecoilApplied;
 
+	// SCARECROW BREEZE
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Scarecrow Breeze Settings")
+	float ScarecrowBreezeCD;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Scarecrow Breeze Settings")
+	float GlideDuration;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Scarecrow Breeze Settings")
+	float JumpZVelocity;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Scarecrow Breeze Settings")
+	float AltitudeLossRate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Scarecrow Breeze Settings")
+	float GlideAirControl;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Scarecrow Breeze Settings")
+	float DefaultAirControl;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Scarecrow Breeze Settings")
+	float DefaultGravity;
 
 	// Class of the sphere projectile
 	TSubclassOf<class AMOBA_Projectile> ProjectileClass;
-
-	// Class Capsule
-	//UCapsuleComponent* CapsuleComponent;
 
 protected:
 

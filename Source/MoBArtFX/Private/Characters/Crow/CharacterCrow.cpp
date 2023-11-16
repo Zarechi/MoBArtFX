@@ -25,9 +25,18 @@ ACharacterCrow::ACharacterCrow()
     RedemptionFeatherKB = 100.0f;
     DistanceFromChara = 100.0f;
 
+    // Default Params for Scarecrow Breeze
+    ScarecrowBreezeCD = 1.0f;
+    GlideDuration = 10.0f;
+    JumpZVelocity = 1.0f;
+    AltitudeLossRate = 50.0f;
+    DefaultAirControl = 1.0f;
+    DefaultGravity = 1.0f;
+
     // Default Params for CD
     LastUsedAATime = -AACD;
     LastUsedSpell01Time = -RedemptionFeatherCD;
+    LastUsedSpell02Time = -ScarecrowBreezeCD;
     RemainingCooldown = 0.0f;
 }
 
@@ -39,6 +48,8 @@ void ACharacterCrow::BeginPlay()
 void ACharacterCrow::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+
+    UpdateGlide();
 }
 
 void ACharacterCrow::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -116,7 +127,7 @@ void ACharacterCrow::Spell_01_Implementation()
         FVector ForwardVector = FRotationMatrix(CameraRotation).GetScaledAxis(EAxis::X);
 
         // Starting point of the sphere trace
-        FVector StartLocation = GetActorLocation() + ForwardVector * 100.0f;
+        FVector StartLocation = GetActorLocation() + ForwardVector * DistanceFromChara;
 
         // Sphere radius
         float SphereRadius = RedemptionFeatherRange;
@@ -173,14 +184,65 @@ void ACharacterCrow::Spell_01_Implementation()
     bRecoilApplied = false;
 }
 
-
-
-
-
-
 void ACharacterCrow::Spell_02_Implementation()
 {
-    GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Purple, TEXT("Scarecrow Storm"));
+    if (CanUseGlideAbility())
+    {
+        // Commencez le saut
+        LaunchCharacter(FVector(0.0f, 0.0f, JumpZVelocity), false, false);
+
+        // Activez le planeur
+        bIsGliding = true;
+        GlideStartTime = GetWorld()->GetTimeSeconds();
+
+        // Réglez le contrôle aérien pour le planeur
+        GetCharacterMovement()->AirControl = GlideAirControl;
+
+        // Mettez à jour le temps de la dernière utilisation
+        LastUsedSpell02Time = GetWorld()->GetTimeSeconds();
+    }
+    else
+    {
+        // Capacité en cours de recharge
+        GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Glide ability is on cooldown"));
+    }
+}
+
+void ACharacterCrow::UpdateGlide()
+{
+    if (bIsGliding)
+    {
+        float ElapsedTime = GetWorld()->GetTimeSeconds() - GlideStartTime;
+
+        if (ElapsedTime < GlideDuration)
+        {
+            // Calcule la perte d'altitude
+            FVector NewLocation = GetActorLocation();
+            NewLocation.Z -= AltitudeLossRate * GetWorld()->GetDeltaSeconds();
+
+            // Applique le contrôle aérien
+            GetCharacterMovement()->AddInputVector(GetPendingMovementInputVector() * GlideAirControl);
+
+            // Met à jour la position du personnage
+            SetActorLocation(NewLocation, true);
+        }
+        else
+        {
+            // Désactive le planeur à la fin de sa durée
+            bIsGliding = false;
+            GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Purple, TEXT("Glide End"));
+
+            // Rétablit le contrôle aérien par défaut
+            GetCharacterMovement()->AirControl = DefaultAirControl;
+        }
+    }
+}
+
+
+bool ACharacterCrow::CanUseGlideAbility() const
+{
+    float CurrentTime = GetWorld()->GetTimeSeconds();
+    return !bIsGliding;
 }
 
 void ACharacterCrow::Ultimate_Implementation()
