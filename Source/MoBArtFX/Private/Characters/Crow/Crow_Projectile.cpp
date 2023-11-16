@@ -1,6 +1,6 @@
-#include "MOBA_Projectile.h"
+#include "Characters/Crow/Crow_Projectile.h"
 
-AMOBA_Projectile::AMOBA_Projectile()
+ACrow_Projectile::ACrow_Projectile()
 {
 	// Set this actor to call Tick() every frame
 	PrimaryActorTick.bCanEverTick = true;
@@ -8,7 +8,7 @@ AMOBA_Projectile::AMOBA_Projectile()
 	// Create shape of the projectile
 	SphereMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SphereMesh"));
 	RootComponent = SphereMesh;
-	
+
 	// Create static mesh for projectile
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> DefaultSphereMesh(TEXT("StaticMesh'/Engine/BasicShapes/Sphere.Sphere'"));
 	if (DefaultSphereMesh.Succeeded())
@@ -32,12 +32,12 @@ AMOBA_Projectile::AMOBA_Projectile()
 
 }
 
-void AMOBA_Projectile::BeginPlay()
+void ACrow_Projectile::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-void AMOBA_Projectile::Tick(float DeltaTime)
+void ACrow_Projectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
@@ -55,25 +55,25 @@ void AMOBA_Projectile::Tick(float DeltaTime)
 }
 
 // Function to define the direction of projectile
-void AMOBA_Projectile::SetDirection(const FVector& NewDirection)
+void ACrow_Projectile::SetDirection(const FVector& NewDirection)
 {
 	UE_LOG(LogTemp, Warning, TEXT("SetDirection: %s"), *NewDirection.ToString());
 	MoveDirection = NewDirection.GetSafeNormal(); // Normalize direction
 }
 
-void AMOBA_Projectile::SetProjectileSpeed(float NewSpeed)
+void ACrow_Projectile::SetProjectileSpeed(float NewSpeed)
 {
 	ProjectileSpeed = NewSpeed;
 }
 
-void AMOBA_Projectile::SetProjectileLifetime(float NewLifetime)
+void ACrow_Projectile::SetProjectileLifetime(float NewLifetime)
 {
 	ProjectileLifetime = NewLifetime;
 }
 
 
 // Function that manage the movement
-void AMOBA_Projectile::MoveProjectile(float DeltaTime)
+void ACrow_Projectile::MoveProjectile(float DeltaTime)
 {
 	FVector NewLocation = GetActorLocation() + MoveDirection * ProjectileSpeed * DeltaTime;
 	SetActorLocation(NewLocation);

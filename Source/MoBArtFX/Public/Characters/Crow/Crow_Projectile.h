@@ -1,16 +1,16 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "MOBA_Projectile.generated.h"
+#include "Crow_Projectile.generated.h"
 
 UCLASS()
-class MOBARTFX_API AMOBA_Projectile : public AActor
+class MOBARTFX_API ACrow_Projectile : public AActor
 {
 	GENERATED_BODY()
 
 public:
 
-	AMOBA_Projectile();
+	ACrow_Projectile();
 	virtual void Tick(float DeltaTime) override;
 
 	// Configurez la fonction pour définir la direction du mouvement du projectile

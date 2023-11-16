@@ -99,7 +99,7 @@ public:
 	float DefaultGravity;
 
 	// Class of the sphere projectile
-	TSubclassOf<class AMOBA_Projectile> ProjectileClass;
+	TSubclassOf<class ACrow_Projectile> ProjectileClass;
 
 protected:
 

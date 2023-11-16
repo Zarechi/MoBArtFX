@@ -1,6 +1,6 @@
 #include "Characters/Crow/CharacterCrow.h"
 #include "Engine/DamageEvents.h"
-#include "MOBA_Projectile.h"
+#include "Characters/Crow/Crow_Projectile.h"
 #include <Kismet/GameplayStatics.h>
 #include "DrawDebugHelpers.h"
 
@@ -13,7 +13,7 @@ ACharacterCrow::ACharacterCrow()
     AADamage = 6.0f;
 
     // Default Params for Auto Attack Projectile
-    ProjectileClass = AMOBA_Projectile::StaticClass();
+    ProjectileClass = ACrow_Projectile::StaticClass();
     AACD = 0.4f;
     ProjectileSpeed = 3000.0f;
     ProjectileLifetime = 1.0f;
@@ -93,7 +93,7 @@ void ACharacterCrow::AutoAttack_Implementation()
                 // Set the projectile's initial velocity based on the character's forward vector
                 FVector ProjectileVelocity = CameraForwardVector * ProjectileSpeed;
 
-                AMOBA_Projectile* NewProjectile = GetWorld()->SpawnActor<AMOBA_Projectile>(ProjectileClass, SpawnLocation, SpawnRotation);
+                ACrow_Projectile* NewProjectile = GetWorld()->SpawnActor<ACrow_Projectile>(ProjectileClass, SpawnLocation, SpawnRotation);
 
                 if (NewProjectile)
                 {
