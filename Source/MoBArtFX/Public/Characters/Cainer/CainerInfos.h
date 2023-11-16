@@ -40,4 +40,7 @@ public:
 	float flashRange = 3000.0f;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Spells|Ultimate", meta = (min = 0.0f))
 	float flashDuration = 1.0f;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Spells|AutoAttack", meta = (min = 0.0f))
+	float autoattack_damage = 1.0f;
 };
