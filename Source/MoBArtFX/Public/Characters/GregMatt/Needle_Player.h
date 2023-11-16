@@ -24,13 +24,7 @@ public:
 	void AutoAttack_Implementation() override;
 	void Reload_Implementation() override;
 
-	void Death_Implementation() override;
-
-	UFUNCTION(BlueprintCallable)
-	void Hit(TEnumAsByte<AttackType> type, float damage);
-
-	UFUNCTION(BlueprintCallable)
-	void SkillShotHit();
+	//void Death_Implementation() override;
 
 	void ShootProjectile(int attType);
 
