@@ -21,6 +21,9 @@ void ANeedle_Player::BeginPlay()
 	int foundActorCount = FoundActors.Num();
 	for (int i = 0; i < foundActorCount; i++)
 	{
+		if (FoundActors[i] == this)
+			continue;
+
 		UNeedle_Damage_System* Component = NewObject<UNeedle_Damage_System>(FoundActors[i]);
 		FoundActors[i]->AddInstanceComponent(Component);
 		Component->OnComponentCreated();

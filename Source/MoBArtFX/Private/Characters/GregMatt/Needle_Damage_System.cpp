@@ -4,6 +4,7 @@
 #include "Characters/GregMatt/Needle_Damage_System.h"
 #include "Engine/EngineTypes.h"
 #include <Kismet/GameplayStatics.h>
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values for this component's properties
 UNeedle_Damage_System::UNeedle_Damage_System()
@@ -21,6 +22,12 @@ void UNeedle_Damage_System::BeginPlay()
 {
 	Super::BeginPlay();
 	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, this->GetOwner()->GetActorLabel());
+	charMov = this->GetOwner()->GetComponentByClass<UCharacterMovementComponent>();
+	if (charMov)
+	{
+		normalMoveSpeed = charMov->MaxWalkSpeed;
+		//charMov->MaxWalkSpeed /= 10.0f;
+	}
 }
 
 
@@ -40,10 +47,31 @@ void UNeedle_Damage_System::TickComponent(float DeltaTime, ELevelTick TickType, 
 	}
 	if (antiHealCurrentCooldown > 0)
 		antiHealCurrentCooldown -= DeltaTime;
+
 	if (slowDownCurrentCooldown > 0)
+	{
 		slowDownCurrentCooldown -= DeltaTime;
+		if (charMov)
+		{
+			charMov->MaxWalkSpeed = normalMoveSpeed / 2.0f;
+		}
+	}
+	else 
+	{
+		if (charMov)
+		{
+			charMov->MaxWalkSpeed = normalMoveSpeed;
+		}
+	}
+
 	if (stunCurrentCooldown > 0)
+	{
 		stunCurrentCooldown -= DeltaTime;
+		if (charMov)
+		{
+			charMov->MaxWalkSpeed = 0;
+		}
+	}
 }
 
 void UNeedle_Damage_System::Hit(TEnumAsByte<AttackType> type, float damage)

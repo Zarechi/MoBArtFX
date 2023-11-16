@@ -8,6 +8,7 @@
 #include "Components/ActorComponent.h"
 #include "Needle_Damage_System.generated.h"
 
+class UCharacterMovementComponent;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MOBARTFX_API UNeedle_Damage_System : public UActorComponent
@@ -42,4 +43,7 @@ private:
 
 	float poisonDamage = 0;
 	float antiHealCurrentCooldown = 0;
+	float normalMoveSpeed = 0;
+
+	UCharacterMovementComponent* charMov;
 };
