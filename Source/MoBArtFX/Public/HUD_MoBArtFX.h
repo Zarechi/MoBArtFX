@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -30,20 +28,9 @@ class MOBARTFX_API AHUD_MoBArtFX : public AHUD
 {
 	GENERATED_BODY()
 	
-	/* FUNCTIONS */
 public:
 	virtual void BeginPlay() override;
 	
-protected:
-private:
-
-	/* VARIABLES */
-public:
-	//TSubclassOf<UUserWidget> ViewportClass;
-	
 	UPROPERTY(BlueprintReadOnly, Category = Viewport)
 	TObjectPtr<UUserWidget> ViewportInstance;
-	
-protected:
-private:
 };
