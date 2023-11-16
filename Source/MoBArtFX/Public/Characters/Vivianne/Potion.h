@@ -23,11 +23,14 @@ public:
 	APotion();
 
 	UStaticMeshComponent* getMesh() { return potionMesh; }
+	void setHealingAmount(float amount) { healingAmount = amount; }
 
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 protected:
+
+	float healingAmount;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

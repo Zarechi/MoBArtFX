@@ -36,6 +36,7 @@ void APotion::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrim
 	if (spawnedPuddle != nullptr)
 	{
 		spawnedPuddle->setHealing(true);  // Set properties on the spawned puddle
+		spawnedPuddle->setHealingAmount(healingAmount);
 
 		// Finalize the spawning process
 		spawnedPuddle->FinishSpawning(SpawnTransform);

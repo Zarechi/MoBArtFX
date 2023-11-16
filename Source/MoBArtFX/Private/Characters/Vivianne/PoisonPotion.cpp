@@ -36,6 +36,7 @@ void APoisonPotion::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 	if (spawnedPuddle != nullptr)
 	{
 		spawnedPuddle->setHealing(false);  // Set properties on the spawned puddle
+		spawnedPuddle->setPoisonAmount(poisonAmount);
 
 		// Finalize the spawning process
 		spawnedPuddle->FinishSpawning(SpawnTransform);
