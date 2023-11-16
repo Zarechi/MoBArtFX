@@ -13,7 +13,9 @@ void APC_MoBArtFX_King::BeginPlay()
 
 	PlayerCharacterK = Cast<ABaseCharacter_King>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
+	EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
+
+	if (EnhancedInputComponent != nullptr)
 	{
 		EnhancedInputComponent->BindAction(Spell01_Action, ETriggerEvent::Triggered, this, &APC_MoBArtFX_King::Spell01);
 		EnhancedInputComponent->BindAction(Spell01_Action, ETriggerEvent::Completed, this, &APC_MoBArtFX_King::Spell01End);
