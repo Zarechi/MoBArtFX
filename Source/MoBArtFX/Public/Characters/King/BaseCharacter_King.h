@@ -51,6 +51,9 @@ public:
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
+	UFUNCTION()
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -124,5 +127,32 @@ private:
 	// ====================
 	// Ultimate
 	// ====================
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Ulti, meta = (AllowPrivateAccess = "true"))
+	float UltiDuration = 6.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Ulti, meta = (AllowPrivateAccess = "true"))
+	float UltiActivationTime = 0.15f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Ulti, meta = (AllowPrivateAccess = "true"))
+	float UltiRetractationTime = 0.25f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Ulti, meta = (AllowPrivateAccess = "true"))
+	float UltiCooldown = 420.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Ulti, meta = (AllowPrivateAccess = "true"))
+	float LevitationHeight = 100.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Ulti, meta = (AllowPrivateAccess = "true"))
+	float DistancePunch = 100.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Ulti, meta = (AllowPrivateAccess = "true"))
+	float UltiDemage = 90.0f;
+
 	bool UltiIsActive = false;
+	float timerUlti = 0.f;
+	float timerUltiActive = 0.f;
+	float saveGravityScale = 0.f;
+	float saveBrakingFrictionFactor = 0.f;
+
+	void EndUltimate();
 };

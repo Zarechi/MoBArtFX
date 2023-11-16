@@ -74,10 +74,17 @@ void ABaseCharacter_King::Tick(float DeltaTime)
 	timerDefaultAttack -= DeltaTime;
 	timerGodHandBreack -= DeltaTime;
 	timerIronShears -= DeltaTime;
+	timerUlti -= DeltaTime;
+	timerUltiActive -= DeltaTime;
 
 	if (timerIronShears <= 0)
 	{
 		Spell02IsActive = false;
+	}
+
+	if (UltiIsActive && timerUltiActive <= 0)
+	{
+		EndUltimate();
 	}
 }
 
@@ -140,6 +147,37 @@ void ABaseCharacter_King::Spell_02_Implementation()
 
 void ABaseCharacter_King::Ultimate_Implementation()
 {
+	FTimerDelegate Delegate;
+	Delegate.BindLambda([&]()
+		{
+			if (!UltiIsActive)
+			{
+				UltiIsActive = true;
+				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Ultimate"));
+
+				saveGravityScale = GetCharacterMovement()->GravityScale;
+				GetCharacterMovement()->GravityScale = 0.f;
+
+				saveBrakingFrictionFactor = GetCharacterMovement()->BrakingFrictionFactor;
+				GetCharacterMovement()->BrakingFrictionFactor = 0.f;
+
+				GetCapsuleComponent()->AddLocalOffset(FVector(0.f, 0.f, LevitationHeight));
+
+				UltimateLHand->SetVisibility(true);
+				UltimateLHand->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+				UltimateRHand->SetVisibility(true);
+				UltimateRHand->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+				timerUltiActive = UltiDuration;
+			}
+		}
+	);
+
+	if (timerUlti <= 0)
+	{
+		FTimerHandle TimerH;
+		GetWorld()->GetTimerManager().SetTimer(TimerH, Delegate, UltiActivationTime, false);
+	}
 }
 
 void ABaseCharacter_King::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -162,6 +200,10 @@ void ABaseCharacter_King::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor
 	}
 }
 
+void ABaseCharacter_King::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+}
+
 void ABaseCharacter_King::Spell_01End_Implementation()
 {
 	FTimerDelegate Delegate;
@@ -182,4 +224,30 @@ void ABaseCharacter_King::EndGodHand()
 	MeshGodHand->SetVisibility(false);
 	MeshGodHand->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Spell01IsActive = false;
+}
+
+void ABaseCharacter_King::EndUltimate()
+{
+	UltiIsActive = false;
+	FTimerDelegate Delegate;
+	Delegate.BindLambda([&]()
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("EndUltimate"));
+
+			UltimateLHand->SetVisibility(false);
+			UltimateLHand->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			UltimateRHand->SetVisibility(false);
+			UltimateRHand->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+			GetCharacterMovement()->GravityScale = saveGravityScale;
+			GetCharacterMovement()->BrakingFrictionFactor = saveBrakingFrictionFactor;
+
+			GetCapsuleComponent()->AddLocalOffset(FVector(0.f, 0.f, -LevitationHeight));
+
+			timerUlti = UltiCooldown;
+		}
+	);
+
+	FTimerHandle TimerH;
+	GetWorld()->GetTimerManager().SetTimer(TimerH, Delegate, UltiRetractationTime, false);
 }
