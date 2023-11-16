@@ -21,8 +21,7 @@ public:
 	void SetLife(float life);
 	void SetDestination(FVector destination, float yawRotation);
 
-	UFUNCTION(BlueprintCallable)
-	void TakeDamage(float damage);
+	float TakeDamage(const float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 protected:
 	virtual void BeginPlay() override;
