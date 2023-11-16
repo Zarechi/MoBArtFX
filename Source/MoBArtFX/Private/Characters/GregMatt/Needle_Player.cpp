@@ -3,6 +3,7 @@
 
 #include "Characters/GregMatt/Needle_Player.h"
 #include "Characters/GregMatt/Needle.h"
+#include "Characters/GregMatt/Needle_Damage_System.h"
 #include <Kismet/GameplayStatics.h>
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -13,6 +14,19 @@ void ANeedle_Player::BeginPlay()
 	Super::BeginPlay();
 
 	CurrentHealth = MaxHealth;
+
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABaseCharacter::StaticClass(), FoundActors);
+
+	int foundActorCount = FoundActors.Num();
+	for (int i = 0; i < foundActorCount; i++)
+	{
+		UNeedle_Damage_System* Component = NewObject<UNeedle_Damage_System>(FoundActors[i]);
+		FoundActors[i]->AddInstanceComponent(Component);
+		Component->OnComponentCreated();
+		Component->RegisterComponent();
+		FoundActors[i]->RerunConstructionScripts();
+	}
 
 	if (IsAI)
 		return;
@@ -40,7 +54,7 @@ void ANeedle_Player::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 void ANeedle_Player::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (poisonDamage >= 0)
+	/*if (poisonDamage >= 0)
 	{
 		poisonDamage -= DeltaTime * 10;
 		CurrentHealth -= DeltaTime * 10;
@@ -50,7 +64,7 @@ void ANeedle_Player::Tick(float DeltaTime)
 	if (slowDownCurrentCooldown > 0)
 		slowDownCurrentCooldown -= DeltaTime;
 	if (stunCurrentCooldown > 0)
-		stunCurrentCooldown -= DeltaTime;
+		stunCurrentCooldown -= DeltaTime;*/
 	if (dodgeCurrentCooldown > 0)
 		dodgeCurrentCooldown -= DeltaTime;
 
@@ -152,112 +166,112 @@ void ANeedle_Player::Death_Implementation()
 
 void ANeedle_Player::Hit(TEnumAsByte<AttackType> type, float damage)
 {
-	int maxStack = 5;
-	int stackCount = needleStack.Num();
-	int stackCountForMultiplier = stackCount % maxStack;
+	//int maxStack = 5;
+	//int stackCount = needleStack.Num();
+	//int stackCountForMultiplier = stackCount % maxStack;
 
-	//GEngine->AddOnScreenDebugMessage(-1, 6.0f, FColor::Yellow, TEXT("stackCount: ") + FString::FromInt(stackCount));
-	//GEngine->AddOnScreenDebugMessage(-1, 6.0f, FColor::Yellow, TEXT("stackCountForMultiplier: ") + FString::FromInt(stackCountForMultiplier));
-	//GEngine->AddOnScreenDebugMessage(-1, 6.0f, FColor::Yellow, TEXT("damage avant: ") + FString::Printf(TEXT("%f"), damage));
-	if (stackCount <= maxStack)
-	{
-		damage = damage + damage * 0.050f * stackCount;
-	}
-	//GEngine->AddOnScreenDebugMessage(-1, 6.0f, FColor::Yellow, TEXT("damage apres: ") + FString::Printf(TEXT("%f"), damage));
-	float damageMultiplied = damage;
-	if (stackCount >= maxStack && stackCount != 9)
-	{
-		damageMultiplied = damageMultiplied * (1.15f + 0.025f * stackCountForMultiplier);
-	}
-
-	//GEngine->AddOnScreenDebugMessage(-1, 6.0f, FColor::Yellow, TEXT("damage final: ") + FString::Printf(TEXT("%f"), damageMultiplied));
-	// Add the attack to stack if the stack is empty or if the current stack is the same type of the attack or if the max stack if reached
-	if (stackCount == 0 || needleStack[stackCount - 1] == type || stackCount == maxStack)
-	{
-		needleStack.Add(type);
-		stackCount++;
-	}
-	else // Or reset stack
-	{
-		needleStack.Empty();
-		stackCount = 0;
-	}
-
-	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("stackCount: ") + FString::FromInt(stackCount));
-	if (stackCount == maxStack)
-	{
-		if (needleStack[0] == AttackType::Fire)
-		{
-			CurrentHealth -= 150;
-			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Done: Apply Fire effet"));
-		}
-		else if (needleStack[0] == AttackType::Poison)
-		{
-			poisonDamage = 215;
-			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Done: Apply Poison effet"));
-		}
-		else if (needleStack[0] == AttackType::AntiHeal)
-		{
-			antiHealCurrentCooldown = 4;
-			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Done: Apply AntiHeal effet"));
-		}
-		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Apply stack effet"));
-	}
-	else if (stackCount == maxStack * 2)
-	{
-		if (needleStack[0] == AttackType::Fire && needleStack[maxStack] == AttackType::Poison ||
-			needleStack[0] == AttackType::Poison && needleStack[maxStack] == AttackType::Fire)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Not done: Crée une explosion Rapide damage flat"));
-			//Crée une explosion Rapide damage flat
-		}
-		else if (needleStack[0] == AttackType::Fire && needleStack[maxStack] == AttackType::AntiHeal ||
-			needleStack[0] == AttackType::AntiHeal && needleStack[maxStack] == AttackType::Fire)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Not done: Applique une zone de fournaise qui applique des dégâts par intervalles aux personnages qui entrent dedans."));
-			// Applique une zone de fournaise qui applique des dégâts par intervalles aux personnages qui entrent dedans.
-		}
-		else if (needleStack[0] == AttackType::AntiHeal && needleStack[maxStack] == AttackType::Poison ||
-			needleStack[0] == AttackType::Poison && needleStack[maxStack] == AttackType::AntiHeal)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Not done: Crée un nuage, qui gêne fortement la vision avec la forme d’un mur qui applique cet effet sur la durée donc anti heal + poison"));
-			// Crée un nuage, qui gêne fortement la vision avec la forme d’un mur qui applique cet effet sur la durée donc anti heal + poison
-		}
-		else
-		{
-			needleStack.Empty();
-		}
-	}
-
-	if (stackCount != 10)
-		CurrentHealth -= damageMultiplied;
-
-	//GEngine->AddOnScreenDebugMessage(-1, 6.0f, FColor::Yellow, TEXT("New player health: ") + FString::FromInt(CurrentHealth));
-
-	if (CurrentHealth <= 0 && IsAI)
-	{
-		Destroy();
-	}
-
-	//if (!IsAI)
+	////GEngine->AddOnScreenDebugMessage(-1, 6.0f, FColor::Yellow, TEXT("stackCount: ") + FString::FromInt(stackCount));
+	////GEngine->AddOnScreenDebugMessage(-1, 6.0f, FColor::Yellow, TEXT("stackCountForMultiplier: ") + FString::FromInt(stackCountForMultiplier));
+	////GEngine->AddOnScreenDebugMessage(-1, 6.0f, FColor::Yellow, TEXT("damage avant: ") + FString::Printf(TEXT("%f"), damage));
+	//if (stackCount <= maxStack)
 	//{
-	//	AMobaHUD* playerHUD;
-	//	playerHUD = Cast<AMobaHUD>(GetPlayerState()->GetPlayerController()->GetHUD());
-	//	playerHUD->OnGetHit();
-	//	playerHUD->UpdateWidgetHealth(CurrentHealth);
+	//	damage = damage + damage * 0.050f * stackCount;
 	//}
-	//else
-	//	UpdateAIHealth(CurrentHealth);
+	////GEngine->AddOnScreenDebugMessage(-1, 6.0f, FColor::Yellow, TEXT("damage apres: ") + FString::Printf(TEXT("%f"), damage));
+	//float damageMultiplied = damage;
+	//if (stackCount >= maxStack && stackCount != 9)
+	//{
+	//	damageMultiplied = damageMultiplied * (1.15f + 0.025f * stackCountForMultiplier);
+	//}
+
+	////GEngine->AddOnScreenDebugMessage(-1, 6.0f, FColor::Yellow, TEXT("damage final: ") + FString::Printf(TEXT("%f"), damageMultiplied));
+	//// Add the attack to stack if the stack is empty or if the current stack is the same type of the attack or if the max stack if reached
+	//if (stackCount == 0 || needleStack[stackCount - 1] == type || stackCount == maxStack)
+	//{
+	//	needleStack.Add(type);
+	//	stackCount++;
+	//}
+	//else // Or reset stack
+	//{
+	//	needleStack.Empty();
+	//	stackCount = 0;
+	//}
+
+	////GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("stackCount: ") + FString::FromInt(stackCount));
+	//if (stackCount == maxStack)
+	//{
+	//	if (needleStack[0] == AttackType::Fire)
+	//	{
+	//		CurrentHealth -= 150;
+	//		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Done: Apply Fire effet"));
+	//	}
+	//	else if (needleStack[0] == AttackType::Poison)
+	//	{
+	//		poisonDamage = 215;
+	//		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Done: Apply Poison effet"));
+	//	}
+	//	else if (needleStack[0] == AttackType::AntiHeal)
+	//	{
+	//		antiHealCurrentCooldown = 4;
+	//		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Done: Apply AntiHeal effet"));
+	//	}
+	//	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Apply stack effet"));
+	//}
+	//else if (stackCount == maxStack * 2)
+	//{
+	//	if (needleStack[0] == AttackType::Fire && needleStack[maxStack] == AttackType::Poison ||
+	//		needleStack[0] == AttackType::Poison && needleStack[maxStack] == AttackType::Fire)
+	//	{
+	//		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Not done: Crée une explosion Rapide damage flat"));
+	//		//Crée une explosion Rapide damage flat
+	//	}
+	//	else if (needleStack[0] == AttackType::Fire && needleStack[maxStack] == AttackType::AntiHeal ||
+	//		needleStack[0] == AttackType::AntiHeal && needleStack[maxStack] == AttackType::Fire)
+	//	{
+	//		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Not done: Applique une zone de fournaise qui applique des dégâts par intervalles aux personnages qui entrent dedans."));
+	//		// Applique une zone de fournaise qui applique des dégâts par intervalles aux personnages qui entrent dedans.
+	//	}
+	//	else if (needleStack[0] == AttackType::AntiHeal && needleStack[maxStack] == AttackType::Poison ||
+	//		needleStack[0] == AttackType::Poison && needleStack[maxStack] == AttackType::AntiHeal)
+	//	{
+	//		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Not done: Crée un nuage, qui gêne fortement la vision avec la forme d’un mur qui applique cet effet sur la durée donc anti heal + poison"));
+	//		// Crée un nuage, qui gêne fortement la vision avec la forme d’un mur qui applique cet effet sur la durée donc anti heal + poison
+	//	}
+	//	else
+	//	{
+	//		needleStack.Empty();
+	//	}
+	//}
+
+	//if (stackCount != 10)
+	//	CurrentHealth -= damageMultiplied;
+
+	////GEngine->AddOnScreenDebugMessage(-1, 6.0f, FColor::Yellow, TEXT("New player health: ") + FString::FromInt(CurrentHealth));
+
+	//if (CurrentHealth <= 0 && IsAI)
+	//{
+	//	Destroy();
+	//}
+
+	////if (!IsAI)
+	////{
+	////	AMobaHUD* playerHUD;
+	////	playerHUD = Cast<AMobaHUD>(GetPlayerState()->GetPlayerController()->GetHUD());
+	////	playerHUD->OnGetHit();
+	////	playerHUD->UpdateWidgetHealth(CurrentHealth);
+	////}
+	////else
+	////	UpdateAIHealth(CurrentHealth);
 }
 
 void ANeedle_Player::SkillShotHit()
 {
-	slowDownCurrentCooldown = SlownessDelay;
-	int stackCount = needleStack.Num();
-	if (stackCount == 5)
-	{
-		stunCurrentCooldown = StunDelay;
-	}
+	//slowDownCurrentCooldown = SlownessDelay;
+	//int stackCount = needleStack.Num();
+	//if (stackCount == 5)
+	//{
+	//	stunCurrentCooldown = StunDelay;
+	//}
 }
 
 void ANeedle_Player::ShootProjectile(int attType)
@@ -274,9 +288,12 @@ void ANeedle_Player::ShootProjectile(int attType)
 		if (IsValid(proj))
 		{
 			ANeedle* needle = (ANeedle*)proj;
+			needle->Player = this;
+
 			needle->Damage = NeedleBaseDamage;
 			needle->Type = CurrentAttackType;
-			needle->Player = this;
+			needle->SlownessDelay = SlownessDelay;
+			needle->StunDelay = StunDelay;
 			if (attType == 1)
 			{
 				needle->IsSkillShot = true;

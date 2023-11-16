@@ -62,24 +62,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Player, meta = (AllowPrivateAccess = "true"))
 	float DodgeImpulsionDelay = 0.25f;
 
-	float poisonDamage = 0;
-	float antiHealCurrentCooldown = 0;
-	float slowDownCurrentCooldown = 0;
-	float stunCurrentCooldown = 0;
 	float dodgeCurrentCooldown = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attack", meta = (AllowPrivateAccess = "true"))
 	TArray <TEnumAsByte<AttackType>> needleStack;
-
-	/*UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attack", meta = (AllowPrivateAccess = "true"))
-	TArray <TEnumAsByte<AttackType>> needleStack;
-
-	AMobaRtFxCharacter();
-	UFUNCTION(BlueprintCallable)
-	void Hit(TEnumAsByte<AttackType> type, float damage);*/
-
-	//UFUNCTION(BlueprintCallable)
-	//void SkillShotHit();
 
 	//UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	//void UpdateAIHealth(float health);

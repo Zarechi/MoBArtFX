@@ -38,4 +38,10 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
 	bool IsTeleport;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
+	float SlownessDelay = 2.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
+	float StunDelay = 1.0f;
 };
