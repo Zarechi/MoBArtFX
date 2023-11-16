@@ -8,6 +8,7 @@
 #include "GameFramework/Actor.h"
 #include "PotionPuddle.generated.h"
 
+
 UCLASS()
 class MOBARTFX_API APotionPuddle : public AActor
 {
@@ -28,6 +29,8 @@ public:
 
 	UStaticMeshComponent* getMesh() { return puddleMesh; }
 	void setHealing(bool healingP);
+	void setHealingAmount(float amount) { healingAmount = amount; }
+	void setPoisonAmount(float amount) { poisonAmount = amount; }
 
 	UFUNCTION()
 	void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -36,6 +39,9 @@ public:
 protected:
 	float puddleTimer;
 	bool healing;
+
+	float healingAmount;
+	float poisonAmount;
 ;
 
 	// Called when the game starts or when spawned

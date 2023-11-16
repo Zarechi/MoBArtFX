@@ -60,7 +60,7 @@ public:
 	void Tick(float DeltaTime) override;
 
 	// Potion attacks
-	void Potion(bool healing);
+	void Potion(bool healing, float amount);
 
 	// Sprint
 	void Sprint();

@@ -18,7 +18,7 @@ void AVivianne::BeginPlay()
 	Super::BeginPlay();
 
 	infos = Cast<UVivianneInfos>(GetPlayerDatas());
-	if (infos.IsNull()) GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.0f, FColor::Red, "ça marche pa");
+	if (infos.IsNull()) GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.0f, FColor::Red, "info not initialized");
 	GetCharacterMovement()->MaxWalkSpeed = infos->MaxWalkSpeed;
 }
 
@@ -88,12 +88,12 @@ void AVivianne::Death_Implementation()
 
 void AVivianne::AutoAttack_Implementation()
 {
-	Potion(true);
+	Potion(true, infos->healingAmount);
 }
 
 void AVivianne::Spell_01_Implementation()
 {
-	Potion(false);
+	Potion(false, infos->poisonAmount);
 }
 
 void AVivianne::Spell_02_Implementation()
@@ -112,9 +112,8 @@ void AVivianne::Reload_Implementation()
 
 
 
-void AVivianne::Potion(bool healing)
+void AVivianne::Potion(bool healing, float amount)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("yes"));
 	APlayerCameraManager* playerCamera = GetWorld()->GetFirstPlayerController() ? GetWorld()->GetFirstPlayerController()->PlayerCameraManager : nullptr;
 
 
@@ -123,6 +122,7 @@ void AVivianne::Potion(bool healing)
 
 	FVector Location = GetActorLocation() + (viewDirection * distanceInFront);
 	FRotator Rotation(0.0f, 0.0f, 0.0f);
+	FTransform SpawnTransform(Rotation, Location);
 	FActorSpawnParameters SpawnInfo;
 
 	float forwardImpulseIntensity = 500.0f;
@@ -135,15 +135,19 @@ void AVivianne::Potion(bool healing)
 		{
 			healThrowable = false;
 			healCooldown = infos->AutoAttack_CD;
-			APotion* spawnedPotion = GetWorld()->SpawnActor<APotion>(potionClass, Location, Rotation, SpawnInfo);
-			if (spawnedPotion && spawnedPotion->getMesh())
+			APotion* spawnedPotion = GetWorld()->SpawnActorDeferred<APotion>(
+				potionClass,
+				SpawnTransform
+			);
+
+			if (spawnedPotion != nullptr)
 			{
-				spawnedPotion->getMesh()->AddImpulse(totalImpulse, NAME_None, true);
+				spawnedPotion->setHealingAmount(infos->healingAmount);  // Set properties on the spawned puddle
+
+				// Finalize the spawning process
+				spawnedPotion->FinishSpawning(SpawnTransform);
 			}
-		}
-		else
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("heal on cooldown"));
+			spawnedPotion->getMesh()->AddImpulse(totalImpulse, NAME_None, true);
 		}
 	}
 	else
@@ -152,15 +156,19 @@ void AVivianne::Potion(bool healing)
 		{
 			poisonThrowable = false;
 			poisonCooldown = infos->Spell01_CD;
-			APoisonPotion* spawnedPotion = GetWorld()->SpawnActor<APoisonPotion>(poisonPotionClass, Location, Rotation, SpawnInfo);
-			if (spawnedPotion && spawnedPotion->getMesh())
+			APoisonPotion* spawnedPotion = GetWorld()->SpawnActorDeferred<APoisonPotion>(
+				poisonPotionClass,
+				SpawnTransform
+			);
+
+			if (spawnedPotion != nullptr)
 			{
-				spawnedPotion->getMesh()->AddImpulse(totalImpulse, NAME_None, true);
+				spawnedPotion->setPoisonAmount(infos->poisonAmount);  // Set properties on the spawned puddle
+
+				// Finalize the spawning process
+				spawnedPotion->FinishSpawning(SpawnTransform);
 			}
-		}
-		else
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("poison on cooldown"));
+			spawnedPotion->getMesh()->AddImpulse(totalImpulse, NAME_None, true);
 		}
 	}
 }
@@ -170,7 +178,7 @@ void AVivianne::Sprint()
 {
 	if (sprintReady)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("sirpnt"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("sprint"));
 		sprintDuration = infos->sprintDuration;
 		sprintCooldown = infos->Spell02_CD;
 		GetCharacterMovement()->MaxWalkSpeed = infos->sprintSpeed;
@@ -210,9 +218,5 @@ void AVivianne::Ultimate()
 			spawnedCauldron->getMesh()->GetBodyInstance()->bLockXRotation = true;
 			spawnedCauldron->getMesh()->GetBodyInstance()->bLockYRotation = true;
 		}
-	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("ult on cooldown"));
 	}
 }

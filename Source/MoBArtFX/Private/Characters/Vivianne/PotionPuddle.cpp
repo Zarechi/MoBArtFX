@@ -3,6 +3,7 @@
 
 
 #include "Characters/Vivianne/PotionPuddle.h"
+#include "Engine/DamageEvents.h"
 
 // Sets default values
 APotionPuddle::APotionPuddle()
@@ -44,12 +45,15 @@ void APotionPuddle::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 
     if (healing)
     {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("healing player"));
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, "healing player for : " + FString::SanitizeFloat(healingAmount));
+        // Handle healing
+        OtherActor->TakeDamage(-healingAmount, FDamageEvent{}, nullptr, this);
     }
     else
     {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("damaging player"));
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, "damaging player for : " +  FString::SanitizeFloat(poisonAmount));
         // Handle poison
+        OtherActor->TakeDamage(poisonAmount, FDamageEvent{}, nullptr, this);
     }
     
 }
