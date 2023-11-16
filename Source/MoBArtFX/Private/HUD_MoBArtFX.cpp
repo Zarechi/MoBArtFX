@@ -1,17 +1,17 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "HUD_MoBArtFX.h"
 
 #include "PS_MoBArtFX.h"
+#include "BaseCharacter.h"
 #include "Blueprint/UserWidget.h"
 
 void AHUD_MoBArtFX::BeginPlay()
 {
 	Super::BeginPlay();
 
-	TSubclassOf<UUserWidget> const ViewportClass = Cast<APS_MoBArtFX>(GetOwningPlayerController()->PlayerState)->PlayerDatas->ViewportClass;
+	auto controller = GetOwningPlayerController();
+	auto character = CastChecked<ABaseCharacter>( controller->GetPawn() );
+	auto data = character->GetPlayerDatas();
 	
-	ViewportInstance = CreateWidget<>(GetOwningPlayerController(), ViewportClass, FName("Viewport"));
-	ViewportInstance->AddToPlayerScreen();	
+	ViewportInstance = CreateWidget<>( controller, data->ViewportClass, FName( "Viewport" ) );
+	ViewportInstance->AddToPlayerScreen();
 }

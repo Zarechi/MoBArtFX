@@ -26,10 +26,18 @@ public:
 	int32 CurrentAmmo;
 
 	/** Character parameters */
+	UPROPERTY( BlueprintReadOnly, EditDefaultsOnly, Category = "Character" )
+	FString Name = "N/A";
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Character")
 	TObjectPtr<UMaterialInstance> CharacterMat;
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Character|Speed")
-	float MaxWalkSpeed = 700.f;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Character|Movement")
+	float MaxWalkSpeed = 600.0f;
+	UPROPERTY( BlueprintReadOnly, EditDefaultsOnly, Category = "Character|Movement" )
+	float JumpVelocity = 420.0f;
+	UPROPERTY( BlueprintReadOnly, EditDefaultsOnly, Category = "Character|Movement" )
+	float AirControl = 0.05f;
+
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Character|Health")
 	int32 MaxHealth = 1500;
 	UPROPERTY(BlueprintReadWrite, Category="Character|Health", meta=(EditCondition=false))

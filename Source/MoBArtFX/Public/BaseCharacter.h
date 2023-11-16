@@ -15,9 +15,6 @@ class MOBARTFX_API ABaseCharacter : public ACharacter
 public:
 	ABaseCharacter();
 
-	virtual void Tick(float DeltaTime) override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 	// Attacks
 	UFUNCTION( BlueprintNativeEvent, BlueprintCallable )
 	void AutoAttack();
@@ -35,6 +32,7 @@ public:
 	void Death();
 
 	// PlayerDatas
+	void SetPlayerDatas( UPlayerInfos* data );
 	UFUNCTION( BlueprintCallable, BlueprintPure )
 	UPlayerInfos* GetPlayerDatas();
 
@@ -45,6 +43,12 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void Tick( float DeltaTime ) override;
+	virtual void SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent ) override;
+	
 	//float TakeDamage(const float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	
+	virtual void SetupData( UPlayerInfos* data );
 
+	TObjectPtr<APS_MoBArtFX> PlayerState;
 };

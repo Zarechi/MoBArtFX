@@ -1,49 +1,80 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "BaseCharacter.h"
 #include "Engine/DamageEvents.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
-// Sets default values
+#include "Defines.h"
+
 ABaseCharacter::ABaseCharacter()
 {
-	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-// Called when the game starts or when spawned
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	//  get player state
+	PlayerState = GetPlayerState<APS_MoBArtFX>();
+	
+	//  setup data
+	SetPlayerDatas( GetPlayerDatas() );
+}
+
+void ABaseCharacter::SetPlayerDatas( UPlayerInfos* data )
+{
+	PlayerState->PlayerDatas = data;
+
+	if ( data == nullptr )
+	{
+		kPRINT_ERROR( "A BaseCharacter doesn't have a PlayerInfos data asset!" );
+		return;
+	}
+
+	SetupData( data );
 }
 
 UPlayerInfos* ABaseCharacter::GetPlayerDatas()
 {
-	if (GetPlayerState<APlayerState>())
+	//  ensure PlayerState has been retrieved
+	if ( !HasActorBegunPlay() )
 	{
-		return GetPlayerState<APS_MoBArtFX>()->PlayerDatas;
-	}
-	else
-	{
-		if(DebugPlayerInfos)
-			return DebugPlayerInfos;
+		DispatchBeginPlay();
 	}
 
-	UE_LOG(LogTemp, Error, TEXT("Can't find PlayerDatas"));
+	//  get player state
+	if ( IsValid( PlayerState ) ) return PlayerState->PlayerDatas;
 
+	//  get debug data
+	if ( DebugPlayerInfos )
+	{
+		return DebugPlayerInfos;
+	}
+
+	UE_LOG( LogTemp, Error, TEXT( "Can't find PlayerDatas" ) );
 	return nullptr;
 }
 
-// Called every frame
 void ABaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-// Called to bind functionality to input
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+void ABaseCharacter::SetupData( UPlayerInfos* data )
+{
+	auto movement = GetCharacterMovement();
+	if ( ensureMsgf( IsValid( movement ), TEXT( "Movement Component couldn't be retrieved!" ) ) )
+	{
+		movement->MaxWalkSpeed = data->MaxWalkSpeed;
+		movement->JumpZVelocity = data->JumpVelocity;
+		movement->AirControl = data->AirControl;
+	}
+
+	kLOG_ARGS( TEXT( "Character '%s' data has been setup" ), *data->Name );
 }
 
 void ABaseCharacter::AutoAttack_Implementation()
