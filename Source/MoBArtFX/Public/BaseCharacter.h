@@ -19,28 +19,28 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	// Attacks
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UFUNCTION( BlueprintNativeEvent, BlueprintCallable )
 	void AutoAttack();
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UFUNCTION( BlueprintNativeEvent, BlueprintCallable )
 	void Reload();
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UFUNCTION( BlueprintNativeEvent, BlueprintCallable )
 	void Spell_01();
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UFUNCTION( BlueprintNativeEvent, BlueprintCallable )
 	void Spell_02();
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UFUNCTION( BlueprintNativeEvent, BlueprintCallable )
 	void Ultimate();
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UFUNCTION( BlueprintNativeEvent, BlueprintCallable )
 	void Death();
 
 	// PlayerDatas
-	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UFUNCTION( BlueprintCallable, BlueprintPure )
 	UPlayerInfos* GetPlayerDatas();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY( EditDefaultsOnly, BlueprintReadOnly )
 	TSoftClassPtr<UPlayerInfos> DebugPlayerInfosAsset;
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY( BlueprintReadWrite )
 	TObjectPtr<UPlayerInfos> DebugPlayerInfos;
 
 protected:
