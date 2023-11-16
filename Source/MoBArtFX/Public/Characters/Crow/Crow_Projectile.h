@@ -32,7 +32,7 @@ private:
 
 	// Projectile Shape
 	UPROPERTY(VisibleAnywhere, Category = "Components")
-	class UStaticMeshComponent* SphereMesh;
+	class UStaticMeshComponent* FeatherMesh;
 
 	// Projectile Speed
 	UPROPERTY(EditAnywhere, Category = "Projectile")

@@ -6,29 +6,29 @@ ACrow_Projectile::ACrow_Projectile()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Create shape of the projectile
-	SphereMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SphereMesh"));
-	RootComponent = SphereMesh;
+	FeatherMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FeatherMesh"));
+	RootComponent = FeatherMesh;
 
 	// Create static mesh for projectile
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> DefaultSphereMesh(TEXT("StaticMesh'/Engine/BasicShapes/Sphere.Sphere'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> DefaultSphereMesh(TEXT("Content/Characters/Crow/Models/ST_Plume"));
 	if (DefaultSphereMesh.Succeeded())
 	{
-		SphereMesh->SetStaticMesh(DefaultSphereMesh.Object);
+		FeatherMesh->SetStaticMesh(DefaultSphereMesh.Object);
 	}
 
 	// Configure material
-	static ConstructorHelpers::FObjectFinder<UMaterial> ProjectileMaterial(TEXT("Content/Materials/MT_Projectile"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> ProjectileMaterial(TEXT("Content/Characters/Crow/Models/lambert2"));
 	if (ProjectileMaterial.Succeeded())
 	{
-		SphereMesh->SetMaterial(0, ProjectileMaterial.Object);
+		FeatherMesh->SetMaterial(0, ProjectileMaterial.Object);
 	}
 
 	//PARAMETERS BY DEFAULT
 	ProjectileSpeed = 2000.0f;
 	ProjectileLifetime = 10.0f;
-	ProjectileSize = FVector(1.0f, 0.05f, 0.05f);
+	ProjectileSize = FVector(1.0f, 1.0f, 1.0f);
 
-	SphereMesh->SetWorldScale3D(ProjectileSize);
+	FeatherMesh->SetWorldScale3D(ProjectileSize);
 
 }
 
