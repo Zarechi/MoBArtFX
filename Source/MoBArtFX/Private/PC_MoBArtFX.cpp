@@ -1,8 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "PC_MoBArtFX.h"
-#include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
 #include "HUD_MoBArtFX.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
@@ -16,43 +14,79 @@ void APC_MoBArtFX::BeginPlay()
 
 	UWidgetBlueprintLibrary::SetInputMode_GameOnly(this);
 	
-	PlayerCharacter = Cast<ABaseCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	//  cast base character
+	PlayerCharacter = Cast<ABaseCharacter>( GetPawn() );
 	
+	//  setup mapping context
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		Subsystem->AddMappingContext(IMC_DefaultPlayer, 0);
 	}
 	
-	// Set up action bindings
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
-	{			
-		//Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &APC_MoBArtFX::StopJump);
+	//  set up action bindings
+	EnhancedInputComponent = CastChecked<UEnhancedInputComponent>( InputComponent );
+	BindActions();
+}
 
-		//Moving
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Move);
+void APC_MoBArtFX::BindActions()
+{
+	BindMovementActions();
+	BindAbilitiesActions();
+}
 
-		//Looking
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Look);
+void APC_MoBArtFX::BindMovementActions()
+{
+	//Jumping
+	EnhancedInputComponent->BindAction( JumpAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Jump );
+	EnhancedInputComponent->BindAction( JumpAction, ETriggerEvent::Completed, this, &APC_MoBArtFX::StopJump );
 
-		//Attacks
-		EnhancedInputComponent->BindAction(AutoAttackAction, ETriggerEvent::Completed, this, &APC_MoBArtFX::AutoAttack);
-		EnhancedInputComponent->BindAction(Spell01_Action, ETriggerEvent::Completed, this, &APC_MoBArtFX::Spell01);
-		EnhancedInputComponent->BindAction(Spell02_Action, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Spell02);
-		EnhancedInputComponent->BindAction(UltimateAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Ultimate);
-	}
-	
-	
+	//Moving
+	EnhancedInputComponent->BindAction( MoveAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Move );
+
+	//Looking
+	EnhancedInputComponent->BindAction( LookAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Look );
+}
+
+void APC_MoBArtFX::BindAbilitiesActions()
+{
+	//Attacks
+	EnhancedInputComponent->BindAction( AutoAttackAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::AutoAttack );
+	EnhancedInputComponent->BindAction( Spell01_Action, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Spell01 );
+	EnhancedInputComponent->BindAction( Spell02_Action, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Spell02 );
+	EnhancedInputComponent->BindAction( UltimateAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Ultimate );
+}
+
+bool APC_MoBArtFX::CameraTraceSingleByChannel( FHitResult& out, float distance, ECollisionChannel collision_channel, const FCollisionQueryParams& params, const FCollisionResponseParams& response_param )
+{
+	FVector trace_start, trace_end;
+	GetCameraTraceBounds( trace_start, trace_end, distance );
+
+	return GetWorld()->LineTraceSingleByChannel(
+		out,
+		trace_start,
+		trace_end,
+		collision_channel,
+		params,
+		response_param
+	);
+}
+
+void APC_MoBArtFX::GetCameraTraceBounds( FVector& start, FVector& end, float distance )
+{
+	start = PlayerCameraManager->GetCameraLocation();
+	end = start + PlayerCameraManager->GetActorForwardVector() * distance;
 }
 
 void APC_MoBArtFX::Move(const FInputActionValue& Value)
 {
+	FRotator rotation = GetControlRotation();
+	rotation.Pitch = 0.0f;
+
 	// Forward Movement
-	PlayerCharacter->AddMovementInput(UKismetMathLibrary::GetForwardVector(GetControlRotation()), Value.Get<FVector2D>().X);
+	PlayerCharacter->AddMovementInput(UKismetMathLibrary::GetForwardVector(rotation), Value.Get<FVector2D>().X);
 	
 	// Right Movement
-	PlayerCharacter->AddMovementInput(UKismetMathLibrary::GetRightVector(GetControlRotation()), Value.Get<FVector2D>().Y);
+	PlayerCharacter->AddMovementInput(UKismetMathLibrary::GetRightVector(rotation), Value.Get<FVector2D>().Y);
 }
 
 void APC_MoBArtFX::Look(const FInputActionValue& Value)
