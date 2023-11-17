@@ -32,16 +32,17 @@ public:
 	float LastUsedAATime;
 	float LastUsedSpell01Time;
 	float LastUsedSpell02Time;
-	float RemainingCooldown;
 	float CastingTime;
 	float AngleBetweenProjectiles;
 
+	// Redemption Feather
+	bool bRecoilApplied;
 
 	// Scarecrow Breeze
 	bool bIsGliding;
 	float GlideStartTime;
 
-	//AUTO ATTACK 
+	// AUTO ATTACK 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Auto Attack Setting")
 	float AACD;
@@ -72,9 +73,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Redemption Feather Setting")
 	float DistanceFromChara;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Redemption Feather Setting")
-	bool bRecoilApplied;
-
 	// SCARECROW BREEZE
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Scarecrow Breeze Settings")
@@ -87,9 +85,6 @@ public:
 	float JumpZVelocity;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Scarecrow Breeze Settings")
-	float AltitudeLossRate;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Scarecrow Breeze Settings")
 	float GlideAirControl;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Scarecrow Breeze Settings")
@@ -97,6 +92,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Scarecrow Breeze Settings")
 	float DefaultGravity;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Scarecrow Breeze Settings")
+	bool bInfiniteGlideDuration;
 
 	// Class of the sphere projectile
 	TSubclassOf<class ACrow_Projectile> ProjectileClass;

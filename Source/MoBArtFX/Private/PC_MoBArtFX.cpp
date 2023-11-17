@@ -50,10 +50,10 @@ void APC_MoBArtFX::BindMovementActions()
 void APC_MoBArtFX::BindAbilitiesActions()
 {
 	//Attacks
-	EnhancedInputComponent->BindAction( AutoAttackAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::AutoAttack );
-	EnhancedInputComponent->BindAction( Spell01_Action, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Spell01 );
-	EnhancedInputComponent->BindAction( Spell02_Action, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Spell02 );
-	EnhancedInputComponent->BindAction( UltimateAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Ultimate );
+	EnhancedInputComponent->BindAction( AutoAttackAction, ETriggerEvent::Completed, this, &APC_MoBArtFX::AutoAttack );
+	EnhancedInputComponent->BindAction( Spell01_Action, ETriggerEvent::Completed, this, &APC_MoBArtFX::Spell01 );
+	EnhancedInputComponent->BindAction( Spell02_Action, ETriggerEvent::Completed, this, &APC_MoBArtFX::Spell02 );
+	EnhancedInputComponent->BindAction( UltimateAction, ETriggerEvent::Completed, this, &APC_MoBArtFX::Ultimate );
 }
 
 bool APC_MoBArtFX::CameraTraceSingleByChannel( FHitResult& out, float distance, ECollisionChannel collision_channel, const FCollisionQueryParams& params, const FCollisionResponseParams& response_param )

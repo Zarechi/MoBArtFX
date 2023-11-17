@@ -26,10 +26,9 @@ ACharacterCrow::ACharacterCrow()
     DistanceFromChara = 200.0f;
 
     // Default Params for Scarecrow Breeze
-    ScarecrowBreezeCD = 1.0f;
-    GlideDuration = 3.0f;
+    ScarecrowBreezeCD = 15.0f;
+    GlideDuration = 10.0f;
     JumpZVelocity = 2000.0f;
-    AltitudeLossRate = 500.0f;
     GlideAirControl = 1.0f;
     DefaultAirControl = 0.3f;
     DefaultGravity = 1.0f;
@@ -38,7 +37,6 @@ ACharacterCrow::ACharacterCrow()
     LastUsedAATime = -AACD;
     LastUsedSpell01Time = -RedemptionFeatherCD;
     LastUsedSpell02Time = -ScarecrowBreezeCD;
-    RemainingCooldown = 0.0f;
 }
 
 void ACharacterCrow::BeginPlay()
@@ -169,8 +167,6 @@ void ACharacterCrow::Spell_01_Implementation()
                     AActor* HitActor = HitResult.GetActor();
                     GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, TEXT("Redemption Feather"));
                     GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, FString::Printf(TEXT("Hit: %s, Recoil Applied"), *HitActor->GetName()));
-
-                    // Sortez de la boucle après avoir appliqué le recul une fois
                     break;
                 }
             }
@@ -187,8 +183,14 @@ void ACharacterCrow::Spell_01_Implementation()
 
 void ACharacterCrow::Spell_02_Implementation()
 {
-    if (CanUseGlideAbility())
+    // Verify if the ability is available
+    const float CurrentTime = GetWorld()->GetTimeSeconds();
+    UE_LOG(LogTemp, Warning, TEXT("CurrentTime: %f, LastUsedSpell02Time: %f, ScarecrowBreezeCD: %f"), CurrentTime, LastUsedSpell02Time, ScarecrowBreezeCD);
+
+    if (CurrentTime - LastUsedSpell02Time >= ScarecrowBreezeCD)
     {
+        LastUsedSpell02Time = CurrentTime;
+
         // Start Jump
         LaunchCharacter(FVector(0.0f, 0.0f, JumpZVelocity), false, false);
 
@@ -198,13 +200,10 @@ void ACharacterCrow::Spell_02_Implementation()
 
         // Params glide controls
         GetCharacterMovement()->AirControl = GlideAirControl;
-
-        // MUpdate last time utilization
-        LastUsedSpell02Time = GetWorld()->GetTimeSeconds();
     }
     else
     {
-        // Capacity in cooldown
+        // Ability in cooldown
         GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Purple, TEXT("Glide ability is on cooldown"));
     }
 }
@@ -215,35 +214,41 @@ void ACharacterCrow::UpdateGlide()
     {
         float ElapsedTime = GetWorld()->GetTimeSeconds() - GlideStartTime;
 
-        if (ElapsedTime < GlideDuration)
+        if (bInfiniteGlideDuration || (ElapsedTime < GlideDuration))
         {
-            // Calculate loss altitude
-            FVector NewLocation = GetActorLocation();
-            NewLocation.Z -= AltitudeLossRate * GetWorld()->GetDeltaSeconds();
-
             // Apply new control in air
-            GetCharacterMovement()->AddInputVector(GetPendingMovementInputVector() * GlideAirControl);
+            FVector HorizontalMovement = FVector(GetPendingMovementInputVector().X, GetPendingMovementInputVector().Y, 0.0f);
+            GetCharacterMovement()->AddInputVector(HorizontalMovement * GlideAirControl);
 
-            // Update Character position
-            SetActorLocation(NewLocation, true);
+            // Check if the character has reached the highest point of the jump
+            if (GetVelocity().Z < 0.0f)
+            {
+                // Disable gravity for a smoother horizontal glide
+                GetCharacterMovement()->GravityScale = 0.0f;
+            }
+            else
+            {
+                // Enable gravity when the character starts descending
+                GetCharacterMovement()->GravityScale = DefaultGravity;
+            }
         }
         else
         {
-            // Desactivate gliding at the end of his time
+            // Deactivate gliding at the end of its time
             bIsGliding = false;
             GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Purple, TEXT("Glide End"));
 
-            // Restore default aerial control
+            // Restore default aerial control and gravity
             GetCharacterMovement()->AirControl = DefaultAirControl;
+            GetCharacterMovement()->GravityScale = DefaultGravity;
         }
     }
 }
 
-
 bool ACharacterCrow::CanUseGlideAbility() const
 {
     float CurrentTime = GetWorld()->GetTimeSeconds();
-    return !bIsGliding;
+    return !bIsGliding && (CurrentTime - LastUsedSpell02Time >= ScarecrowBreezeCD);
 }
 
 void ACharacterCrow::Ultimate_Implementation()
