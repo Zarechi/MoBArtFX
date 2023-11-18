@@ -71,7 +71,6 @@ void ACrow_Projectile::SetProjectileLifetime(float NewLifetime)
 	ProjectileLifetime = NewLifetime;
 }
 
-
 // Function that manage the movement
 void ACrow_Projectile::MoveProjectile(float DeltaTime)
 {

@@ -3,8 +3,8 @@
 #include "../../BaseCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
+#include <Components/SplineComponent.h>
 #include "CharacterCrow.generated.h"
-
 
 UCLASS()
 class MOBARTFX_API ACharacterCrow : public ABaseCharacter
@@ -17,6 +17,8 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	void SetupCurvedMovement(FVector TargetLocation);
 
 	// Abilities
 
@@ -32,6 +34,7 @@ public:
 	float LastUsedAATime;
 	float LastUsedSpell01Time;
 	float LastUsedSpell02Time;
+	float LastUsedUltimateTime;
 	float CastingTime;
 	float AngleBetweenProjectiles;
 
@@ -96,6 +99,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Scarecrow Breeze Settings")
 	bool bInfiniteGlideDuration;
 
+	// ULTIMATE
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Scarecrow Breeze Settings")
+	float UltimateCD;
+
 	// Class of the sphere projectile
 	TSubclassOf<class ACrow_Projectile> ProjectileClass;
 
@@ -103,5 +110,9 @@ protected:
 
 	virtual void BeginPlay() override;
 	int32 SideCounter = 0; // Initialize SideCounter to 0
+
+	// Spline component for curved movement
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Curved Movement")
+	USplineComponent* CurvedMovementSpline;
 
 };
