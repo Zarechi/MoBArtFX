@@ -15,8 +15,20 @@ class MOBARTFX_API ABaseCharacter : public ACharacter
 public:
 	ABaseCharacter();
 
-	virtual void Tick(float DeltaTime) override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	float TakeDamage(
+		const float Damage, 
+		FDamageEvent const& DamageEvent, 
+		AController* EventInstigator, 
+		AActor* DamageCauser
+	) override;
+
+	/*
+	 *  Intermediate function called before TakeDamage to mitigate damage taken
+	 * 
+	 *  Returns amount of damage to apply
+	 */
+	UFUNCTION( BlueprintNativeEvent, BlueprintCallable )
+	float MitigateDamage( float damage, AActor* causer );
 
 	UFUNCTION( BlueprintCallable )
 	void ApplySpellCooldown( float time, EMobaSpellType type );
@@ -40,6 +52,7 @@ public:
 	void Death();
 
 	// PlayerDatas
+	void SetPlayerDatas( UPlayerInfos* data );
 	UFUNCTION( BlueprintCallable, BlueprintPure )
 	UPlayerInfos* GetPlayerDatas();
 
@@ -50,6 +63,10 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void Tick( float DeltaTime ) override;
+	
+	virtual void SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent ) override;
+	virtual void SetupData( UPlayerInfos* data );
 
 	TMap<EMobaSpellType, float> SpellCooldowns;
 

@@ -1,9 +1,7 @@
 #include "BaseCharacter.h"
 #include "Engine/DamageEvents.h"
+#include "PC_MoBArtFX.h"
 #include "GameFramework/CharacterMovementComponent.h"
-
-#include "PC_MoBArtFX.h"
-#include "PC_MoBArtFX.h"
 
 #include "Defines.h"
 
@@ -39,6 +37,11 @@ float ABaseCharacter::TakeDamage(
 	return took_damage;
 }
 
+float ABaseCharacter::MitigateDamage_Implementation( float damage, AActor* causer )
+{
+	return damage;
+}
+
 void ABaseCharacter::ApplySpellCooldown( float time, EMobaSpellType type )
 {
 	SpellCooldowns.Add( type, time );
@@ -62,11 +65,6 @@ bool ABaseCharacter::IsSpellOnCooldown( EMobaSpellType type )
 	if ( itr == nullptr ) return false;
 
 	return *itr > 0.0f;
-}
-
-float ABaseCharacter::MitigateDamage_Implementation( float damage, AActor* causer )
-{
-	return damage;
 }
 
 void ABaseCharacter::BeginPlay()
@@ -101,32 +99,46 @@ void ABaseCharacter::SetPlayerDatas( UPlayerInfos* data )
 
 UPlayerInfos* ABaseCharacter::GetPlayerDatas()
 {
-	if (GetPlayerState<APlayerState>())
+	//  ensure PlayerState has been retrieved
+	if ( !HasActorBegunPlay() )
 	{
-		return GetPlayerState<APS_MoBArtFX>()->PlayerDatas;
-	}
-	else
-	{
-		if(DebugPlayerInfos)
-			return DebugPlayerInfos;
+		DispatchBeginPlay();
 	}
 
 	//  get player state
 	if ( IsValid( CustomPlayerState ) ) return CustomPlayerState->PlayerDatas;
 
+	//  get debug data
+	if ( DebugPlayerInfos )
+	{
+		return DebugPlayerInfos;
+	}
+
+	UE_LOG( LogTemp, Error, TEXT( "Can't find PlayerDatas" ) );
 	return nullptr;
 }
 
-// Called every frame
 void ABaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-// Called to bind functionality to input
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+void ABaseCharacter::SetupData( UPlayerInfos* data )
+{
+	auto movement = GetCharacterMovement();
+	if ( ensureMsgf( IsValid( movement ), TEXT( "Movement Component couldn't be retrieved!" ) ) )
+	{
+		movement->MaxWalkSpeed = data->MaxWalkSpeed;
+		movement->JumpZVelocity = data->JumpVelocity;
+		movement->AirControl = data->AirControl;
+	}
+
+	kLOG_ARGS( "Character '%s' data has been setup", *data->Name );
 }
 
 void ABaseCharacter::AutoAttack_Implementation()
@@ -149,4 +161,10 @@ void ABaseCharacter::Spell_02_Implementation() {}
 
 void ABaseCharacter::Ultimate_Implementation() {}
 
-void ABaseCharacter::Death_Implementation() {}
+void ABaseCharacter::Death_Implementation() 
+{
+	auto data = GetPlayerDatas();
+	if ( !IsValid( data ) ) return;
+
+	kPRINT( data->Name + " is dead!" );
+}
