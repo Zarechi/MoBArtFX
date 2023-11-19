@@ -18,8 +18,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void SetupCurvedMovement(FVector TargetLocation);
-
 	// Abilities
 
 	void AutoAttack_Implementation() override;
@@ -29,6 +27,7 @@ public:
 
 	bool CanUseGlideAbility() const;
 	void UpdateGlide();
+	void SetupCurvedMovement();
 
 	// Cooldown
 	float LastUsedAATime;
@@ -111,8 +110,7 @@ protected:
 	virtual void BeginPlay() override;
 	int32 SideCounter = 0; // Initialize SideCounter to 0
 
-	// Spline component for curved movement
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Curved Movement")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	USplineComponent* CurvedMovementSpline;
 
 };

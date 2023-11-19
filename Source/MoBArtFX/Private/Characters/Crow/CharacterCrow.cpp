@@ -39,10 +39,8 @@ ACharacterCrow::ACharacterCrow()
     LastUsedSpell02Time = -ScarecrowBreezeCD;
     LastUsedUltimateTime = -UltimateCD;
 
-    // Initialize the spline component
     CurvedMovementSpline = CreateDefaultSubobject<USplineComponent>(TEXT("CurvedMovementSpline"));
     CurvedMovementSpline->SetupAttachment(RootComponent);
-    CurvedMovementSpline->SetHiddenInGame(false); // Hide the spline in the game
 }
 
 void ACharacterCrow::BeginPlay()
@@ -60,23 +58,6 @@ void ACharacterCrow::Tick(float DeltaTime)
 void ACharacterCrow::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
-}
-
-void ACharacterCrow::SetupCurvedMovement(FVector TargetLocation)
-{
-    // Clear existing points from the spline
-    CurvedMovementSpline->ClearSplinePoints();
-
-    // Add start and end points to the spline
-    CurvedMovementSpline->AddSplinePoint(GetActorLocation(), ESplineCoordinateSpace::World);
-    CurvedMovementSpline->AddSplinePoint(GetActorLocation() + FVector(0.0f, 1000.0f, 0.0f), ESplineCoordinateSpace::World);
-
-    // Add a control point to create a curved path
-    FVector ControlPoint = FVector(0.0f, 500.0f, 0.0f) + GetActorLocation();
-    CurvedMovementSpline->AddSplinePoint(ControlPoint, ESplineCoordinateSpace::World);
-
-    // Set the end point to the target location
-    CurvedMovementSpline->AddSplinePoint(TargetLocation, ESplineCoordinateSpace::World);
 }
 
 void ACharacterCrow::AutoAttack_Implementation()
@@ -283,30 +264,65 @@ void ACharacterCrow::Ultimate_Implementation()
     {
         LastUsedUltimateTime = CurrentTime;
 
-        // Get the player controller from the world
-        APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+        APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 
         if (PlayerController)
         {
             // Get the camera forward vector from the player controller
             FVector CameraForwardVector = PlayerController->GetControlRotation().Vector();
 
-            // Define the target location (center of the screen)
+            // Define the target location (end of the line)
             FVector TargetLocation = GetActorLocation() + CameraForwardVector * 1000.0f;
 
-            // Create a spline curve from the character to the right
-            SetupCurvedMovement(TargetLocation);
+            // Number of points to generate
+            const int32 NumPoints = 20;
 
-            // Draw debug sphere at the end of the spline
-            FVector SplineEndLocation = CurvedMovementSpline->GetLocationAtSplinePoint(CurvedMovementSpline->GetNumberOfSplinePoints() - 1, ESplineCoordinateSpace::World);
-            DrawDebugSphere(GetWorld(), SplineEndLocation, 50.0f, 32, FColor::Orange, false, 2.0f, 0, 1.0f);
+            // Array to store line points
+            TArray<FVector> LinePoints;
 
-            GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Orange, TEXT("Curved Movement Ability Activated"));
-        }
-        else
-        {
-            // Handle the case where the player controller is not found
-            GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Error: Player Controller not found"));
+            // Generate line points in the shape of an arc
+            for (int32 i = 0; i < NumPoints; ++i)
+            {
+                float Alpha = static_cast<float>(i) / static_cast<float>(NumPoints - 1);
+
+                FVector PointLocation = FMath::Lerp(GetActorLocation(), TargetLocation, Alpha);
+                LinePoints.Add(PointLocation);
+
+                // Draw debug point
+                DrawDebugPoint(GetWorld(), PointLocation, 10.0f, FColor::Red, false, 1.0f);
+            }
+
+            // Draw debug sphere at the end of the line
+            DrawDebugSphere(GetWorld(), TargetLocation, 20.0f, 32, FColor::Green, false, 1.0f, 0, 1.0f);
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
