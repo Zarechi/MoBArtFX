@@ -75,8 +75,8 @@ void ANeedle_Player::Tick(float DeltaTime)
 		BasicAttackCurrentCooldown -= DeltaTime;
 	if (SkillShotCurrentCooldown > 0)
 		SkillShotCurrentCooldown -= DeltaTime;
-	if (DodgeSkillShootCurrentCooldown > 0)
-		DodgeSkillShootCurrentCooldown -= DeltaTime;
+	//if (DodgeSkillShootCurrentCooldown > 0)
+	//	DodgeSkillShootCurrentCooldown -= DeltaTime;
 	if (TeleportCurrentCooldown > 0)
 		TeleportCurrentCooldown -= DeltaTime;
 	if (UltimateCurrentCooldown > 0)
@@ -110,8 +110,6 @@ void ANeedle_Player::Ultimate_Implementation()
 		UltimateCurrentCooldown = UltimateCooldown;
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Ultimate"));
 
-		
-
 		TArray<AActor*> FoundActors;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABaseCharacter::StaticClass(), FoundActors);
 
@@ -141,32 +139,6 @@ void ANeedle_Player::Ultimate_Implementation()
 				}
 			}
 		}
-
-		/*TArray<AActor*> FoundActors;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ANeedle_Player::StaticClass(), FoundActors);
-		int foundActorCount = FoundActors.Num();
-
-		int foundNeedleCount = 0;
-		for (int i = 0; i < foundActorCount; i++)
-		{
-			ANeedle_Player* player = (ANeedle_Player*)FoundActors[i];
-			if (FoundActors[i] != GetOwner())
-			{
-				foundNeedleCount += player->needleStack.Num();
-			}
-		}
-
-		if (foundNeedleCount >= 2)
-		{
-			for (int i = 0; i < foundActorCount; i++)
-			{
-				ANeedle_Player* player = (ANeedle_Player*)FoundActors[i];
-				if (FoundActors[i] != GetOwner())
-				{
-					player->Hit(CurrentAttackType, NeedleBaseDamage);
-				}
-			}
-		}*/
 	}
 }
 
