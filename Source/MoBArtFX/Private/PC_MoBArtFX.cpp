@@ -15,7 +15,7 @@ void APC_MoBArtFX::BeginPlay()
 	UWidgetBlueprintLibrary::SetInputMode_GameOnly(this);
 	
 	//  cast base character
-	PlayerCharacter = Cast<ABaseCharacter>( GetPawn() );
+	PlayerCharacter = CastChecked<ABaseCharacter>( GetPawn() );
 	
 	//  setup mapping context
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
