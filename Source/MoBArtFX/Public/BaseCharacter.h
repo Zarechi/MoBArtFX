@@ -1,11 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "PS_MoBArtFX.h"
 #include "BaseCharacter.generated.h"
+
+class APC_MoBArtFX;
 
 UCLASS()
 class MOBARTFX_API ABaseCharacter : public ACharacter
@@ -30,6 +30,13 @@ public:
 	UFUNCTION( BlueprintNativeEvent, BlueprintCallable )
 	float MitigateDamage( float damage, AActor* causer );
 
+	UFUNCTION( BlueprintCallable )
+	void ApplySpellCooldown( float time, EMobaAbilitySlot type );
+	UFUNCTION( BlueprintCallable, BlueprintPure )
+	bool IsSpellOnCooldown( EMobaAbilitySlot type ) const;
+	UFUNCTION( BlueprintCallable, BlueprintPure )
+	float GetSpellCooldown( EMobaAbilitySlot type ) const;
+
 	// Attacks
 	UFUNCTION( BlueprintNativeEvent, BlueprintCallable )
 	void AutoAttack();
@@ -51,6 +58,11 @@ public:
 	UFUNCTION( BlueprintCallable, BlueprintPure )
 	UPlayerInfos* GetPlayerDatas();
 
+	UFUNCTION( BlueprintCallable, BlueprintPure )
+	APS_MoBArtFX* GetCustomPlayerState() const { return CustomPlayerState; }
+	UFUNCTION( BlueprintCallable, BlueprintPure )
+	APC_MoBArtFX* GetCustomPlayerController() const { return CustomPlayerController; }
+
 	UPROPERTY( EditDefaultsOnly, BlueprintReadOnly )
 	TSoftClassPtr<UPlayerInfos> DebugPlayerInfosAsset;
 	UPROPERTY( BlueprintReadWrite )
@@ -63,5 +75,8 @@ protected:
 	virtual void SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent ) override;
 	virtual void SetupData( UPlayerInfos* data );
 
-	TObjectPtr<APS_MoBArtFX> PlayerState;
+	TMap<EMobaAbilitySlot, float> SpellTimers;
+
+	TObjectPtr<APS_MoBArtFX> CustomPlayerState;
+	TObjectPtr<APC_MoBArtFX> CustomPlayerController;
 };
