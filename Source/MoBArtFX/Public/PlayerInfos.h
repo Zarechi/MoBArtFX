@@ -1,4 +1,7 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
 #pragma once
+
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "PlayerInfos.generated.h"
@@ -10,7 +13,6 @@ class MOBARTFX_API UPlayerInfos : public UDataAsset
 
 	/* VARIABLES */
 public:
-
 	/** Crosshair parameters */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="CrossHair")
 	TObjectPtr<UMaterialInstance> CrossHairMat;

@@ -60,15 +60,18 @@ void ACainerMonstro::SetDestination(FVector destination, float yawRotation)
 	SetActorRotation(rotation);
 }
 
-
-void ACainerMonstro::TakeDamage(float damage)
+float ACainerMonstro::TakeDamage(const float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	health -= damage;
-	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::White, "Monstro took " + FString::SanitizeFloat(damage) + " damages.");
+	float damage_taken = fmax(health, Damage);
+
+	health -= Damage;
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::White, "Monstro took " + FString::SanitizeFloat(Damage) + " damages.");
 
 	if (health <= 0.0f)
 	{
 		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::White, "Monstro died.");
 		Destroy();
 	}
+
+	return damage_taken; 
 }
