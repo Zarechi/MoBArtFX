@@ -72,7 +72,7 @@ void ACainerMonstro::SetDestination(FVector destination, float yawRotation)
 
 void ACainerMonstro::BoostSpeed(float boost, float boostTime)
 {
-	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Green, "Monstro got a speed boost.");
+	if (boost > 1.0f) GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Green, "Monstro got a speed boost.");
 	Cast<UCharacterMovementComponent>(GetMovementComponent())->MaxWalkSpeed = basespeed * boost;
 	boostTimer = boostTime;
 }
