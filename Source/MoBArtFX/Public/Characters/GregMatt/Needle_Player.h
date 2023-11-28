@@ -24,13 +24,7 @@ public:
 	void AutoAttack_Implementation() override;
 	void Reload_Implementation() override;
 
-	void Death_Implementation() override;
-
-	UFUNCTION(BlueprintCallable)
-	void Hit(TEnumAsByte<AttackType> type, float damage);
-
-	UFUNCTION(BlueprintCallable)
-	void SkillShotHit();
+	//void Death_Implementation() override;
 
 	void ShootProjectile(int attType);
 
@@ -89,8 +83,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attack", meta = (AllowPrivateAccess = "true"))
 	float SkillShotCooldown = 1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attack", meta = (AllowPrivateAccess = "true"))
-	float DodgeSkillShootCooldown = 1;
+	/*UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attack", meta = (AllowPrivateAccess = "true"))
+	float DodgeSkillShootCooldown = 1;*/
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attack", meta = (AllowPrivateAccess = "true"))
 	float TeleportCooldown = 1;
@@ -102,19 +96,19 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Attack")
 	UClass* ProjectileClass;
 
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "false"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "false"))
 	float BasicAttackCurrentCooldown = 0;
 
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "false"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "false"))
 	float SkillShotCurrentCooldown = 0;
 
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "false"))
-	float DodgeSkillShootCurrentCooldown = 0;
+	/*UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "false"))
+	float DodgeSkillShootCurrentCooldown = 0;*/
 
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "false"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "false"))
 	float TeleportCurrentCooldown = 0;
 
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "false"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "false"))
 	float UltimateCurrentCooldown = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attack", meta = (AllowPrivateAccess = "true"))
