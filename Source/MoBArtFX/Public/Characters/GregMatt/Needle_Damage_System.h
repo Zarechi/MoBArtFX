@@ -33,10 +33,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SkillShotHit(float SlownessDelay, float StunDelay);
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attack", meta = (AllowPrivateAccess = "true"))
-	TArray <TEnumAsByte<AttackType>> needleStack;
 private:
 	void ApplyDmg(float damage);
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attack", meta = (AllowPrivateAccess = "true"))
+	TArray <TEnumAsByte<AttackType>> needleStack;
 
 	float slowDownCurrentCooldown = 0;
 	float stunCurrentCooldown = 0;

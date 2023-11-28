@@ -1,8 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "PS_MoBArtFX.h"
-
 #include "HUD_MoBArtFX.h"
 
 void APS_MoBArtFX::BeginPlay()

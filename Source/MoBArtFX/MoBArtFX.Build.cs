@@ -20,7 +20,7 @@ public class MoBArtFX : ModuleRules
 				"LevelSequence",
 				"MovieScene",
 				"ActorSequence",
-            }
+			}
 		);
 
 		PrivateDependencyModuleNames.AddRange(
