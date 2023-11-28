@@ -20,6 +20,15 @@ void ACainerMonstro::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (boostTimer > 0.0f)
+	{
+		boostTimer -= DeltaTime;
+		if (boostTimer <= 0.0f)
+		{
+			BoostSpeed(1.0f, 0.0f);
+		}
+	}
+
 	if (isMoving)
 	{
 		if (!aiController->IsMoving())
@@ -36,8 +45,9 @@ void ACainerMonstro::Tick(float DeltaTime)
 }
 
 
-void ACainerMonstro::SetSpeed(float speed)
+void ACainerMonstro::SetBaseSpeed(float speed)
 {
+	basespeed = speed;
 	Cast<UCharacterMovementComponent>(GetMovementComponent())->MaxWalkSpeed = speed;
 }
 
@@ -58,6 +68,13 @@ void ACainerMonstro::SetDestination(FVector destination, float yawRotation)
 	FRotator rotation = GetActorRotation();
 	rotation.Yaw = wantedYawRotation;
 	SetActorRotation(rotation);
+}
+
+void ACainerMonstro::BoostSpeed(float boost, float boostTime)
+{
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Green, "Monstro got a speed boost.");
+	Cast<UCharacterMovementComponent>(GetMovementComponent())->MaxWalkSpeed = basespeed * boost;
+	boostTimer = boostTime;
 }
 
 float ACainerMonstro::TakeDamage(const float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)

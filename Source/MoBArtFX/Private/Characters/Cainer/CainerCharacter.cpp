@@ -92,6 +92,14 @@ void ACainerCharacter::Spell_01_Implementation() //  speed boost
 
 		speed_comp->TriggerSpeedBoost(infos->speedBoostValue, infos->speedBoostDuration);
 	}
+
+	if (IsValid(monstro))
+	{
+		if (FVector::Distance(GetActorLocation(), monstro->GetActorLocation()) < infos->speedBoostRadius)
+		{
+			monstro->BoostSpeed(infos->speedBoostValue, infos->speedBoostDuration);
+		}
+	}
 }
 
 void ACainerCharacter::Spell_02_Implementation() //  monstro
@@ -120,7 +128,7 @@ void ACainerCharacter::Spell_02_Implementation() //  monstro
 	monstro_transform.SetRotation(GetActorRotation().Quaternion()); 
 
 	monstro = GetWorld()->SpawnActor<ACainerMonstro>(infos->monstroBlueprint, monstro_transform); 
-	monstro->SetSpeed(infos->monstroMoveSpeed); 
+	monstro->SetBaseSpeed(infos->monstroMoveSpeed); 
 	monstro->SetLife(infos->monstroLife); 
 }
 
