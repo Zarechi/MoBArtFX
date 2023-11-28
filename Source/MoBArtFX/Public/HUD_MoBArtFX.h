@@ -3,15 +3,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
 #include "Blueprint/UserWidget.h"
+#include "PlayerInfos.h"
 #include "HUD_MoBArtFX.generated.h"
-
-UENUM( BlueprintType )
-enum class EMobaSpellType : uint8
-{
-	First        UMETA( DisplayName = "First" ),
-	Second       UMETA( DisplayName = "Second" ),
-	Ultimate     UMETA( DisplayName = "Ultimate" ),
-};
 
 /** HUD Interface */
 
@@ -39,7 +32,7 @@ public:
 	virtual void BeginPlay() override;
 
 	UFUNCTION( BlueprintImplementableEvent, BlueprintCallable, Category = "HUD" )
-	void Cooldown( float time, EMobaSpellType type );
+	void Cooldown( float time, EMobaAbilitySlot type );
 	
 	UPROPERTY(BlueprintReadOnly, Category = Viewport)
 	TObjectPtr<UUserWidget> ViewportInstance;

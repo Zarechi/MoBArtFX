@@ -42,38 +42,49 @@ float ABaseCharacter::MitigateDamage_Implementation( float damage, AActor* cause
 	return damage;
 }
 
-void ABaseCharacter::ApplySpellCooldown( float time, EMobaSpellType type )
+void ABaseCharacter::ApplySpellCooldown( float time, EMobaAbilitySlot type )
 {
-	SpellCooldowns.Add( type, time );
+	//  register time
+	SpellTimers.Add( type, GetWorld()->GetTimeSeconds() + time );
 
+	//  update hud
 	if ( IsValid( CustomPlayerController ) )
 	{
 		CustomPlayerController->ApplySpellCooldownOnHUD( time, type );
 	}
 
+	//  debug
 	auto data = GetPlayerDatas();
 	if ( IsValid( data ) )
 	{
-		auto type_name = StaticEnum<EMobaSpellType>()->GetValueAsString( type );
-		kLOG_ARGS( "%s: %s is on cooldown for %ds!", *data->Name, *type_name, time );
+		auto type_name = StaticEnum<EMobaAbilitySlot>()->GetValueAsString( type );
+		kLOG_ARGS( "%s: %s is on cooldown for %fs!", *data->Name, *type_name, time );
 	}
 }
 
-bool ABaseCharacter::IsSpellOnCooldown( EMobaSpellType type )
+float ABaseCharacter::GetSpellCooldown( EMobaAbilitySlot type ) const
 {
-	auto itr = SpellCooldowns.Find( type );
-	if ( itr == nullptr ) return false;
+	auto itr = SpellTimers.Find( type );
+	if ( itr == nullptr ) return 0.0f;
 
-	return *itr > 0.0f;
+	return *itr - GetWorld()->GetTimeSeconds();
+}
+
+bool ABaseCharacter::IsSpellOnCooldown( EMobaAbilitySlot type ) const
+{
+	return GetSpellCooldown( type ) > 0.0f;
 }
 
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//  get player controller
+	CustomPlayerController = GetController<APC_MoBArtFX>();
+
 	//  get player state
 	CustomPlayerState = GetPlayerState<APS_MoBArtFX>();
-	if ( CustomPlayerState == nullptr && GetController<APC_MoBArtFX>() )
+	if ( CustomPlayerState == nullptr && IsValid( CustomPlayerController ) )
 	{
 		kERROR_LOG_ARGS( "A Player-Controlled Character doesn't have a valid Player State!" );
 	}

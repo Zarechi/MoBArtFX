@@ -58,7 +58,7 @@ void APC_MoBArtFX::BindAbilitiesActions()
 	EnhancedInputComponent->BindAction( UltimateAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Ultimate );
 }
 
-void APC_MoBArtFX::ApplySpellCooldownOnHUD( float time, EMobaSpellType type )
+void APC_MoBArtFX::ApplySpellCooldownOnHUD( float time, EMobaAbilitySlot type )
 {
 	if ( !IsValid( HUD ) )
 	{

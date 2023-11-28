@@ -31,9 +31,11 @@ public:
 	float MitigateDamage( float damage, AActor* causer );
 
 	UFUNCTION( BlueprintCallable )
-	void ApplySpellCooldown( float time, EMobaSpellType type );
+	void ApplySpellCooldown( float time, EMobaAbilitySlot type );
 	UFUNCTION( BlueprintCallable, BlueprintPure )
-	bool IsSpellOnCooldown( EMobaSpellType type );
+	bool IsSpellOnCooldown( EMobaAbilitySlot type ) const;
+	UFUNCTION( BlueprintCallable, BlueprintPure )
+	float GetSpellCooldown( EMobaAbilitySlot type ) const;
 
 	// Attacks
 	UFUNCTION( BlueprintNativeEvent, BlueprintCallable )
@@ -56,6 +58,11 @@ public:
 	UFUNCTION( BlueprintCallable, BlueprintPure )
 	UPlayerInfos* GetPlayerDatas();
 
+	UFUNCTION( BlueprintCallable, BlueprintPure )
+	APS_MoBArtFX* GetCustomPlayerState() const { return CustomPlayerState; }
+	UFUNCTION( BlueprintCallable, BlueprintPure )
+	APC_MoBArtFX* GetCustomPlayerController() const { return CustomPlayerController; }
+
 	UPROPERTY( EditDefaultsOnly, BlueprintReadOnly )
 	TSoftClassPtr<UPlayerInfos> DebugPlayerInfosAsset;
 	UPROPERTY( BlueprintReadWrite )
@@ -68,7 +75,7 @@ protected:
 	virtual void SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent ) override;
 	virtual void SetupData( UPlayerInfos* data );
 
-	TMap<EMobaSpellType, float> SpellCooldowns;
+	TMap<EMobaAbilitySlot, float> SpellTimers;
 
 	TObjectPtr<APS_MoBArtFX> CustomPlayerState;
 	TObjectPtr<APC_MoBArtFX> CustomPlayerController;

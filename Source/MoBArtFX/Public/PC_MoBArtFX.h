@@ -26,7 +26,7 @@ public:
 	virtual void BindAbilitiesActions();
 
 	UFUNCTION( BlueprintCallable )
-	void ApplySpellCooldownOnHUD( float time, EMobaSpellType type );
+	void ApplySpellCooldownOnHUD( float time, EMobaAbilitySlot type );
 
 	/*
 	 *  Performs a Line Trace Single by Channel using the camera location 
