@@ -39,18 +39,12 @@
 			"Enabled": true
 		},
 		{
-<<<<<<< Updated upstream
 			"Name": "VisualStudioTools",
 			"Enabled": false,
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/362651520df94e4fa65492dbcba44ae2",
 			"SupportedTargetPlatforms": [
 				"Win64"
 			]
-=======
-			"Name": "ElectronicNodes",
-			"Enabled": true,
-			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/5cb2a394d0c04e73891762be4cbd7216"
->>>>>>> Stashed changes
 		}
 	]
 }
