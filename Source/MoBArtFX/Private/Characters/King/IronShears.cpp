@@ -40,7 +40,7 @@ void AIronShears::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Ot
 {
 	if (OtherActor->Implements<UInt_Interaction_Chara>())
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Ability2"));
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("IronShears"));
 		IInt_Interaction_Chara::Execute_SlowDown(OtherActor);
 	}
 }

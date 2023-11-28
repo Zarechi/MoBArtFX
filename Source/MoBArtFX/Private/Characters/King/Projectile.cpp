@@ -4,6 +4,7 @@
 #include "Characters/King/Projectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
+#include <Characters/King/Int_Interaction_Chara.h>
 
 // Sets default values
 AProjectile::AProjectile()
@@ -49,6 +50,11 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 	// Only add impulse and destroy projectile if we hit a physics
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
 	{
+		if (OtherActor->Implements<UInt_Interaction_Chara>())
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("IronShears"));
+			IInt_Interaction_Chara::Execute_DoDamage(OtherActor);
+		}
 		Destroy();
 	}
 }

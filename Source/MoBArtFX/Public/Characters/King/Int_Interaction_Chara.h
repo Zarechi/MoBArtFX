@@ -25,4 +25,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, Category = "Interact")
 	void SlowDown();
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Interact")
+	void DoDamage();
 };
