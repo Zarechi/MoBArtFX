@@ -11,13 +11,11 @@ ACauldron::ACauldron()
 
     // Initialize your cauldron's mesh component here
     cauldronMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CauldronMesh"));
-    RootComponent = cauldronMesh;
 
-
-    // Ensure the mesh simulates physics so that it has velocity
-    cauldronMesh->SetSimulatePhysics(true);
-
-    hitbox = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Hitbox"));
+    HitboxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("HitboxComponent"));
+    HitboxComponent->SetupAttachment(cauldronMesh);
+    
+    
     // Initialize the flag
     bRotationCorrected = false;
 }
@@ -28,8 +26,11 @@ void ACauldron::BeginPlay()
     Super::BeginPlay();
     SetLifeSpan(15.f);
 
+    HitboxComponent->SetBoxExtent(FVector(5, 2, 5)); // Set the size of the hitbox
+    HitboxComponent->SetCollisionProfileName(TEXT("OverlapAllDynamic")); // Set an appropriate collision profile
+    HitboxComponent->OnComponentBeginOverlap.AddDynamic(this, &ACauldron::OnHitboxOverlapBegin);
 
-
+    
 }
 
 // Called every frame
@@ -74,4 +75,9 @@ void ACauldron::CorrectRotation()
 
 
 
+}
+
+void ACauldron::OnHitboxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("t'es dedans connard"));
 }
