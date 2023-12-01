@@ -14,6 +14,13 @@ void UDesertClawAutoAttackAbility::OnTick_Implementation( float dt )
 {
 	if ( !IsActive ) return;
 	
+	//  auto-disable when running out of sand
+	if ( PassiveAbility->GetSandPercent() <= 0.01f )
+	{
+		IsActive = false;
+		return;
+	}
+	
 	//  reset passive cooldown
 	PassiveAbility->ResetCooldown();
 

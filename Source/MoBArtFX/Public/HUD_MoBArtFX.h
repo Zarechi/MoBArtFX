@@ -1,10 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
 #include "Blueprint/UserWidget.h"
+#include "PlayerInfos.h"
 #include "HUD_MoBArtFX.generated.h"
 
 /** HUD Interface */
@@ -19,31 +18,22 @@ class IHUDInterface
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "HUD")
-	void Cooldown(double _CooldownTime, int SpellNum = -1);
+	UFUNCTION( BlueprintImplementableEvent, BlueprintCallable, Category = "HUD" )
+	void Cooldown( double time, int type );
 };
 
 /** HUD Class */
-
 UCLASS()
 class MOBARTFX_API AHUD_MoBArtFX : public AHUD
 {
 	GENERATED_BODY()
 	
-	/* FUNCTIONS */
 public:
 	virtual void BeginPlay() override;
-	
-protected:
-private:
 
-	/* VARIABLES */
-public:
-	//TSubclassOf<UUserWidget> ViewportClass;
+	UFUNCTION( BlueprintImplementableEvent, BlueprintCallable, Category = "HUD" )
+	void Cooldown( float time, EMobaAbilitySlot type );
 	
 	UPROPERTY(BlueprintReadOnly, Category = Viewport)
 	TObjectPtr<UUserWidget> ViewportInstance;
-	
-protected:
-private:
 };

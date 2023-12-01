@@ -16,7 +16,9 @@ class MOBARTFX_API ADesertClawCharacter : public ABaseCharacter
 	GENERATED_BODY()
 	
 public:
+	UFUNCTION( BlueprintCallable )
 	void OverrideAbilitySlot( EMobaAbilitySlot slot, UMobaAbility* ability );
+	UFUNCTION( BlueprintCallable )
 	void ResetAbilitySlot( EMobaAbilitySlot slot );
 
 	void ProcessAbility( EMobaAbilitySlot slot, bool is_started );

@@ -1,12 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "PC_MoBArtFX.h"
 #include "HUD_MoBArtFX.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "HUD_MoBArtFX.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
+
+#include "Defines.h"
 
 void APC_MoBArtFX::BeginPlay()
 {
@@ -15,7 +14,10 @@ void APC_MoBArtFX::BeginPlay()
 	UWidgetBlueprintLibrary::SetInputMode_GameOnly(this);
 	
 	//  cast base character
-	PlayerCharacter = Cast<ABaseCharacter>( GetPawn() );
+	PlayerCharacter = CastChecked<ABaseCharacter>( GetPawn() );
+
+	//  cast HUD
+	HUD = CastChecked<AHUD_MoBArtFX>( GetHUD() );
 	
 	//  setup mapping context
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
@@ -50,10 +52,21 @@ void APC_MoBArtFX::BindMovementActions()
 void APC_MoBArtFX::BindAbilitiesActions()
 {
 	//Attacks
-	EnhancedInputComponent->BindAction( AutoAttackAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::AutoAttack );
-	EnhancedInputComponent->BindAction( Spell01_Action, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Spell01 );
-	EnhancedInputComponent->BindAction( Spell02_Action, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Spell02 );
-	EnhancedInputComponent->BindAction( UltimateAction, ETriggerEvent::Triggered, this, &APC_MoBArtFX::Ultimate );
+	EnhancedInputComponent->BindAction( AutoAttackAction, ETriggerEvent::Completed, this, &APC_MoBArtFX::AutoAttack );
+	EnhancedInputComponent->BindAction( Spell01_Action, ETriggerEvent::Completed, this, &APC_MoBArtFX::Spell01 );
+	EnhancedInputComponent->BindAction( Spell02_Action, ETriggerEvent::Completed, this, &APC_MoBArtFX::Spell02 );
+	EnhancedInputComponent->BindAction( UltimateAction, ETriggerEvent::Completed, this, &APC_MoBArtFX::Ultimate );
+}
+
+void APC_MoBArtFX::ApplySpellCooldownOnHUD( float time, EMobaAbilitySlot type )
+{
+	if ( !IsValid( HUD ) )
+	{
+		kERROR_LOG_ARGS( "ApplySpellCooldown: HUDInterface is NOT valid!" );
+		return;
+	}
+
+	HUD->Cooldown( time, type );
 }
 
 bool APC_MoBArtFX::CameraTraceSingleByChannel( FHitResult& out, float distance, ECollisionChannel collision_channel, const FCollisionQueryParams& params, const FCollisionResponseParams& response_param )
