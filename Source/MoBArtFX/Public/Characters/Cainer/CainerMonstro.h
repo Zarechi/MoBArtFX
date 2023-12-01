@@ -23,7 +23,7 @@ public:
 	void BoostSpeed(float boost, float boostTime);
 
 	UFUNCTION(BlueprintCallable)
-	void TakeDamage(float damage);
+	float TakeDamage(const float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 protected:
 	virtual void BeginPlay() override;
