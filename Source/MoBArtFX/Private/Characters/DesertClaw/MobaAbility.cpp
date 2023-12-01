@@ -21,7 +21,7 @@ bool UMobaAbility::Run( FMobaAbilityRunContext context )
 {
 	if ( IsOnCooldown() )
 	{
-		kPRINT_WARNING( "Ability: " + Data->Name + " is on cooldown (" + FString::SanitizeFloat( Cooldown ) + "s)" );
+		kPRINT_WARNING( "Ability: " + Data->Name + " is on cooldown (" + FString::SanitizeFloat( GetCooldown() ) + "s)" );
 		return false;
 	}
 
@@ -41,7 +41,7 @@ bool UMobaAbility::Run( FMobaAbilityRunContext context )
 		if ( IsActive )
 		{
 			//  reset cooldown
-			Cooldown = Data->ToggleCooldown;
+			SetCooldown( Data->ToggleCooldown );
 
 			//  custom callback
 			OnRun( context );
@@ -83,10 +83,10 @@ bool UMobaAbility::Run( FMobaAbilityRunContext context )
 void UMobaAbility::Tick( float dt )
 {
 	//  decrease cooldown
-	if ( Cooldown > 0.0f )
+	/*if ( Cooldown > 0.0f )
 	{
 		Cooldown = FMath::Max( 0.0f, Cooldown - dt );
-	}
+	}*/
 
 	//  custom callback
 	OnTick( dt );
@@ -114,9 +114,25 @@ UWorld* UMobaAbility::GetWorld() const
 	return Character->GetWorld();
 }
 
+bool UMobaAbility::IsOnCooldown()
+{
+	return Character->IsSpellOnCooldown( Slot );
+}
+
+void UMobaAbility::SetCooldown( float cooldown )
+{
+	//Cooldown = cooldown;
+	Character->ApplySpellCooldown( cooldown, Slot );
+}
+
 void UMobaAbility::ResetCooldown()
 {
-	Cooldown = Data->Cooldown;
+	SetCooldown( Data->Cooldown );
+}
+
+float UMobaAbility::GetCooldown() const
+{
+	return Character->GetSpellCooldown( Slot );
 }
 
 FString UMobaAbility::GetName() const

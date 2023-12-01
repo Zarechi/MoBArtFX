@@ -125,6 +125,7 @@ void ADesertClawCharacter::ProcessAbility( EMobaAbilitySlot slot, bool is_starte
 	FMobaAbilityRunContext context {};
 	context.IsOverridenSlot = slot != ability->Slot;
 	context.IsStartInput = is_started;
+	context.InputSlot = slot;
 
 	//  run ability
 	ability->Run( context );

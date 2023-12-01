@@ -31,7 +31,7 @@ void UDesertClawPassiveAbility::AddSandPercent( float amount )
 	//  reset cooldown
 	if ( amount < 0.0f )
 	{
-		Cooldown = Data->Cooldown;
+		SetCooldown( Data->Cooldown );
 		kPRINT_TICK( "Passive on Cooldown" );
 	}
 }

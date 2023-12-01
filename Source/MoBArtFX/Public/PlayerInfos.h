@@ -3,6 +3,17 @@
 #include "Engine/DataAsset.h"
 #include "PlayerInfos.generated.h"
 
+UENUM( BlueprintType )
+enum class EMobaAbilitySlot : uint8
+{
+	First        UMETA( DisplayName = "First" ),
+	Second       UMETA( DisplayName = "Second" ),
+	Third        UMETA( DisplayName = "Third" ),
+	Ultimate     UMETA( DisplayName = "Ultimate" ),
+	AutoAttack   UMETA( DisplayName = "Auto-Attack" ),
+	Passive      UMETA( DisplayName = "Passive" ),
+};
+
 UCLASS(Blueprintable, BlueprintType)
 class MOBARTFX_API UPlayerInfos : public UDataAsset
 {

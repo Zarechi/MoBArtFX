@@ -42,13 +42,49 @@ float ABaseCharacter::MitigateDamage_Implementation( float damage, AActor* cause
 	return damage;
 }
 
+void ABaseCharacter::ApplySpellCooldown( float time, EMobaAbilitySlot type )
+{
+	//  register time
+	SpellTimers.Add( type, GetWorld()->GetTimeSeconds() + time );
+
+	//  update hud
+	if ( IsValid( CustomPlayerController ) )
+	{
+		CustomPlayerController->ApplySpellCooldownOnHUD( time, type );
+	}
+
+	//  debug
+	auto data = GetPlayerDatas();
+	if ( IsValid( data ) )
+	{
+		auto type_name = StaticEnum<EMobaAbilitySlot>()->GetValueAsString( type );
+		kLOG_ARGS( "%s: %s is on cooldown for %fs!", *data->Name, *type_name, time );
+	}
+}
+
+float ABaseCharacter::GetSpellCooldown( EMobaAbilitySlot type ) const
+{
+	auto itr = SpellTimers.Find( type );
+	if ( itr == nullptr ) return 0.0f;
+
+	return *itr - GetWorld()->GetTimeSeconds();
+}
+
+bool ABaseCharacter::IsSpellOnCooldown( EMobaAbilitySlot type ) const
+{
+	return GetSpellCooldown( type ) > 0.0f;
+}
+
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//  get player controller
+	CustomPlayerController = GetController<APC_MoBArtFX>();
+
 	//  get player state
-	PlayerState = GetPlayerState<APS_MoBArtFX>();
-	if ( PlayerState == nullptr && GetController<APC_MoBArtFX>() )
+	CustomPlayerState = GetPlayerState<APS_MoBArtFX>();
+	if ( CustomPlayerState == nullptr && IsValid( CustomPlayerController ) )
 	{
 		kERROR_LOG_ARGS( "A Player-Controlled Character doesn't have a valid Player State!" );
 	}
@@ -59,9 +95,9 @@ void ABaseCharacter::BeginPlay()
 
 void ABaseCharacter::SetPlayerDatas( UPlayerInfos* data )
 {
-	if ( !IsValid( PlayerState ) ) return;
+	if ( !IsValid( CustomPlayerState ) ) return;
 
-	PlayerState->PlayerDatas = data;
+	CustomPlayerState->PlayerDatas = data;
 
 	if ( data == nullptr )
 	{
@@ -81,7 +117,7 @@ UPlayerInfos* ABaseCharacter::GetPlayerDatas()
 	}
 
 	//  get player state
-	if ( IsValid( PlayerState ) ) return PlayerState->PlayerDatas;
+	if ( IsValid( CustomPlayerState ) ) return CustomPlayerState->PlayerDatas;
 
 	//  get debug data
 	if ( DebugPlayerInfos )
