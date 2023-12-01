@@ -17,6 +17,9 @@ struct FMobaAbilityRunContext
 
 	UPROPERTY( BlueprintReadOnly )
 	bool IsStartInput = true;
+
+	UPROPERTY( BlueprintReadOnly )
+	EMobaAbilitySlot InputSlot;
 };
 
 /*
@@ -59,13 +62,13 @@ public:
 	void OnTick( float delta_time );
 
 	UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Ability" )
-	bool IsOnCooldown() { return Cooldown > 0.0f; }
+	bool IsOnCooldown();
 	UFUNCTION( BlueprintCallable, Category = "Ability" )
-	void SetCooldown( float cooldown ) { Cooldown = cooldown; }
+	void SetCooldown( float cooldown );
 	UFUNCTION( BlueprintCallable, Category = "Ability" )
 	void ResetCooldown();
 	UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Ability" )
-	float GetCooldown() { return Cooldown; }
+	float GetCooldown() const;
 
 	UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Ability" )
 	UMobaAbilityData* GetData() { return Data; }
@@ -75,9 +78,9 @@ public:
 	FString GetName() const;
 
 	UPROPERTY( BlueprintReadOnly, Category = "Ability" )
-	EMobaAbilityMode Mode = EMobaAbilityMode::Single;
+	EMobaAbilityMode Mode;
 	UPROPERTY( BlueprintReadOnly, Category = "Ability" )
-	EMobaAbilitySlot Slot = EMobaAbilitySlot::First;
+	EMobaAbilitySlot Slot;
 
 	UWorld* GetWorld() const override;
 
@@ -90,6 +93,6 @@ protected:
 	bool IsActive = false;
 
 	//  Time in seconds before being able to use the ability again
-	UPROPERTY( BlueprintReadOnly, Category = "Ability", meta = ( AllowPrivateAccess = true ) )
-	float Cooldown = 0.0f;
+	/*UPROPERTY( BlueprintReadOnly, Category = "Ability", meta = ( AllowPrivateAccess = true ) )
+	float Cooldown = 0.0f;*/
 };

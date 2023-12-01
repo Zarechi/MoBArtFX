@@ -1,10 +1,18 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
-
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "PlayerInfos.generated.h"
+
+UENUM( BlueprintType )
+enum class EMobaAbilitySlot : uint8
+{
+	First        UMETA( DisplayName = "First" ),
+	Second       UMETA( DisplayName = "Second" ),
+	Third        UMETA( DisplayName = "Third" ),
+	Ultimate     UMETA( DisplayName = "Ultimate" ),
+	AutoAttack   UMETA( DisplayName = "Auto-Attack" ),
+	Passive      UMETA( DisplayName = "Passive" ),
+};
 
 UCLASS(Blueprintable, BlueprintType)
 class MOBARTFX_API UPlayerInfos : public UDataAsset
@@ -13,6 +21,7 @@ class MOBARTFX_API UPlayerInfos : public UDataAsset
 
 	/* VARIABLES */
 public:
+
 	/** Crosshair parameters */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="CrossHair")
 	TObjectPtr<UMaterialInstance> CrossHairMat;
@@ -26,14 +35,22 @@ public:
 	int32 CurrentAmmo;
 
 	/** Character parameters */
+	UPROPERTY( BlueprintReadOnly, EditDefaultsOnly, Category = "Character" )
+	FString Name = "N/A";
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Character")
 	TObjectPtr<UMaterialInstance> CharacterMat;
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Character|Speed")
-	float MaxWalkSpeed = 700.f;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Character|Movement")
+	float MaxWalkSpeed = 600.0f;
+	UPROPERTY( BlueprintReadOnly, EditDefaultsOnly, Category = "Character|Movement" )
+	float JumpVelocity = 420.0f;
+	UPROPERTY( BlueprintReadOnly, EditDefaultsOnly, Category = "Character|Movement" )
+	float AirControl = 0.05f;
+
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Character|Health")
-	int32 MaxHealth = 1500;
+	float MaxHealth = 1500;
 	UPROPERTY(BlueprintReadWrite, Category="Character|Health", meta=(EditCondition=false))
-	int32 CurrentHealth;
+	float CurrentHealth;
 
 	/** Spells parameters */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Spells|AutoAttack")
