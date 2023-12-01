@@ -14,8 +14,6 @@ public:
 
 	virtual void BeginPlay() override;
 
-
-
 public:
 
 	UPROPERTY(EditAnywhere, Category="PlayerDatas", meta=(AllowedClasses="UPlayerInfos"))
