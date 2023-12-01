@@ -17,6 +17,9 @@ struct FMobaAbilityRunContext
 
 	UPROPERTY( BlueprintReadOnly )
 	bool IsStartInput = true;
+
+	UPROPERTY( BlueprintReadOnly )
+	EMobaAbilitySlot InputSlot;
 };
 
 /*
