@@ -266,43 +266,54 @@ bool ACharacterCrow::CanUseGlideAbility() const
 
 void ACharacterCrow::ShowFlashbangEffect()
 {
-    // Create instance of the HUD Flash Effect
     if (HUDFlashEffect)
     {
-        FlashbangWidget = CreateWidget<UUserWidget>(GetWorld(), HUDFlashEffect);
+        // Créer une instance du widget HUD Flashbang
+        UUserWidget* FlashbangWidget = CreateWidget<UUserWidget>(GetWorld(), HUDFlashEffect);
         if (FlashbangWidget)
         {
             FlashbangWidget->AddToViewport();
+
+            // Démarrer l'animation d'opacity (remplacez "FadeInAnimation" par le nom de votre animation)
+            UWidgetAnimation* OpacityAnimation = UWidgetBlueprintLibrary::FindWidgetAnimation(FlashbangWidget, TEXT("FadeInAnimation"));
+            if (OpacityAnimation)
+            {
+                FlashbangWidget->PlayAnimation(OpacityAnimation, 0.0f, 1, EUMGSequencePlayMode::Forward, 1.0f);
+            }
+
+            const float YourDelayTime = 2.0f; // Exemple de durée d'affichage de l'écran blanc
             FTimerHandle TimerHandle;
-            GetWorldTimerManager().SetTimer(TimerHandle, this, &ACharacterCrow::HideFlashbangEffect, FlashbangDuration, false);
+            GetWorldTimerManager().SetTimer(TimerHandle, this, &ACharacterCrow::HideFlashbangEffect, YourDelayTime, false);
         }
     }
 }
 
-/*void ACharacterCrow::HideFlashbangEffect()
+void ACharacterCrow::HideFlashbangEffect()
 {
     if (FlashbangWidget)
     {
-        // Start Animation
-        UWidgetAnimation* OpacityAnimation = FlashbangWidget->WidgetTree->FindWidgetAnimation(TEXT("FadeOut"));
+        // Trouver l'animation de fade out (remplacez "FadeOutAnimation" par le nom de votre animation)
+        UWidgetAnimation* OpacityAnimation = UWidgetBlueprintLibrary::FindWidgetAnimation(FlashbangWidget, TEXT("FadeOutAnimation"));
         if (OpacityAnimation)
         {
             FlashbangWidget->PlayAnimation(OpacityAnimation, 0.0f, 1, EUMGSequencePlayMode::Forward, 1.0f);
+
+            const float YourDelayTime = 1.0f; // Exemple de durée de l'animation de fade out
+            FTimerHandle TimerHandle;
+            GetWorldTimerManager().SetTimer(TimerHandle, this, &ACharacterCrow::DestroyFlashbangWidget, YourDelayTime, false);
         }
-        FTimerHandle TimerHandle;
-        GetWorldTimerManager().SetTimer(TimerHandle, this, &ACharacterCrow::DestroyFlashbangWidget, OpacityAnimation->GetEndTime(), false);
     }
-}*/
+}
 
 void ACharacterCrow::DestroyFlashbangWidget()
 {
     if (FlashbangWidget)
     {
-        // Remove the widget
-        FlashbangWidget->RemoveFromViewport();
-        // Or FlashbangWidget->MarkPendingKill(); to destroy the widget
+        FlashbangWidget->RemoveFromParent();
+        FlashbangWidget = nullptr;
     }
 }
+
 
 void ACharacterCrow::Ultimate_Implementation()
 {
