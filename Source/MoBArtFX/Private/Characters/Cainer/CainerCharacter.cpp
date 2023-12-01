@@ -18,7 +18,7 @@ void ACainerCharacter::BeginPlay()
 	if(infos.IsNull()) GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.0f, FColor::Red, "WARNING : Cainer doesn't have the correct player infos !");
 
 	//  set ultimate cooldown at max
-	ApplySpellCooldown(infos->Ultimate_CD, EMobaAbilitySlot::Ultimate);
+	//ApplySpellCooldown(infos->Ultimate_CD, EMobaAbilitySlot::Ultimate);
 }
 
 void ACainerCharacter::Tick(float DeltaTime)
