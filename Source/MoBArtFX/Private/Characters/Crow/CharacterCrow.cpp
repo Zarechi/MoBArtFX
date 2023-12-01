@@ -3,6 +3,9 @@
 #include "Characters/Crow/Crow_Projectile.h"
 #include <Kismet/GameplayStatics.h>
 #include "DrawDebugHelpers.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Blueprint/WidgetTree.h"
+#include "Blueprint/UserWidget.h"
 
 ACharacterCrow::ACharacterCrow()
 {
@@ -32,6 +35,7 @@ ACharacterCrow::ACharacterCrow()
     GlideAirControl = 1.0f;
     DefaultAirControl = 0.3f;
     DefaultGravity = 1.0f;
+    FlashbangDuration = 3.0f;
 
     // Default Params for CD
     LastUsedAATime = -AACD;
@@ -195,6 +199,11 @@ void ACharacterCrow::Spell_02_Implementation()
     {
         LastUsedSpell02Time = CurrentTime;
 
+        // Activer l'effet de flashbang
+        bIsFlashing = true;
+        // Afficher l'effet de flashbang sur l'HUD
+        ShowFlashbangEffect();
+
         // Start Jump
         LaunchCharacter(FVector(0.0f, 0.0f, JumpZVelocity), false, false);
 
@@ -255,6 +264,46 @@ bool ACharacterCrow::CanUseGlideAbility() const
     return !bIsGliding && (CurrentTime - LastUsedSpell02Time >= ScarecrowBreezeCD);
 }
 
+void ACharacterCrow::ShowFlashbangEffect()
+{
+    // Create instance of the HUD Flash Effect
+    if (HUDFlashEffect)
+    {
+        FlashbangWidget = CreateWidget<UUserWidget>(GetWorld(), HUDFlashEffect);
+        if (FlashbangWidget)
+        {
+            FlashbangWidget->AddToViewport();
+            FTimerHandle TimerHandle;
+            GetWorldTimerManager().SetTimer(TimerHandle, this, &ACharacterCrow::HideFlashbangEffect, FlashbangDuration, false);
+        }
+    }
+}
+
+/*void ACharacterCrow::HideFlashbangEffect()
+{
+    if (FlashbangWidget)
+    {
+        // Start Animation
+        UWidgetAnimation* OpacityAnimation = FlashbangWidget->WidgetTree->FindWidgetAnimation(TEXT("FadeOut"));
+        if (OpacityAnimation)
+        {
+            FlashbangWidget->PlayAnimation(OpacityAnimation, 0.0f, 1, EUMGSequencePlayMode::Forward, 1.0f);
+        }
+        FTimerHandle TimerHandle;
+        GetWorldTimerManager().SetTimer(TimerHandle, this, &ACharacterCrow::DestroyFlashbangWidget, OpacityAnimation->GetEndTime(), false);
+    }
+}*/
+
+void ACharacterCrow::DestroyFlashbangWidget()
+{
+    if (FlashbangWidget)
+    {
+        // Remove the widget
+        FlashbangWidget->RemoveFromViewport();
+        // Or FlashbangWidget->MarkPendingKill(); to destroy the widget
+    }
+}
+
 void ACharacterCrow::Ultimate_Implementation()
 {
     // Verify if the ability is available
@@ -280,7 +329,7 @@ void ACharacterCrow::Ultimate_Implementation()
             // Array to store line points
             TArray<FVector> LinePoints;
 
-            // Generate line points in the shape of an arc
+            // Generate line points
             for (int32 i = 0; i < NumPoints; ++i)
             {
                 float Alpha = static_cast<float>(i) / static_cast<float>(NumPoints - 1);
