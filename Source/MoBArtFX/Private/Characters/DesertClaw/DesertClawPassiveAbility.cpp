@@ -1,4 +1,5 @@
 #include "Characters/DesertClaw/DesertClawPassiveAbility.h"
+#include "Characters/DesertClaw/DesertClawCharacter.h"
 #include "Defines.h"
 
 void UDesertClawPassiveAbility::OnInitialize_Implementation()
@@ -22,6 +23,9 @@ void UDesertClawPassiveAbility::AddSandPercent( float amount )
 	float old_percent = SandPercent;
 	SandPercent = FMath::Clamp( SandPercent + amount, 0.0f, 1.0f );
 
+	//  reflect changes on data (e.g. HUD)
+	Character->GetPlayerDatas()->CurrentAmmo = SandPercent * 100;
+
 	//  update on change
 	if ( old_percent != SandPercent )
 	{
@@ -31,7 +35,7 @@ void UDesertClawPassiveAbility::AddSandPercent( float amount )
 	//  reset cooldown
 	if ( amount < 0.0f )
 	{
-		Cooldown = Data->Cooldown;
+		SetCooldown( Data->Cooldown );
 		kPRINT_TICK( "Passive on Cooldown" );
 	}
 }

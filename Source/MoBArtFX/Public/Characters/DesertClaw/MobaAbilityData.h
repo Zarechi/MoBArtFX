@@ -2,20 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "PlayerInfos.h"
 #include "MobaAbilityData.generated.h"
 
 class UMobaAbility;
-
-UENUM( BlueprintType )
-enum class EMobaAbilitySlot : uint8
-{
-	First        UMETA( DisplayName = "First" ),
-	Second       UMETA( DisplayName = "Second" ),
-	Third        UMETA( DisplayName = "Third" ),
-	Ultimate     UMETA( DisplayName = "Ultimate" ),
-	AutoAttack   UMETA( DisplayName = "Auto-Attack" ),
-	Passive      UMETA( DisplayName = "Passive" ),
-};
 
 UENUM( BlueprintType )
 enum class EMobaAbilityMode : uint8

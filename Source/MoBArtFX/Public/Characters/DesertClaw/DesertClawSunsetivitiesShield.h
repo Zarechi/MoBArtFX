@@ -10,15 +10,12 @@ class MOBARTFX_API ADesertClawSunsetivitiesShield : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	ADesertClawSunsetivitiesShield();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	void Activate();
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+protected:
+	virtual void BeginPlay() override;
+	virtual void Tick( float dt ) override;
 
 };

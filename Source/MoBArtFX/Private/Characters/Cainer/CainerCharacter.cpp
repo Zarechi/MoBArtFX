@@ -18,17 +18,12 @@ void ACainerCharacter::BeginPlay()
 	if(infos.IsNull()) GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.0f, FColor::Red, "WARNING : Cainer doesn't have the correct player infos !");
 
 	//  set ultimate cooldown at max
-	flashCrtCD = infos->Ultimate_CD;
+	ApplySpellCooldown(infos->Ultimate_CD, EMobaAbilitySlot::Ultimate);
 }
 
 void ACainerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	//  decrease cooldowns each frame
-	monstroCrtCD = fmax(monstroCrtCD - DeltaTime, 0.0f);
-	speedBoostCrtCD = fmax(speedBoostCrtCD - DeltaTime, 0.0f);
-	flashCrtCD = fmax(flashCrtCD - DeltaTime, 0.0f);
 }
 
 
@@ -55,15 +50,15 @@ void ACainerCharacter::Spell_01_Implementation() //  speed boost
 	//  TODO implement gameplay state system to check if character can cast the spell
 
 
-	if (speedBoostCrtCD > 0.0f)
+	if (GetSpellCooldown(EMobaAbilitySlot::First) > 0.0f)
 	{
-		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Cyan, "Spell_01 : Speed Boost on cooldown for " + FString::SanitizeFloat(speedBoostCrtCD) + " seconds.");
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Cyan, "Spell_01 : Speed Boost on cooldown for " + FString::SanitizeFloat(GetSpellCooldown(EMobaAbilitySlot::First)) + " seconds.");
 		return;
 	}
 
 
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Blue, "Spell_01 : Speed Boost");
-	speedBoostCrtCD = infos->Spell01_CD;
+	ApplySpellCooldown(infos->Spell01_CD, EMobaAbilitySlot::First);
 
 	TArray<FHitResult> outs;
 
@@ -92,6 +87,14 @@ void ACainerCharacter::Spell_01_Implementation() //  speed boost
 
 		speed_comp->TriggerSpeedBoost(infos->speedBoostValue, infos->speedBoostDuration);
 	}
+
+	if (IsValid(monstro))
+	{
+		if (FVector::Distance(GetActorLocation(), monstro->GetActorLocation()) < infos->speedBoostRadius)
+		{
+			monstro->BoostSpeed(infos->speedBoostValue, infos->speedBoostDuration);
+		}
+	}
 }
 
 void ACainerCharacter::Spell_02_Implementation() //  monstro
@@ -99,9 +102,9 @@ void ACainerCharacter::Spell_02_Implementation() //  monstro
 	//  TODO implement gameplay state system to check if character can cast the spell
 
 
-	if (monstroCrtCD > 0.0f)
+	if (GetSpellCooldown(EMobaAbilitySlot::Second) > 0.0f)
 	{
-		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Cyan, "Spell_02 : Monstro on cooldown for " + FString::SanitizeFloat(monstroCrtCD) + " seconds.");
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Cyan, "Spell_02 : Monstro on cooldown for " + FString::SanitizeFloat(GetSpellCooldown(EMobaAbilitySlot::Second)) + " seconds.");
 		return;
 	}
 
@@ -112,7 +115,7 @@ void ACainerCharacter::Spell_02_Implementation() //  monstro
 	}
 
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Blue, "Spell_02 : Monstro");
-	monstroCrtCD = infos->Spell02_CD;
+	ApplySpellCooldown(infos->Spell02_CD, EMobaAbilitySlot::Second);
 
 
 	FTransform monstro_transform; 
@@ -120,7 +123,7 @@ void ACainerCharacter::Spell_02_Implementation() //  monstro
 	monstro_transform.SetRotation(GetActorRotation().Quaternion()); 
 
 	monstro = GetWorld()->SpawnActor<ACainerMonstro>(infos->monstroBlueprint, monstro_transform); 
-	monstro->SetSpeed(infos->monstroMoveSpeed); 
+	monstro->SetBaseSpeed(infos->monstroMoveSpeed); 
 	monstro->SetLife(infos->monstroLife); 
 }
 
@@ -147,15 +150,15 @@ void ACainerCharacter::Ultimate_Implementation() //  flash
 	//  TODO implement gameplay state system to check if character can cast the spell
 
 
-	if (flashCrtCD > 0.0f)
+	if (GetSpellCooldown(EMobaAbilitySlot::Ultimate) > 0.0f)
 	{
-		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Cyan, "Ultimate : Flash on cooldown for " + FString::SanitizeFloat(flashCrtCD) + " seconds.");
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Cyan, "Ultimate : Flash on cooldown for " + FString::SanitizeFloat(GetSpellCooldown(EMobaAbilitySlot::Ultimate)) + " seconds.");
 		return;
 	}
 
 
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3.0f, FColor::Blue, "Ultimate : Flash");
-	flashCrtCD = infos->Ultimate_CD;
+	ApplySpellCooldown(infos->Ultimate_CD, EMobaAbilitySlot::Ultimate);
 
 
 	TArray<FHitResult> outs; 
@@ -250,22 +253,6 @@ FVector ACainerCharacter::GetMonstroDestination()
 
 
 	return destination;
-}
-
-
-float ACainerCharacter::GetSpell01Cooldown() const
-{
-	return speedBoostCrtCD;
-}
-
-float ACainerCharacter::GetSpell02Cooldown() const
-{
-	return monstroCrtCD;
-}
-
-float ACainerCharacter::GetUltimateCooldown() const
-{
-	return flashCrtCD;
 }
 
 

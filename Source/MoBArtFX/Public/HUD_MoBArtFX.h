@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
 #include "Blueprint/UserWidget.h"
+#include "PlayerInfos.h"
 #include "HUD_MoBArtFX.generated.h"
 
 /** HUD Interface */
@@ -17,12 +18,11 @@ class IHUDInterface
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "HUD")
-	void Cooldown(double _CooldownTime, int SpellNum = -1);
+	UFUNCTION( BlueprintImplementableEvent, BlueprintCallable, Category = "HUD" )
+	void Cooldown( double time, int type );
 };
 
 /** HUD Class */
-
 UCLASS()
 class MOBARTFX_API AHUD_MoBArtFX : public AHUD
 {
@@ -30,6 +30,9 @@ class MOBARTFX_API AHUD_MoBArtFX : public AHUD
 	
 public:
 	virtual void BeginPlay() override;
+
+	UFUNCTION( BlueprintImplementableEvent, BlueprintCallable, Category = "HUD" )
+	void Cooldown( float time, EMobaAbilitySlot type );
 	
 	UPROPERTY(BlueprintReadOnly, Category = Viewport)
 	TObjectPtr<UUserWidget> ViewportInstance;

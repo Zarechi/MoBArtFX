@@ -17,9 +17,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AI)
 	TSubclassOf<AAIC_CainerMonstro> aiControllerClass_;
 
-	void SetSpeed(float speed);
+	void SetBaseSpeed(float speed);
 	void SetLife(float life);
 	void SetDestination(FVector destination, float yawRotation);
+	void BoostSpeed(float boost, float boostTime);
 
 	UFUNCTION(BlueprintCallable)
 	void TakeDamage(float damage);
@@ -31,7 +32,9 @@ private:
 	TObjectPtr<AAIC_CainerMonstro> aiController;
 
 	float health{ 0.0f };
+	float basespeed{ 0.0f };
 	bool isMoving{ false };
+	float boostTimer{ 0.0f };
 
 	float wantedYawRotation{ 0.0f };
 };

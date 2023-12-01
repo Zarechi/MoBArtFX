@@ -31,16 +31,6 @@ public:
 
 	void PingMonstro();
 
-
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	float GetSpell01Cooldown() const;
-
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	float GetSpell02Cooldown() const;
-
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	float GetUltimateCooldown() const;
-
 protected:
 	virtual void BeginPlay() override;
 
@@ -50,11 +40,6 @@ protected:
 
 
 private:
-	// Cooldowns
-	float monstroCrtCD = 0.0f;
-	float speedBoostCrtCD = 0.0f;
-	float flashCrtCD = 0.0f;
-
 	TObjectPtr<UCainerInfos> infos;
 	TObjectPtr<ACainerMonstro> monstro;
 
