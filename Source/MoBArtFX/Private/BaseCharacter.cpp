@@ -70,6 +70,12 @@ float ABaseCharacter::GetSpellCooldown( EMobaAbilitySlot type ) const
 	return *itr - GetWorld()->GetTimeSeconds();
 }
 
+void ABaseCharacter::AlterateSpeed(float alteration, float duration)
+{
+	SpeedAlterations.Add(FSpeedAlteration{ alteration, duration }); 
+	ChangeSpeed();
+}
+
 bool ABaseCharacter::IsSpellOnCooldown( EMobaAbilitySlot type ) const
 {
 	return GetSpellCooldown( type ) > 0.0f;
@@ -132,6 +138,28 @@ UPlayerInfos* ABaseCharacter::GetPlayerDatas()
 void ABaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	int nb_alterations = SpeedAlterations.Num();
+	if (nb_alterations > 0)
+	{
+		float change = 1.0f;
+		for (int i = 0; i < nb_alterations; i++)
+		{
+			SpeedAlterations[i].duration -= DeltaTime; 
+			if (SpeedAlterations[i].duration <= 0.0f) 
+			{
+				SpeedAlterations.RemoveAt(i); 
+				i--; 
+				nb_alterations--; 
+				ChangeSpeed(); 
+			}
+			else
+			{
+				change *= SpeedAlterations[i].change;
+			}
+		}
+		kPRINT_TICK("Speed currently altered by a factor of " + FString::SanitizeFloat(change) + ".");
+	}
 }
 
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -150,6 +178,18 @@ void ABaseCharacter::SetupData( UPlayerInfos* data )
 	}
 
 	kLOG_ARGS( "Character '%s' data has been setup", *data->Name );
+}
+
+void ABaseCharacter::ChangeSpeed()
+{
+	float change = 1.0f;
+
+	for (auto alteration : SpeedAlterations)
+	{
+		change *= alteration.change; 
+	}
+
+	GetCharacterMovement()->MaxWalkSpeed = GetPlayerDatas()->MaxWalkSpeed * change;
 }
 
 void ABaseCharacter::AutoAttack_Implementation()

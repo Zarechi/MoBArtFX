@@ -71,21 +71,17 @@ void ACainerCharacter::Spell_01_Implementation() //  speed boost
 		return;
 	}
 
-	TArray<ACharacter*> checked_chara; 
+	TArray<ABaseCharacter*> checked_chara; 
 
 	for (FHitResult out : outs)
 	{
-		auto chara = Cast<ACharacter>(out.GetActor());
+		auto chara = Cast<ABaseCharacter>(out.GetActor());
 		if (!chara->IsValidLowLevel()) continue;
 
 		if (checked_chara.Contains(chara)) continue;
 		checked_chara.Add(chara);
 
-
-		auto speed_comp = chara->GetComponentByClass<UAC_CainerSpeedBoost>();
-		if (!speed_comp->IsValidLowLevel()) continue;
-
-		speed_comp->TriggerSpeedBoost(infos->speedBoostValue, infos->speedBoostDuration);
+		chara->AlterateSpeed(infos->speedBoostValue, infos->speedBoostDuration);
 	}
 
 	if (IsValid(monstro))
