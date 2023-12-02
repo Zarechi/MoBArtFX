@@ -10,14 +10,33 @@ void AHUD_MoBArtFX::BeginPlay()
 	Super::BeginPlay();
 
 	auto controller = GetOwningPlayerController();
-	auto character = Cast<ABaseCharacter>( controller->GetPawn() );
-	if ( !character )
+	if (!controller) {
+		kPRINT_ERROR("[AHUD_MoBArtFX::BeginPlay] Moba HUD couldn't get the controller!");
+		return;
+	}
+	//kPRINT_ERROR(controller->GetName());
+	//kPRINT_ERROR(controller->GetOwner()->GetName());
+
+	auto pawn = controller->GetPawn();
+	if (!pawn)
 	{
-		kPRINT_ERROR( "Moba HUD couldn't cast the controlled pawn to ABaseCharacter!" );
+		kPRINT_ERROR("[AHUD_MoBArtFX::BeginPlay] Moba HUD couldn't get the pawn!");
 		return;
 	}
 
-	auto data = character->GetPlayerDatas();
+	auto character = Cast<ABaseCharacter>( controller->GetPawn() );
+	if ( !character )
+	{
+		kPRINT_ERROR( "[AHUD_MoBArtFX::BeginPlay] Moba HUD couldn't cast the controlled pawn to ABaseCharacter!" );
+		return;
+	}
+
+	auto data = character->GetPlayerDatas(); // Ici le client n'arrive pas à faire ça
+	if (!data) 
+	{
+		kPRINT_ERROR("[AHUD_MoBArtFX::BeginPlay] Moba HUD couldn't get the player data!");
+		return;
+	}
 	ViewportInstance = CreateWidget<>( controller, data->ViewportClass, FName( "Viewport" ) );
 	ViewportInstance->AddToPlayerScreen();
 }

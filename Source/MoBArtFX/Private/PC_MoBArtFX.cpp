@@ -17,7 +17,7 @@ void APC_MoBArtFX::BeginPlay()
 	PlayerCharacter = Cast<ABaseCharacter>( GetPawn() );
 	if ( !PlayerCharacter )
 	{
-		kPRINT_ERROR( "A Moba PlayerController couldn't cast its pawn to ABaseCharacter!" );
+		kPRINT_ERROR( "[APC_MoBArtFX::BeginPlay] A Moba PlayerController couldn't cast its pawn to ABaseCharacter!" );
 		return;
 	}
 
