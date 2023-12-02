@@ -212,7 +212,6 @@ void AVivianne::Ultimate()
 		if (spawnedCauldron && spawnedCauldron->getMesh())
 		{
 			spawnedCauldron->getMesh()->AddImpulse(totalImpulse, NAME_None, true);
-			spawnedCauldron->getHitbox()->AddImpulse(totalImpulse, NAME_None, true);
 			// Lock rotation on the Z-axis (or any other axis as needed)
 			spawnedCauldron->getMesh()->SetConstraintMode(EDOFMode::SixDOF);
 			spawnedCauldron->getMesh()->GetBodyInstance()->bLockXRotation = true;
