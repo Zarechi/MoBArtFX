@@ -30,21 +30,11 @@ void AVivianne::Tick(float DeltaTime)
 	{
 		sprintCooldown -= DeltaTime;
 	}
+
 	else if (sprintCooldown < 0 && !sprintReady)
 	{
 		sprintReady = true;
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("sprint ready"));
-	}
-
-	if (sprintDuration > 0)
-	{
-		sprintDuration -= DeltaTime;
-	}
-	else if (sprintDuration < 0 && sprinting)
-	{
-		sprinting = false;
-		GetCharacterMovement()->MaxWalkSpeed = infos->MaxWalkSpeed;
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("sprint off"));
 	}
 
 	if (healCooldown > 0)
@@ -181,8 +171,8 @@ void AVivianne::Sprint()
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("sprint"));
 		sprintDuration = infos->sprintDuration;
 		sprintCooldown = infos->Spell02_CD;
-		GetCharacterMovement()->MaxWalkSpeed = infos->sprintSpeed;
-		sprinting = true;
+		sprintSpeed = infos->sprintSpeed;
+		AlterateSpeed(sprintSpeed, sprintDuration);
 		sprintReady = false;
 	}
 }
