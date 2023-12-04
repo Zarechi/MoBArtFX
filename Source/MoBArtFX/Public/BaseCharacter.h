@@ -1,7 +1,9 @@
 #pragma once
 #include "CoreMinimal.h"
+#include "Engine/DamageEvents.h"
 #include "GameFramework/Character.h"
 #include "PS_MoBArtFX.h"
+#include "MobaGameplayStatics.h"
 #include "BaseCharacter.generated.h"
 
 class APC_MoBArtFX;
@@ -13,14 +15,6 @@ struct FSpeedAlteration
 
 	float change;
 	float duration;
-};
-
-UENUM(BlueprintType)
-enum class EMobaTeam : uint8
-{
-	NONE = 0,
-	BLUE = 1,
-	RED = 2
 };
 
 UCLASS()
@@ -115,5 +109,7 @@ protected:
 	TObjectPtr<APC_MoBArtFX> CustomPlayerController;
 
 private:
+	void HandleDeath();
+
 	EMobaTeam Team{ EMobaTeam::NONE };
 };

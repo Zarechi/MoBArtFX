@@ -1,8 +1,7 @@
 #include "BaseCharacter.h"
-#include "Engine/DamageEvents.h"
 #include "PC_MoBArtFX.h"
 #include "GameFramework/CharacterMovementComponent.h"
-
+#include "Kismet/GameplayStatics.h"
 #include "Defines.h"
 
 ABaseCharacter::ABaseCharacter()
@@ -22,20 +21,18 @@ float ABaseCharacter::TakeDamage(
 	if ( data->CurrentHealth == 0.0f ) return 0.0f;
 
 	//  check team
-	if (IsValid(EventInstigator))
+	if (DamageEvent.IsOfType(FMobaDamageEvent::ClassID))
 	{
-		ABaseCharacter* instigator = Cast<ABaseCharacter>(EventInstigator->GetPawn());
-		if (IsValid(instigator))
+		FMobaDamageEvent* const moba_damage_event = (FMobaDamageEvent*) &DamageEvent;
+
+		if (Team != EMobaTeam::NONE && Team == moba_damage_event->Team)
 		{
-			if (Team != EMobaTeam::NONE && Team == instigator->GetTeam())
-			{
-				return 0.0f;
-			}
+			return 0.0f;
 		}
 	}
 	else
 	{
-		kPRINT_WARNING("A damage has been send without the instigator controller !");
+		kPRINT_WARNING("A damage has been send without the moba damage event struct.");
 	}
 
 	//  mitigate damage
@@ -48,7 +45,7 @@ float ABaseCharacter::TakeDamage(
 	//  check death
 	if ( data->CurrentHealth == 0.0f )
 	{
-		Death();
+		HandleDeath();
 	}
 
 	return took_damage;
@@ -236,10 +233,18 @@ void ABaseCharacter::Spell_02_Implementation() {}
 
 void ABaseCharacter::Ultimate_Implementation() {}
 
-void ABaseCharacter::Death_Implementation() 
+void ABaseCharacter::Death_Implementation() {}
+
+void ABaseCharacter::HandleDeath()
 {
 	auto data = GetPlayerDatas();
-	if ( !IsValid( data ) ) return;
+	if (!IsValid(data)) return;
 
-	kPRINT( data->Name + " is dead!" );
+	kPRINT(data->Name + " is dead!");
+
+	Death(); //  character's specific death implementation
+
+
+	//  death logic
+	CustomPlayerController->UnPossess();
 }

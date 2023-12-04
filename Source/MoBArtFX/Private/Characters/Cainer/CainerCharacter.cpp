@@ -252,4 +252,10 @@ FVector ACainerCharacter::GetMonstroDestination()
 }
 
 
-void ACainerCharacter::Death_Implementation() {}
+void ACainerCharacter::Death_Implementation()
+{
+	if (IsValid(monstro)) //  kill monstro on Cainer death
+	{
+		monstro->Destroy();
+	}
+}
