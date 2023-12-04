@@ -4,8 +4,13 @@
 #include "Characters/King/IronShears.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/BoxComponent.h"
-#include <Characters/King/Int_Interaction_Chara.h>
+#include <BaseCharacter.h>
 
+
+void AIronShears::SetDurationSlowOnTarget(float dur)
+{
+	DurationSlowOnTarget = dur;
+}
 
 // Sets default values
 AIronShears::AIronShears()
@@ -34,14 +39,17 @@ AIronShears::AIronShears()
 	// Die after 1 second
 	InitialLifeSpan = 1.f;
 
+	DurationSlowOnTarget = 1.f;
+
 }
 
 void AIronShears::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->Implements<UInt_Interaction_Chara>())
+	TObjectPtr<ABaseCharacter> target = Cast<ABaseCharacter>(OtherActor);
+	if (target != nullptr)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("IronShears"));
-		IInt_Interaction_Chara::Execute_SlowDown(OtherActor);
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("IronShears"));
+		target->AlterateSpeed(0.7, DurationSlowOnTarget);
 	}
 }
 

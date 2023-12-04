@@ -61,6 +61,12 @@ public:
 	UFUNCTION( BlueprintNativeEvent )
 	void OnTick( float delta_time );
 
+	/*
+	 *  Called before OnRun and OnStop to control whenever the ability is able to process.
+	 */
+	UFUNCTION( BlueprintNativeEvent )
+	bool CanRun( FMobaAbilityRunContext context );
+
 	UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Ability" )
 	bool IsOnCooldown();
 	UFUNCTION( BlueprintCallable, Category = "Ability" )
