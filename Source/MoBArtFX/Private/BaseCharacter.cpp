@@ -21,6 +21,23 @@ float ABaseCharacter::TakeDamage(
 	if ( !IsValid( data ) ) return 0.0f;
 	if ( data->CurrentHealth == 0.0f ) return 0.0f;
 
+	//  check team
+	if (IsValid(EventInstigator))
+	{
+		ABaseCharacter* instigator = Cast<ABaseCharacter>(EventInstigator->GetPawn());
+		if (IsValid(instigator))
+		{
+			if (Team != EMobaTeam::NONE && Team == instigator->GetTeam())
+			{
+				return 0.0f;
+			}
+		}
+	}
+	else
+	{
+		kPRINT_WARNING("A damage has been send without the instigator controller !");
+	}
+
 	//  mitigate damage
 	float took_damage = Super::TakeDamage( Damage, DamageEvent, EventInstigator, DamageCauser );
 	took_damage = MitigateDamage( took_damage, DamageCauser );
@@ -70,9 +87,22 @@ float ABaseCharacter::GetSpellCooldown( EMobaAbilitySlot type ) const
 	return *itr - GetWorld()->GetTimeSeconds();
 }
 
+void ABaseCharacter::AlterateSpeed(float alteration, float duration)
+{
+	SpeedAlterations.Add(FSpeedAlteration{ alteration, duration }); 
+	ChangeSpeed();
+}
+
 bool ABaseCharacter::IsSpellOnCooldown( EMobaAbilitySlot type ) const
 {
 	return GetSpellCooldown( type ) > 0.0f;
+}
+
+void ABaseCharacter::SetTeam(EMobaTeam newTeam)
+{
+	Team = newTeam;
+
+	//  do other stuff if necessary
 }
 
 void ABaseCharacter::BeginPlay()
@@ -132,6 +162,28 @@ UPlayerInfos* ABaseCharacter::GetPlayerDatas()
 void ABaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	int nb_alterations = SpeedAlterations.Num();
+	if (nb_alterations > 0)
+	{
+		float change = 1.0f;
+		for (int i = 0; i < nb_alterations; i++)
+		{
+			SpeedAlterations[i].duration -= DeltaTime; 
+			if (SpeedAlterations[i].duration <= 0.0f) 
+			{
+				SpeedAlterations.RemoveAt(i); 
+				i--; 
+				nb_alterations--; 
+				ChangeSpeed(); 
+			}
+			else
+			{
+				change *= SpeedAlterations[i].change;
+			}
+		}
+		kPRINT_TICK("Speed currently altered by a factor of " + FString::SanitizeFloat(change) + ".");
+	}
 }
 
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -150,6 +202,18 @@ void ABaseCharacter::SetupData( UPlayerInfos* data )
 	}
 
 	kLOG_ARGS( "Character '%s' data has been setup", *data->Name );
+}
+
+void ABaseCharacter::ChangeSpeed()
+{
+	float change = 1.0f;
+
+	for (auto alteration : SpeedAlterations)
+	{
+		change *= alteration.change; 
+	}
+
+	GetCharacterMovement()->MaxWalkSpeed = GetPlayerDatas()->MaxWalkSpeed * change;
 }
 
 void ABaseCharacter::AutoAttack_Implementation()

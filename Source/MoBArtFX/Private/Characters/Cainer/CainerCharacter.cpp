@@ -18,7 +18,7 @@ void ACainerCharacter::BeginPlay()
 	if(infos.IsNull()) GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.0f, FColor::Red, "WARNING : Cainer doesn't have the correct player infos !");
 
 	//  set ultimate cooldown at max
-	ApplySpellCooldown(infos->Ultimate_CD, EMobaAbilitySlot::Ultimate);
+	//ApplySpellCooldown(infos->Ultimate_CD, EMobaAbilitySlot::Ultimate);
 }
 
 void ACainerCharacter::Tick(float DeltaTime)
@@ -71,21 +71,17 @@ void ACainerCharacter::Spell_01_Implementation() //  speed boost
 		return;
 	}
 
-	TArray<ACharacter*> checked_chara; 
+	TArray<ABaseCharacter*> checked_chara; 
 
 	for (FHitResult out : outs)
 	{
-		auto chara = Cast<ACharacter>(out.GetActor());
+		auto chara = Cast<ABaseCharacter>(out.GetActor());
 		if (!chara->IsValidLowLevel()) continue;
 
 		if (checked_chara.Contains(chara)) continue;
 		checked_chara.Add(chara);
 
-
-		auto speed_comp = chara->GetComponentByClass<UAC_CainerSpeedBoost>();
-		if (!speed_comp->IsValidLowLevel()) continue;
-
-		speed_comp->TriggerSpeedBoost(infos->speedBoostValue, infos->speedBoostDuration);
+		chara->AlterateSpeed(infos->speedBoostValue, infos->speedBoostDuration);
 	}
 
 	if (IsValid(monstro))

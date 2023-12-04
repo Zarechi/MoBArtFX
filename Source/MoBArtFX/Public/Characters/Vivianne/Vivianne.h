@@ -32,6 +32,7 @@ protected:
 	// Sprint related
 	float sprintCooldown = 0.f;
 	float sprintDuration = 0.f;
+	float sprintSpeed = 0.f;
 	bool sprinting = false;
 	bool sprintReady = true;
 

@@ -14,7 +14,12 @@ void APC_MoBArtFX::BeginPlay()
 	UWidgetBlueprintLibrary::SetInputMode_GameOnly(this);
 	
 	//  cast base character
-	PlayerCharacter = CastChecked<ABaseCharacter>( GetPawn() );
+	PlayerCharacter = Cast<ABaseCharacter>( GetPawn() );
+	if ( !PlayerCharacter )
+	{
+		kPRINT_ERROR( "A Moba PlayerController couldn't cast its pawn to ABaseCharacter!" );
+		return;
+	}
 
 	//  cast HUD
 	HUD = CastChecked<AHUD_MoBArtFX>( GetHUD() );
