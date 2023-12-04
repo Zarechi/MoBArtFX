@@ -110,9 +110,9 @@ public:
 	UPROPERTY()
 	UUserWidget* FlashbangWidget;
 
-	// ULTIMATE
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Scarecrow Breeze Settings")
-	float UltimateCD;
+	// ULTIMATE VENFEGUL RAVEN
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Vengeful Raven Settings")
+	float VengefulRavenCD;
 
 	// Class of the sphere projectile
 	TSubclassOf<class ACrow_Projectile> ProjectileClass;

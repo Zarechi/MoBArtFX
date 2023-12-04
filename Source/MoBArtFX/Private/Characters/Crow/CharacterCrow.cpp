@@ -37,11 +37,14 @@ ACharacterCrow::ACharacterCrow()
     DefaultGravity = 1.0f;
     FlashbangDuration = 3.0f;
 
+    // Default Params for Vengeful Raven (Ultimate)
+    VengefulRavenCD = 30.0f;
+
     // Default Params for CD
     LastUsedAATime = -AACD;
     LastUsedSpell01Time = -RedemptionFeatherCD;
     LastUsedSpell02Time = -ScarecrowBreezeCD;
-    LastUsedUltimateTime = -UltimateCD;
+    LastUsedUltimateTime = -VengefulRavenCD;
 
     CurvedMovementSpline = CreateDefaultSubobject<USplineComponent>(TEXT("CurvedMovementSpline"));
     CurvedMovementSpline->SetupAttachment(RootComponent);
@@ -319,7 +322,7 @@ void ACharacterCrow::Ultimate_Implementation()
     // Verify if the ability is available
     const float CurrentTime = GetWorld()->GetTimeSeconds();
 
-    if (CurrentTime - LastUsedUltimateTime >= UltimateCD)
+    if (CurrentTime - LastUsedUltimateTime >= VengefulRavenCD)
     {
         LastUsedUltimateTime = CurrentTime;
 
