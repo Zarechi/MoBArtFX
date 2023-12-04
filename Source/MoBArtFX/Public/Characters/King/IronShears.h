@@ -20,7 +20,7 @@ class MOBARTFX_API AIronShears : public AActor
 	/** Projectile movement component */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
-	
+
 public:	
 	// Sets default values for this actor's properties
 	AIronShears();
@@ -28,8 +28,14 @@ public:
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UFUNCTION()
+	void SetDurationSlowOnTarget(float dur);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+private:
+	float DurationSlowOnTarget;
 
 };
