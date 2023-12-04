@@ -264,7 +264,7 @@ bool ACharacterCrow::CanUseGlideAbility() const
     return !bIsGliding && (CurrentTime - LastUsedSpell02Time >= ScarecrowBreezeCD);
 }
 
-void ACharacterCrow::ShowFlashbangEffect()
+/*void ACharacterCrow::ShowFlashbangEffect()
 {
     if (HUDFlashEffect)
     {
@@ -274,36 +274,35 @@ void ACharacterCrow::ShowFlashbangEffect()
         {
             FlashbangWidget->AddToViewport();
 
-            // Démarrer l'animation d'opacity (remplacez "FadeInAnimation" par le nom de votre animation)
+
             UWidgetAnimation* OpacityAnimation = UWidgetBlueprintLibrary::FindWidgetAnimation(FlashbangWidget, TEXT("FadeInAnimation"));
             if (OpacityAnimation)
             {
                 FlashbangWidget->PlayAnimation(OpacityAnimation, 0.0f, 1, EUMGSequencePlayMode::Forward, 1.0f);
             }
 
-            const float YourDelayTime = 2.0f; // Exemple de durée d'affichage de l'écran blanc
+            const float YourDelayTime = 2.0f;
             FTimerHandle TimerHandle;
             GetWorldTimerManager().SetTimer(TimerHandle, this, &ACharacterCrow::HideFlashbangEffect, YourDelayTime, false);
         }
     }
-}
+}*/
 
-void ACharacterCrow::HideFlashbangEffect()
+/*void ACharacterCrow::HideFlashbangEffect()
 {
     if (FlashbangWidget)
     {
-        // Trouver l'animation de fade out (remplacez "FadeOutAnimation" par le nom de votre animation)
         UWidgetAnimation* OpacityAnimation = UWidgetBlueprintLibrary::FindWidgetAnimation(FlashbangWidget, TEXT("FadeOutAnimation"));
         if (OpacityAnimation)
         {
             FlashbangWidget->PlayAnimation(OpacityAnimation, 0.0f, 1, EUMGSequencePlayMode::Forward, 1.0f);
 
-            const float YourDelayTime = 1.0f; // Exemple de durée de l'animation de fade out
+            const float YourDelayTime = 1.0f;
             FTimerHandle TimerHandle;
             GetWorldTimerManager().SetTimer(TimerHandle, this, &ACharacterCrow::DestroyFlashbangWidget, YourDelayTime, false);
         }
     }
-}
+}*/
 
 void ACharacterCrow::DestroyFlashbangWidget()
 {
