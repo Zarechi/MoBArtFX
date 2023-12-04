@@ -17,6 +17,8 @@ class MOBARTFX_API ADesertClawSunsetivitiesGrenade : public AActor
 public:
 	ADesertClawSunsetivitiesGrenade();
 
+	void SetupData( UDesertClawSunsetivitiesAbilityData* data );
+
 	UPROPERTY( BlueprintReadOnly, VisibleAnywhere )
 	UStaticMeshComponent* Mesh;
 
@@ -24,6 +26,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick( float dt ) override;
 
+	UFUNCTION()
 	void OnMeshHit(
 		UPrimitiveComponent* HitComponent, 
 		AActor* OtherActor, 
