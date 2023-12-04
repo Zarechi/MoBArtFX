@@ -21,6 +21,23 @@ float ABaseCharacter::TakeDamage(
 	if ( !IsValid( data ) ) return 0.0f;
 	if ( data->CurrentHealth == 0.0f ) return 0.0f;
 
+	//  check team
+	if (IsValid(EventInstigator))
+	{
+		ABaseCharacter* instigator = Cast<ABaseCharacter>(EventInstigator->GetPawn());
+		if (IsValid(instigator))
+		{
+			if (Team != EMobaTeam::NONE && Team == instigator->GetTeam())
+			{
+				return 0.0f;
+			}
+		}
+	}
+	else
+	{
+		kPRINT_WARNING("A damage has been send without the instigator controller !");
+	}
+
 	//  mitigate damage
 	float took_damage = Super::TakeDamage( Damage, DamageEvent, EventInstigator, DamageCauser );
 	took_damage = MitigateDamage( took_damage, DamageCauser );
@@ -79,6 +96,13 @@ void ABaseCharacter::AlterateSpeed(float alteration, float duration)
 bool ABaseCharacter::IsSpellOnCooldown( EMobaAbilitySlot type ) const
 {
 	return GetSpellCooldown( type ) > 0.0f;
+}
+
+void ABaseCharacter::SetTeam(EMobaTeam newTeam)
+{
+	Team = newTeam;
+
+	//  do other stuff if necessary
 }
 
 void ABaseCharacter::BeginPlay()

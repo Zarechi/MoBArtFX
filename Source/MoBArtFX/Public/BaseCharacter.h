@@ -15,6 +15,14 @@ struct FSpeedAlteration
 	float duration;
 };
 
+UENUM(BlueprintType)
+enum class EMobaTeam : uint8
+{
+	NONE = 0,
+	BLUE = 1,
+	RED = 2
+};
+
 UCLASS()
 class MOBARTFX_API ABaseCharacter : public ACharacter
 {
@@ -80,6 +88,11 @@ public:
 	UFUNCTION( BlueprintCallable, BlueprintPure )
 	APC_MoBArtFX* GetCustomPlayerController() const { return CustomPlayerController; }
 
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	EMobaTeam GetTeam() const { return Team; }
+	UFUNCTION(BlueprintCallable)
+	void SetTeam(EMobaTeam newTeam);
+
 	UPROPERTY( EditDefaultsOnly, BlueprintReadOnly )
 	TSoftClassPtr<UPlayerInfos> DebugPlayerInfosAsset;
 	UPROPERTY( BlueprintReadWrite )
@@ -100,4 +113,7 @@ protected:
 
 	TObjectPtr<APS_MoBArtFX> CustomPlayerState;
 	TObjectPtr<APC_MoBArtFX> CustomPlayerController;
+
+private:
+	EMobaTeam Team{ EMobaTeam::NONE };
 };
