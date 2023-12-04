@@ -26,8 +26,8 @@ public:
 	void Ultimate_Implementation() override;
 
 	bool CanUseGlideAbility() const;
-	void ShowFlashbangEffect();
-	void HideFlashbangEffect();
+	//void ShowFlashbangEffect();
+	//void HideFlashbangEffect();
 	void DestroyFlashbangWidget();
 	void UpdateGlide();
 

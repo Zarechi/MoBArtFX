@@ -202,7 +202,7 @@ void ACharacterCrow::Spell_02_Implementation()
         // Activer l'effet de flashbang
         bIsFlashing = true;
         // Afficher l'effet de flashbang sur l'HUD
-        ShowFlashbangEffect();
+        //ShowFlashbangEffect();
 
         // Start Jump
         LaunchCharacter(FVector(0.0f, 0.0f, JumpZVelocity), false, false);
