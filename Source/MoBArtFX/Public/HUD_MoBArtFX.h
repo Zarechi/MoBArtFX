@@ -36,4 +36,7 @@ public:
 	
 	UPROPERTY(BlueprintReadOnly, Category = Viewport)
 	TObjectPtr<UUserWidget> ViewportInstance;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void SetViewportPlayerDatas();
 };

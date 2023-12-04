@@ -20,4 +20,6 @@ void AHUD_MoBArtFX::BeginPlay()
 	auto data = character->GetPlayerDatas();
 	ViewportInstance = CreateWidget<>( controller, data->ViewportClass, FName( "Viewport" ) );
 	ViewportInstance->AddToPlayerScreen();
+
+	SetViewportPlayerDatas();
 }
