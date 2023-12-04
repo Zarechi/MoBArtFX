@@ -26,8 +26,10 @@ public:
 	void Ultimate_Implementation() override;
 
 	bool CanUseGlideAbility() const;
+	//void ShowFlashbangEffect();
+	//void HideFlashbangEffect();
+	void DestroyFlashbangWidget();
 	void UpdateGlide();
-	void SetupCurvedMovement();
 
 	// Cooldown
 	float LastUsedAATime;
@@ -42,6 +44,7 @@ public:
 
 	// Scarecrow Breeze
 	bool bIsGliding;
+	bool bIsFlashing;
 	float GlideStartTime;
 
 	// AUTO ATTACK 
@@ -97,6 +100,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Scarecrow Breeze Settings")
 	bool bInfiniteGlideDuration;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Scarecrow Breeze Settings")
+	float FlashbangDuration;
+
+	UPROPERTY(EditDefaultsOnly, Category = "HUD")
+	TSubclassOf<UUserWidget> HUDFlashEffect;
+
+	UPROPERTY()
+	UUserWidget* FlashbangWidget;
 
 	// ULTIMATE
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Scarecrow Breeze Settings")
