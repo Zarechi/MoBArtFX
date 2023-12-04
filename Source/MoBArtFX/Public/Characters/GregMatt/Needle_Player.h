@@ -22,6 +22,12 @@ public:
 	void Ultimate_Implementation() override;
 
 	void AutoAttack_Implementation() override;
+
+	//Works on client only
+	UFUNCTION(Server, Reliable)
+	void AutoAttack_Client();
+	void AutoAttack_Client_Implementation();
+
 	void Reload_Implementation() override;
 
 	void Death_Implementation() override;

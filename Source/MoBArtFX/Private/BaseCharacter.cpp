@@ -4,6 +4,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 
 #include "Defines.h"
+#include <Kismet/GameplayStatics.h>
 
 ABaseCharacter::ABaseCharacter()
 {
@@ -99,9 +100,27 @@ void ABaseCharacter::BeginPlay()
 	SetPlayerDatas( GetPlayerDatas() );
 }
 
+void ABaseCharacter::OnRep_PlayerState() 
+{
+	kPRINT_ERROR("OnRep_PlayerState!");
+	CustomPlayerState = GetPlayerState<APS_MoBArtFX>();
+
+	SetPlayerDatas(GetPlayerDatas());
+
+	AHUD_MoBArtFX* hud = Cast<AHUD_MoBArtFX>(UGameplayStatics::GetPlayerController(this, 0)->GetHUD());
+	if (hud) 
+	{
+		hud->BeginPlay();
+	}
+}
+
 void ABaseCharacter::SetPlayerDatas( UPlayerInfos* data )
 {
-	if ( !IsValid( CustomPlayerState ) ) return;
+	if (!IsValid(CustomPlayerState)) 
+	{
+		kPRINT_ERROR("A Character doesn't have a CustomPlayerState!");
+		return;
+	}
 
 	CustomPlayerState->PlayerDatas = data;
 
@@ -110,7 +129,6 @@ void ABaseCharacter::SetPlayerDatas( UPlayerInfos* data )
 		kPRINT_ERROR( "A Character doesn't have a PlayerInfos data asset!" );
 		return;
 	}
-
 	SetupData( data );
 }
 
@@ -119,6 +137,7 @@ UPlayerInfos* ABaseCharacter::GetPlayerDatas()
 	//  ensure PlayerState has been retrieved
 	if ( !HasActorBegunPlay() )
 	{
+		kPRINT_ERROR("PlayerState has not been retrieved!");
 		DispatchBeginPlay();
 	}
 

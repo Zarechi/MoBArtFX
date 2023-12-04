@@ -9,13 +9,15 @@ void AHUD_MoBArtFX::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (ViewportInstance)
+		return;
+
+	kPRINT_ERROR("[AHUD_MoBArtFX]");
 	auto controller = GetOwningPlayerController();
 	if (!controller) {
 		kPRINT_ERROR("[AHUD_MoBArtFX::BeginPlay] Moba HUD couldn't get the controller!");
 		return;
 	}
-	//kPRINT_ERROR(controller->GetName());
-	//kPRINT_ERROR(controller->GetOwner()->GetName());
 
 	auto pawn = controller->GetPawn();
 	if (!pawn)

@@ -154,7 +154,22 @@ void ANeedle_Player::AutoAttack_Implementation()
 
 		ShootProjectile(0);
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("AutoAttack"));
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("ATTACK!Normal"));
+		if (HasAuthority()) 
+		{
+
+		}
+		else 
+		{
+			//AutoAttack_Client();
+		}
 	}
+}
+
+void ANeedle_Player::AutoAttack_Client_Implementation()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("ATTACK!ClientA"));
+	AutoAttack_Implementation();
 }
 
 void ANeedle_Player::Reload_Implementation()
