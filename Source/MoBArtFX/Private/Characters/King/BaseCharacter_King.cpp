@@ -34,7 +34,7 @@ ABaseCharacter_King::ABaseCharacter_King()
 	MeshGodHand->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	MeshGodHand->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	MeshGodHand->BodyInstance.SetCollisionProfileName("Shield");
-	//MeshGodHand->OnComponentHit.AddDynamic(this, &AC_Moba::OnHit);
+	MeshGodHand->OnComponentHit.AddDynamic(this, &ABaseCharacter_King::OnHit);
 
 	// Create as mesh for Ultimate L Hand
 	UltimateLHand = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshUltimateLHand"));
@@ -44,7 +44,7 @@ ABaseCharacter_King::ABaseCharacter_King()
 	UltimateLHand->SetVisibility(false);
 	UltimateLHand->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	UltimateLHand->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
-	//UltimateLHand->OnComponentBeginOverlap.AddDynamic(this, &AC_Moba::OnOverlapBegin);
+	UltimateLHand->OnComponentBeginOverlap.AddDynamic(this, &ABaseCharacter_King::OnOverlapBegin);
 
 	// Create as mesh for Ultimate R Hand
 	UltimateRHand = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshUltimateRHand"));
@@ -54,7 +54,7 @@ ABaseCharacter_King::ABaseCharacter_King()
 	UltimateRHand->SetVisibility(false);
 	UltimateRHand->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	UltimateRHand->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
-	//UltimateRHand->OnComponentBeginOverlap.AddDynamic(this, &AC_Moba::OnOverlapBegin);
+	UltimateRHand->OnComponentBeginOverlap.AddDynamic(this, &ABaseCharacter_King::OnOverlapBegin);
 
 	SetActorTickInterval(0.1);
 }
@@ -91,10 +91,10 @@ void ABaseCharacter_King::Tick(float DeltaTime)
 		EndUltimate();
 	}
 
-	if (Spell01IsActive && data->CurrentHealth <= saveCurentHealth)
+	/*if (Spell01IsActive && data->CurrentHealth <= saveCurentHealth)
 	{
 		EndGodHand();
-	}
+	}*/
 }
 
 void ABaseCharacter_King::AutoAttack_Implementation()
@@ -211,7 +211,7 @@ void ABaseCharacter_King::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor
 		OtherActor->Destroy();
 
 		//FString currentFHHealthStr = FString::SanitizeFloat(currentGodHandHealth);
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::SanitizeFloat(currentGodHandHealth));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::SanitizeFloat(currentGodHandHealth));
 
 		//if (currentGodHandHealth <= proj->GetDamage())
 		if (currentGodHandHealth <= proj->GetDamage())
@@ -228,8 +228,11 @@ void ABaseCharacter_King::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 {
 	TObjectPtr<ABaseCharacter> target = Cast<ABaseCharacter>(OtherActor);
 
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("UltimateDmg"));
+
 	if (target != nullptr)
 	{
+		
 		UMobaGameplayStatics::ApplyMobaDamage(target, UltiDemage, this, this);
 	}
 
