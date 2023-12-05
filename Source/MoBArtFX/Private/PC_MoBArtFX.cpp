@@ -97,6 +97,8 @@ void APC_MoBArtFX::GetCameraTraceBounds( FVector& start, FVector& end, float dis
 
 void APC_MoBArtFX::Move(const FInputActionValue& Value)
 {
+	if (PlayerCharacter->IsDead()) return;
+
 	FRotator rotation = GetControlRotation();
 	rotation.Pitch = 0.0f;
 
@@ -109,38 +111,52 @@ void APC_MoBArtFX::Move(const FInputActionValue& Value)
 
 void APC_MoBArtFX::Look(const FInputActionValue& Value)
 {
+	if (PlayerCharacter->IsDead()) return;
+
 	AddYawInput(Value.Get<FVector2D>().X);
 	AddPitchInput(Value.Get<FVector2D>().Y * -1);
 }
 
 void APC_MoBArtFX::Jump(const FInputActionValue& Value)
 {
+	if (PlayerCharacter->IsDead()) return;
+
 	PlayerCharacter->Jump();
 }
 
 void APC_MoBArtFX::StopJump(const FInputActionValue& Value)
 {
+	if (PlayerCharacter->IsDead()) return;
+
 	PlayerCharacter->StopJumping();
 }
 
 void APC_MoBArtFX::AutoAttack(const FInputActionValue& Value)
 {
+	if (PlayerCharacter->IsDead()) return;
+
 	PlayerCharacter->AutoAttack();
 }
 
 void APC_MoBArtFX::Spell01(const FInputActionValue& Value)
 {
+	if (PlayerCharacter->IsDead()) return;
+
 	UE_LOG(LogTemp, Warning, TEXT("Launch Spell_01"));
 	PlayerCharacter->Spell_01();
 }
 
 void APC_MoBArtFX::Spell02(const FInputActionValue& Value)
 {
+	if (PlayerCharacter->IsDead()) return;
+
 	UE_LOG(LogTemp, Warning, TEXT("Launch Spell_02"));
 	PlayerCharacter->Spell_02();
 }
 
 void APC_MoBArtFX::Ultimate(const FInputActionValue& Value)
 {
+	if (PlayerCharacter->IsDead()) return;
+
 	PlayerCharacter->Ultimate();
 }

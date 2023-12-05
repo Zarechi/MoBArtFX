@@ -259,3 +259,7 @@ void ACainerCharacter::Death_Implementation()
 		monstro->Destroy();
 	}
 }
+
+void ACainerCharacter::Respawn_Implementation()
+{
+}

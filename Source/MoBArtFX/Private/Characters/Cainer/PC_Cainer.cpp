@@ -9,5 +9,7 @@ void APC_Cainer::BindAbilitiesActions()
 
 void APC_Cainer::PingMonstro(const FInputActionValue& Value)
 {
+	if (PlayerCharacter->IsDead()) return;
+
 	Cast<ACainerCharacter>(PlayerCharacter)->PingMonstro();
 }

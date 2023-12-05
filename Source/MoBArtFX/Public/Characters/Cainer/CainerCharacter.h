@@ -22,6 +22,7 @@ public:
 
 
 	void Death_Implementation() override;
+	void Respawn_Implementation() override;
 	void AutoAttack_Implementation() override;
 	void Spell_01_Implementation() override;
 	void Spell_02_Implementation() override;
