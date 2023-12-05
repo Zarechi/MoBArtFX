@@ -33,9 +33,9 @@ public:
 	UPROPERTY( BlueprintReadOnly, EditAnywhere, Category = "Auto-Attack" )
 	float Radius = 15.0f;
 
-	//  Trace query object types
+	//  Trace query type
 	UPROPERTY( BlueprintReadOnly, EditAnywhere, Category = "Auto-Attack" )
-	TArray<TEnumAsByte<EObjectTypeQuery>> QueryObjectTypes;
+	TEnumAsByte<ETraceTypeQuery> TraceType;
 
 	//  Trace draw debug type
 	UPROPERTY( BlueprintReadOnly, EditAnywhere, Category = "Auto-Attack" )

@@ -35,6 +35,9 @@ protected:
 		const FHitResult& Hit
 	);
 
+	UFUNCTION()
+	void OnShieldDestroy( AActor* Actor, EEndPlayReason::Type EndPlayReason );
+
 private:
 	bool IsTriggered = false;
 	float TriggerTime = 0.5f;

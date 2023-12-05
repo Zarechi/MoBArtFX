@@ -3,10 +3,12 @@
 
 #include "Engine/DamageEvents.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "MobaGameplayStatics.h"
 
 void UDesertClawAutoAttackAbility::OnInitialize_Implementation()
 {
-	PassiveAbility = CastChecked<UDesertClawPassiveAbility>( Character->GetAbility( EMobaAbilitySlot::Passive ) );
+	auto passive = Character->GetAbility( EMobaAbilitySlot::Passive );
+	PassiveAbility = CastChecked<UDesertClawPassiveAbility>( passive );
 	CustomData = CastChecked<UDesertClawAutoAttackAbilityData>( Data );
 }
 
@@ -31,7 +33,7 @@ void UDesertClawAutoAttackAbility::OnTick_Implementation( float dt )
 
 	//  get references
 	UWorld* world = GetWorld();
-	auto controller = CastChecked<APC_MoBArtFX>( Character->GetController() );
+	auto controller = Character->GetPlayerController();
 
 	//  query params
 	TArray<AActor*> ignored_actors;
@@ -43,12 +45,12 @@ void UDesertClawAutoAttackAbility::OnTick_Implementation( float dt )
 
 	//  sphere trace 
 	FHitResult result;
-	UKismetSystemLibrary::SphereTraceSingleForObjects( 
+	UKismetSystemLibrary::SphereTraceSingle( 
 		Character,
 		start, 
 		end, 
 		CustomData->Radius,
-		CustomData->QueryObjectTypes,
+		CustomData->TraceType,
 		false,
 		ignored_actors,
 		CustomData->DrawDebugType,
@@ -62,11 +64,11 @@ void UDesertClawAutoAttackAbility::OnTick_Implementation( float dt )
 		AActor* actor = result.GetActor();
 
 		//  inflict damage
-		actor->TakeDamage( 
-			CustomData->Damage * dt, 
-			FDamageEvent {}, 
-			Character->GetController(), 
-			Character 
+		UMobaGameplayStatics::ApplyMobaDamage(
+			actor,
+			CustomData->Damage * dt,
+			Character,
+			Character
 		);
 
 		//kPRINT_TICK( result.GetActor()->GetName() );

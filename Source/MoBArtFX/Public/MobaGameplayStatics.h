@@ -43,6 +43,7 @@ class MOBARTFX_API UMobaGameplayStatics : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 	
+public:
 	/** Hurts the specified actor with moba specific damage.
 	 * @param DamagedActor - Actor that will be damaged.
 	 * @param BaseDamage - The base damage to apply.

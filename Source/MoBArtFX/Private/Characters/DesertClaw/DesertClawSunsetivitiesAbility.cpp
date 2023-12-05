@@ -9,7 +9,7 @@ void UDesertClawSunsetivitiesAbility::OnInitialize_Implementation()
 
 void UDesertClawSunsetivitiesAbility::OnRun_Implementation( FMobaAbilityRunContext context )
 {
-	ADesertClawPlayerController* controller = Character->GetPlayerController();
+	auto controller = Character->GetPlayerController();
 
 	//  pay sand cost
 	PassiveAbility->AddSandPercent( -CustomData->SandCost );

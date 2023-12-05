@@ -5,6 +5,7 @@
 
 #include "Defines.h"
 #include "Engine/DamageEvents.h"
+#include "MobaGameplayStatics.h"
 
 ADesertClawUltimatePillar::ADesertClawUltimatePillar()
 {
@@ -85,11 +86,11 @@ void ADesertClawUltimatePillar::OnMeshBeginOverlap(
 	const FHitResult& SweepResult 
 )
 {
-	OtherActor->TakeDamage( 
-		CustomData->PillarDamage, 
-		FDamageEvent {}, 
-		Ability->GetCharacter()->GetController(), 
-		Ability->GetDecalActor()
+	UMobaGameplayStatics::ApplyMobaDamage(
+		OtherActor,
+		CustomData->PillarDamage,
+		this,
+		Ability->GetCharacter()
 	);
 }
 
