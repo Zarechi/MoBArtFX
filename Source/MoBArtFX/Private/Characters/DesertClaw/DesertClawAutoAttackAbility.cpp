@@ -3,6 +3,7 @@
 
 #include "Engine/DamageEvents.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "MobaGameplayStatics.h"
 
 void UDesertClawAutoAttackAbility::OnInitialize_Implementation()
 {
@@ -62,11 +63,11 @@ void UDesertClawAutoAttackAbility::OnTick_Implementation( float dt )
 		AActor* actor = result.GetActor();
 
 		//  inflict damage
-		actor->TakeDamage( 
-			CustomData->Damage * dt, 
-			FDamageEvent {}, 
-			Character->GetController(), 
-			Character 
+		UMobaGameplayStatics::ApplyMobaDamage(
+			actor,
+			CustomData->Damage * dt,
+			Character,
+			Character
 		);
 
 		//kPRINT_TICK( result.GetActor()->GetName() );
