@@ -1,7 +1,9 @@
 #pragma once
 #include "CoreMinimal.h"
+#include "Engine/DamageEvents.h"
 #include "GameFramework/Character.h"
 #include "PS_MoBArtFX.h"
+#include "MobaGameplayStatics.h"
 #include "BaseCharacter.generated.h"
 
 class APC_MoBArtFX;
@@ -80,6 +82,11 @@ public:
 	UFUNCTION( BlueprintCallable, BlueprintPure )
 	APC_MoBArtFX* GetCustomPlayerController() const { return CustomPlayerController; }
 
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	EMobaTeam GetTeam() const { return Team; }
+	UFUNCTION(BlueprintCallable)
+	void SetTeam(EMobaTeam newTeam);
+
 	UPROPERTY( EditDefaultsOnly, BlueprintReadOnly )
 	TSoftClassPtr<UPlayerInfos> DebugPlayerInfosAsset;
 	UPROPERTY( BlueprintReadWrite )
@@ -101,4 +108,9 @@ protected:
 
 	TObjectPtr<APS_MoBArtFX> CustomPlayerState;
 	TObjectPtr<APC_MoBArtFX> CustomPlayerController;
+
+private:
+	void HandleDeath();
+
+	EMobaTeam Team{ EMobaTeam::NONE };
 };

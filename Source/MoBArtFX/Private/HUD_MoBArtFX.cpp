@@ -41,4 +41,6 @@ void AHUD_MoBArtFX::BeginPlay()
 	}
 	ViewportInstance = CreateWidget<>( controller, data->ViewportClass, FName( "Viewport" ) );
 	ViewportInstance->AddToPlayerScreen();
+
+	SetViewportPlayerDatas();
 }

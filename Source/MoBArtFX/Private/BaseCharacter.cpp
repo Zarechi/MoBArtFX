@@ -1,8 +1,7 @@
 #include "BaseCharacter.h"
-#include "Engine/DamageEvents.h"
 #include "PC_MoBArtFX.h"
 #include "GameFramework/CharacterMovementComponent.h"
-
+#include "Kismet/GameplayStatics.h"
 #include "Defines.h"
 #include <Kismet/GameplayStatics.h>
 
@@ -22,6 +21,21 @@ float ABaseCharacter::TakeDamage(
 	if ( !IsValid( data ) ) return 0.0f;
 	if ( data->CurrentHealth == 0.0f ) return 0.0f;
 
+	//  check team
+	if (DamageEvent.IsOfType(FMobaDamageEvent::ClassID))
+	{
+		FMobaDamageEvent* const moba_damage_event = (FMobaDamageEvent*) &DamageEvent;
+
+		if (Team != EMobaTeam::NONE && Team == moba_damage_event->Team)
+		{
+			return 0.0f;
+		}
+	}
+	else
+	{
+		kPRINT_WARNING("A damage has been send without the moba damage event struct.");
+	}
+
 	//  mitigate damage
 	float took_damage = Super::TakeDamage( Damage, DamageEvent, EventInstigator, DamageCauser );
 	took_damage = MitigateDamage( took_damage, DamageCauser );
@@ -32,7 +46,7 @@ float ABaseCharacter::TakeDamage(
 	//  check death
 	if ( data->CurrentHealth == 0.0f )
 	{
-		Death();
+		HandleDeath();
 	}
 
 	return took_damage;
@@ -80,6 +94,13 @@ void ABaseCharacter::AlterateSpeed(float alteration, float duration)
 bool ABaseCharacter::IsSpellOnCooldown( EMobaAbilitySlot type ) const
 {
 	return GetSpellCooldown( type ) > 0.0f;
+}
+
+void ABaseCharacter::SetTeam(EMobaTeam newTeam)
+{
+	Team = newTeam;
+
+	//  do other stuff if necessary
 }
 
 void ABaseCharacter::BeginPlay()
@@ -231,10 +252,18 @@ void ABaseCharacter::Spell_02_Implementation() {}
 
 void ABaseCharacter::Ultimate_Implementation() {}
 
-void ABaseCharacter::Death_Implementation() 
+void ABaseCharacter::Death_Implementation() {}
+
+void ABaseCharacter::HandleDeath()
 {
 	auto data = GetPlayerDatas();
-	if ( !IsValid( data ) ) return;
+	if (!IsValid(data)) return;
 
-	kPRINT( data->Name + " is dead!" );
+	kPRINT(data->Name + " is dead!");
+
+	Death(); //  character's specific death implementation
+
+
+	//  death logic
+	CustomPlayerController->UnPossess();
 }

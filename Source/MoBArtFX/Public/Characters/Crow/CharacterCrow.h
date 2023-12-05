@@ -26,8 +26,10 @@ public:
 	void Ultimate_Implementation() override;
 
 	bool CanUseGlideAbility() const;
+	//void ShowFlashbangEffect();
+	//void HideFlashbangEffect();
+	void DestroyFlashbangWidget();
 	void UpdateGlide();
-	void SetupCurvedMovement();
 
 	// Cooldown
 	float LastUsedAATime;
@@ -42,6 +44,7 @@ public:
 
 	// Scarecrow Breeze
 	bool bIsGliding;
+	bool bIsFlashing;
 	float GlideStartTime;
 
 	// AUTO ATTACK 
@@ -98,9 +101,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Scarecrow Breeze Settings")
 	bool bInfiniteGlideDuration;
 
-	// ULTIMATE
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Scarecrow Breeze Settings")
-	float UltimateCD;
+	float FlashbangDuration;
+
+	UPROPERTY(EditDefaultsOnly, Category = "HUD")
+	TSubclassOf<UUserWidget> HUDFlashEffect;
+
+	UPROPERTY()
+	UUserWidget* FlashbangWidget;
+
+	// ULTIMATE VENFEGUL RAVEN
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Vengeful Raven Settings")
+	float VengefulRavenCD;
 
 	// Class of the sphere projectile
 	TSubclassOf<class ACrow_Projectile> ProjectileClass;

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/BoxComponent.h"
 #include "Cauldron.generated.h"
 
 UCLASS()
@@ -15,8 +16,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly);
 	UStaticMeshComponent* cauldronMesh;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly);
-	UStaticMeshComponent* hitbox;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UBoxComponent* HitboxComponent;
 
 	bool bRotationCorrected;
 
@@ -25,12 +26,12 @@ public:
 	ACauldron();
 
 	UStaticMeshComponent* getMesh() { return cauldronMesh; }
-	UStaticMeshComponent* getHitbox() { return hitbox; }
 
 protected:
 	FTimerHandle RotationCorrectionTimer;
 
 	void CorrectRotation();
+	void OnHitboxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
