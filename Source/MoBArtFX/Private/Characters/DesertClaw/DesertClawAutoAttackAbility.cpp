@@ -7,7 +7,8 @@
 
 void UDesertClawAutoAttackAbility::OnInitialize_Implementation()
 {
-	PassiveAbility = CastChecked<UDesertClawPassiveAbility>( Character->GetAbility( EMobaAbilitySlot::Passive ) );
+	auto passive = Character->GetAbility( EMobaAbilitySlot::Passive );
+	PassiveAbility = CastChecked<UDesertClawPassiveAbility>( passive );
 	CustomData = CastChecked<UDesertClawAutoAttackAbilityData>( Data );
 }
 
@@ -32,7 +33,7 @@ void UDesertClawAutoAttackAbility::OnTick_Implementation( float dt )
 
 	//  get references
 	UWorld* world = GetWorld();
-	auto controller = CastChecked<APC_MoBArtFX>( Character->GetController() );
+	auto controller = Character->GetPlayerController();
 
 	//  query params
 	TArray<AActor*> ignored_actors;
