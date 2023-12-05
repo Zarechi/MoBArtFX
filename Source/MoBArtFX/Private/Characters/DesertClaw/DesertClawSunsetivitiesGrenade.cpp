@@ -45,6 +45,8 @@ void ADesertClawSunsetivitiesGrenade::Tick( float dt )
 		);
 		shield->Activate( CustomData->ShieldTime );
 
+		shield->OnEndPlay.AddDynamic( this, &ADesertClawSunsetivitiesGrenade::OnShieldDestroy );
+
 		SetActorTickEnabled( false );
 	}
 }
@@ -70,5 +72,10 @@ void ADesertClawSunsetivitiesGrenade::OnMeshHit(
 	Mesh->SetAngularDamping( 3.0f );
 
 	IsTriggered = true;
+}
+
+void ADesertClawSunsetivitiesGrenade::OnShieldDestroy( AActor* Actor, EEndPlayReason::Type EndPlayReason )
+{
+	Destroy();
 }
 
