@@ -44,12 +44,12 @@ void UDesertClawAutoAttackAbility::OnTick_Implementation( float dt )
 
 	//  sphere trace 
 	FHitResult result;
-	UKismetSystemLibrary::SphereTraceSingleForObjects( 
+	UKismetSystemLibrary::SphereTraceSingle( 
 		Character,
 		start, 
 		end, 
 		CustomData->Radius,
-		CustomData->QueryObjectTypes,
+		CustomData->TraceType,
 		false,
 		ignored_actors,
 		CustomData->DrawDebugType,
