@@ -94,6 +94,7 @@ void ABaseCharacter_King::AutoAttack_Implementation()
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, SpellSpawnPoint->GetComponentLocation().ToString());
 		timerDefaultAttack = AttackRate;
+		ApplySpellCooldown(timerDefaultAttack, EMobaAbilitySlot::AutoAttack);
 		GetWorld()->SpawnActor<AActor>(ProjectilClass, SpellSpawnPoint->GetComponentLocation(), FirstPersonCameraComponent->GetComponentRotation() + Calibrate);
 	}
 }
@@ -133,6 +134,7 @@ void ABaseCharacter_King::Spell_02_Implementation()
 				//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Ability2"));
 				GetWorld()->SpawnActor<AActor>(ActorAbility2, SpellSpawnPoint->GetComponentLocation(), GetCapsuleComponent()->GetComponentRotation());
 				timerIronShears = cooldownAbility2;
+				ApplySpellCooldown(timerIronShears, EMobaAbilitySlot::Second);
 				Spell02IsActive = true;
 			}
 		}
@@ -196,6 +198,7 @@ void ABaseCharacter_King::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor
 			EndGodHand();
 			godHandBreak = true;
 			timerGodHandBreack = cooldownAbilityBreak;
+			ApplySpellCooldown(timerGodHandBreack, EMobaAbilitySlot::First);
 		}
 	}
 }
@@ -245,6 +248,7 @@ void ABaseCharacter_King::EndUltimate()
 			GetCapsuleComponent()->AddLocalOffset(FVector(0.f, 0.f, -LevitationHeight));
 
 			timerUlti = UltiCooldown;
+			ApplySpellCooldown(timerUlti, EMobaAbilitySlot::Ultimate);
 		}
 	);
 
