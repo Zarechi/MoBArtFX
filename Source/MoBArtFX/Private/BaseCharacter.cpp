@@ -8,6 +8,9 @@
 ABaseCharacter::ABaseCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	ChildCam = CreateDefaultSubobject<UChildActorComponent>("Child Actor Cam");
+	ChildCam->SetChildActorClass(TSubclassOf<AActor>());
 }
 
 float ABaseCharacter::TakeDamage(
@@ -119,6 +122,9 @@ void ABaseCharacter::BeginPlay()
 	
 	//  setup data
 	SetPlayerDatas( GetPlayerDatas() );
+
+
+	ChildCam->SetChildActorClass(TSubclassOf<AActor>()); 
 }
 
 void ABaseCharacter::SetPlayerDatas( UPlayerInfos* data )
@@ -267,6 +273,15 @@ void ABaseCharacter::HandleDeath()
 
 	SpeedAlterations.Empty(); 
 	ChangeSpeed(); 
+
+
+	//  death cam
+	ChildCam->GetChildActor()->SetActorLocation(GetActorLocation() + FVector(0.0f, 0.0f, 200.0f)); 
+	//ChildCam->GetChildActor()->SetActorRelativeRotation(FQuat(FVector::UnitX(), FMath::DegreesToRadians(90.0f)));
+
+	FViewTargetTransitionParams camera_change_params;
+	camera_change_params.BlendTime = 2.0f;
+	CustomPlayerController->PlayerCameraManager->SetViewTarget(ChildCam->GetChildActor(), camera_change_params);
 }
 
 void ABaseCharacter::HandleRespawn()
@@ -296,4 +311,6 @@ void ABaseCharacter::HandleRespawn()
 	}
 
 	SetupData(data);
+
+	CustomPlayerController->PlayerCameraManager->SetViewTarget(this); 
 }

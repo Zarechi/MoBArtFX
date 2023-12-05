@@ -3,6 +3,7 @@
 #include "Engine/DamageEvents.h"
 #include "GameFramework/Character.h"
 #include "PS_MoBArtFX.h"
+#include "Components/ChildActorComponent.h"
 #include "MobaGameplayStatics.h"
 #include "BaseCharacter.generated.h"
 
@@ -46,6 +47,9 @@ public:
 	bool IsSpellOnCooldown( EMobaAbilitySlot type ) const;
 	UFUNCTION( BlueprintCallable, BlueprintPure )
 	float GetSpellCooldown( EMobaAbilitySlot type ) const;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UChildActorComponent* ChildCam;
 
 	/**
 	* Alterate the speed (positively or negatively) of a character for a given duration (stackable with other speed alterations).
