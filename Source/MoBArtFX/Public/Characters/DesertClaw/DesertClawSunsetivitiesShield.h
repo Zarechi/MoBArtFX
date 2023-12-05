@@ -12,10 +12,6 @@ class MOBARTFX_API ADesertClawSunsetivitiesShield : public AActor
 public:	
 	ADesertClawSunsetivitiesShield();
 
-	void Activate();
-
-protected:
-	virtual void BeginPlay() override;
-	virtual void Tick( float dt ) override;
-
+	UFUNCTION( BlueprintCallable )
+	void Activate( float time );
 };

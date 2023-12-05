@@ -1,4 +1,5 @@
 #include "Characters/DesertClaw/DesertClawSunsetivitiesShield.h"
+#include "Characters/DesertClaw/DesertClawSunsetivitiesAbility.h"
 
 ADesertClawSunsetivitiesShield::ADesertClawSunsetivitiesShield()
 {
@@ -6,19 +7,7 @@ ADesertClawSunsetivitiesShield::ADesertClawSunsetivitiesShield()
 
 }
 
-void ADesertClawSunsetivitiesShield::Activate()
+void ADesertClawSunsetivitiesShield::Activate( float time )
 {
+	SetLifeSpan( time );
 }
-
-void ADesertClawSunsetivitiesShield::BeginPlay()
-{
-	Super::BeginPlay();
-
-}
-
-void ADesertClawSunsetivitiesShield::Tick( float dt )
-{
-	Super::Tick( dt );
-
-}
-

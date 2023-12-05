@@ -19,11 +19,14 @@ void UMobaAbility::Initialize()
 
 bool UMobaAbility::Run( FMobaAbilityRunContext context )
 {
+	//  check cooldown
 	if ( IsOnCooldown() )
 	{
 		kPRINT_WARNING( "Ability: " + Data->Name + " is on cooldown (" + FString::SanitizeFloat( GetCooldown() ) + "s)" );
 		return false;
 	}
+	//  check can run
+	if ( !CanRun( context ) ) return false;
 
 	//  toggle on/off mode
 	if ( Mode == EMobaAbilityMode::OnOff )
@@ -107,6 +110,8 @@ void UMobaAbility::OnStop_Implementation( FMobaAbilityRunContext context )
 }
 
 void UMobaAbility::OnTick_Implementation( float dt ) {}
+
+bool UMobaAbility::CanRun_Implementation( FMobaAbilityRunContext context ) { return true; }
 
 UWorld* UMobaAbility::GetWorld() const
 {
