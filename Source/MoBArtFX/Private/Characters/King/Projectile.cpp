@@ -5,6 +5,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
 #include <Characters/King/Int_Interaction_Chara.h>
+#include <MobaGameplayStatics.h>
 
 // Sets default values
 AProjectile::AProjectile()
@@ -47,15 +48,19 @@ AProjectile::AProjectile()
 
 void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	// Only add impulse and destroy projectile if we hit a physics
-	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
-	{
-		if (OtherActor->Implements<UInt_Interaction_Chara>())
+	if ((OtherActor != nullptr) && (OtherActor != this)) {
+		TObjectPtr<ABaseCharacter> target = Cast<ABaseCharacter>(OtherActor);
+		if (target != nullptr)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("IronShears"));
-			IInt_Interaction_Chara::Execute_DoDamage(OtherActor);
+			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("hit"));
+			UMobaGameplayStatics::ApplyMobaDamage(target, Damage, this, shooter);
 		}
 		Destroy();
 	}
+}
+
+void AProjectile::SetShooter(ABaseCharacter* origin)
+{
+	shooter = origin;
 }
 

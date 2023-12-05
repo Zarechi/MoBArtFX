@@ -106,6 +106,8 @@ private:
 	bool godHandBreak = false;
 	float timerGodHandBreack = 0.f;
 	float currentGodHandHealth;
+	TObjectPtr<UPlayerInfos> data;
+	float saveCurentHealth = 0;
 
 	void EndGodHand();
 
