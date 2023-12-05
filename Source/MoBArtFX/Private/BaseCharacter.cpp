@@ -2,6 +2,7 @@
 #include "PC_MoBArtFX.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/GameMode.h"
 #include "Defines.h"
 
 ABaseCharacter::ABaseCharacter()
@@ -181,6 +182,13 @@ void ABaseCharacter::Tick(float DeltaTime)
 		}
 		kPRINT_TICK("Speed currently altered by a factor of " + FString::SanitizeFloat(change) + ".");
 	}
+
+	if (Dead)
+	{
+		RespawnTimer -= DeltaTime;
+		if (RespawnTimer <= 0.0f) HandleRespawn();
+		else kPRINT_TICK("Respawn in " + FString::SanitizeFloat(RespawnTimer) + " seconds.");
+	}
 }
 
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -199,6 +207,12 @@ void ABaseCharacter::SetupData( UPlayerInfos* data )
 	}
 
 	kLOG_ARGS( "Character '%s' data has been setup", *data->Name );
+
+	data->CurrentHealth = data->MaxHealth;
+	data->CurrentAmmo = data->MaxAmmo;
+	ApplySpellCooldown(0.0f, EMobaAbilitySlot::First);
+	ApplySpellCooldown(0.0f, EMobaAbilitySlot::Second);
+	ApplySpellCooldown(0.0f, EMobaAbilitySlot::Ultimate);
 }
 
 void ABaseCharacter::ChangeSpeed()
@@ -235,6 +249,8 @@ void ABaseCharacter::Ultimate_Implementation() {}
 
 void ABaseCharacter::Death_Implementation() {}
 
+void ABaseCharacter::Respawn_Implementation() {}
+
 void ABaseCharacter::HandleDeath()
 {
 	auto data = GetPlayerDatas();
@@ -246,5 +262,38 @@ void ABaseCharacter::HandleDeath()
 
 
 	//  death logic
-	CustomPlayerController->UnPossess();
+	Dead = true;
+	RespawnTimer = 5.0f;
+
+	SpeedAlterations.Empty(); 
+	ChangeSpeed(); 
+}
+
+void ABaseCharacter::HandleRespawn()
+{
+	auto data = GetPlayerDatas();
+	if (!IsValid(data)) return;
+
+	kPRINT(data->Name + " has respawn!");
+
+	Respawn(); //  character's specific respawn implementation
+
+
+	//  respawn logic
+	Dead = false;
+
+	AActor* start = UGameplayStatics::GetGameMode(GetWorld())->FindPlayerStart(GetController()); 
+	if (IsValid(start))
+	{
+		SetActorLocation(start->GetActorLocation());
+		SetActorRotation(start->GetActorRotation());
+	}
+	else
+	{
+		kPRINT_WARNING("Player Start not found!");
+		SetActorLocation(FVector::ZeroVector);
+		SetActorRotation(FQuat::Identity);
+	}
+
+	SetupData(data);
 }

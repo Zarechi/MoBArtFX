@@ -7,6 +7,8 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/ArrowComponent.h"
 #include <Characters/King/Projectile.h>
+#include "MobaGameplayStatics.h"
+#include <Defines.h>
 
 ABaseCharacter_King::ABaseCharacter_King()
 {
@@ -65,6 +67,8 @@ void ABaseCharacter_King::BeginPlay()
 	GetCharacterMovement()->GravityScale = DefaultGravityScale;
 
 	currentGodHandHealth = AbilityHealth;
+
+	data = GetPlayerDatas();
 }
 
 void ABaseCharacter_King::Tick(float DeltaTime)
@@ -86,6 +90,11 @@ void ABaseCharacter_King::Tick(float DeltaTime)
 	{
 		EndUltimate();
 	}
+
+	if (Spell01IsActive && data->CurrentHealth <= saveCurentHealth)
+	{
+		EndGodHand();
+	}
 }
 
 void ABaseCharacter_King::AutoAttack_Implementation()
@@ -95,7 +104,10 @@ void ABaseCharacter_King::AutoAttack_Implementation()
 		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, SpellSpawnPoint->GetComponentLocation().ToString());
 		timerDefaultAttack = AttackRate;
 		ApplySpellCooldown(timerDefaultAttack, EMobaAbilitySlot::AutoAttack);
-		GetWorld()->SpawnActor<AActor>(ProjectilClass, SpellSpawnPoint->GetComponentLocation(), FirstPersonCameraComponent->GetComponentRotation() + Calibrate);
+		TObjectPtr<AActor> proj;
+		proj = GetWorld()->SpawnActor<AActor>(ProjectilClass, SpellSpawnPoint->GetComponentLocation(), FirstPersonCameraComponent->GetComponentRotation() + Calibrate);
+		TObjectPtr<AProjectile> projectil = Cast<AProjectile>(proj);
+		projectil->SetShooter(this);
 	}
 }
 
@@ -104,16 +116,24 @@ void ABaseCharacter_King::Spell_01_Implementation()
 	FTimerDelegate Delegate;
 	Delegate.BindLambda([&]()
 		{
-			Spell01IsActive = true;
+			//Spell01IsActive = true;
 			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("God Hand"));
 			GetCharacterMovement()->MaxWalkSpeed = AbilityMaxWalkSpeed;
 			MeshGodHand->SetVisibility(true);
 			MeshGodHand->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+			saveCurentHealth = data->CurrentHealth;
+			if (data->CurrentHealth > 0)
+			{
+				data->CurrentHealth += AbilityHealth;
+
+			}
 		}
 	);
 
-	if (!UltiIsActive && timerGodHandBreack < 0)
+	if (!UltiIsActive && timerGodHandBreack < 0 && !Spell01IsActive)
 	{
+		Spell01IsActive = true;
 		FTimerHandle TimerH;
 		GetWorld()->GetTimerManager().SetTimer(TimerH, Delegate, abilityActivationTime, false);
 		if (godHandBreak)
@@ -155,7 +175,7 @@ void ABaseCharacter_King::Ultimate_Implementation()
 			if (!UltiIsActive)
 			{
 				UltiIsActive = true;
-				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Ultimate"));
+				//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Ultimate"));
 
 				saveGravityScale = GetCharacterMovement()->GravityScale;
 				GetCharacterMovement()->GravityScale = 0.f;
@@ -193,6 +213,7 @@ void ABaseCharacter_King::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor
 		//FString currentFHHealthStr = FString::SanitizeFloat(currentGodHandHealth);
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::SanitizeFloat(currentGodHandHealth));
 
+		//if (currentGodHandHealth <= proj->GetDamage())
 		if (currentGodHandHealth <= proj->GetDamage())
 		{
 			EndGodHand();
@@ -205,6 +226,13 @@ void ABaseCharacter_King::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor
 
 void ABaseCharacter_King::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	TObjectPtr<ABaseCharacter> target = Cast<ABaseCharacter>(OtherActor);
+
+	if (target != nullptr)
+	{
+		UMobaGameplayStatics::ApplyMobaDamage(target, UltiDemage, this, this);
+	}
+
 }
 
 void ABaseCharacter_King::Spell_01End_Implementation()
@@ -217,6 +245,7 @@ void ABaseCharacter_King::Spell_01End_Implementation()
 		}
 	);
 
+	Spell01IsActive = false;
 	FTimerHandle TimerH;
 	GetWorld()->GetTimerManager().SetTimer(TimerH, Delegate, abilityActivationTime, false);
 }
@@ -227,6 +256,8 @@ void ABaseCharacter_King::EndGodHand()
 	MeshGodHand->SetVisibility(false);
 	MeshGodHand->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Spell01IsActive = false;
+
+	data->CurrentHealth = saveCurentHealth;
 }
 
 void ABaseCharacter_King::EndUltimate()

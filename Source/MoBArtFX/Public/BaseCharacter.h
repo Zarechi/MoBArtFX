@@ -71,6 +71,8 @@ public:
 
 	UFUNCTION( BlueprintNativeEvent, BlueprintCallable )
 	void Death();
+	UFUNCTION( BlueprintNativeEvent, BlueprintCallable )
+	void Respawn();
 
 	// PlayerDatas
 	void SetPlayerDatas( UPlayerInfos* data );
@@ -92,6 +94,9 @@ public:
 	UPROPERTY( BlueprintReadWrite )
 	TObjectPtr<UPlayerInfos> DebugPlayerInfos;
 
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool IsDead() const { return Dead; }
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick( float DeltaTime ) override;
@@ -110,6 +115,10 @@ protected:
 
 private:
 	void HandleDeath();
+	void HandleRespawn();
+
+	bool Dead{ false };
+	float RespawnTimer{ 0.0f };
 
 	EMobaTeam Team{ EMobaTeam::NONE };
 };

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include <BaseCharacter.h>
 #include "Projectile.generated.h"
 
 class USphereComponent;
@@ -28,6 +29,8 @@ class MOBARTFX_API AProjectile : public AActor
 	/** Projectile movement component */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
+
+	TObjectPtr<ABaseCharacter> shooter;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -43,5 +46,7 @@ public:
 	TObjectPtr<UProjectileMovementComponent> GetProjectileMovement() const { return ProjectileMovement; }
 
 	float GetDamage() const { return Damage; }
+
+	void SetShooter(ABaseCharacter* origin);
 
 };
